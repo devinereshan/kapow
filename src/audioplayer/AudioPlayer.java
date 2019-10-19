@@ -4,93 +4,51 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class AudioPlayer {
 
-    private Clip currentSongClip;
-    private Vector<File> songQueue;
+    private Track currentTrack;
+    private Vector<Track> trackQueue;
 
-    private AudioInputStream audioInputStream;
-    private AudioFormat currentSongFormat;
-    private AudioListener audioListener;
-
-    private float currentSongFrameRate;
-    private long currentSongFrames;
-
+ 
 
     public AudioPlayer () {
-        audioListener = new AudioListener();
+        trackQueue = new Vector<Track>();
     }
 
-    public void playSong() {
-        try {
-            currentSongClip.open(audioInputStream);
-        } catch (LineUnavailableException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    
+
+    private void playTrack() {
+        currentTrack.playClip();
+    }
+
+    public void play() {
+        if (isPlaying()) {
+            return;
         }
-
-        currentSongClip.setFramePosition(currentSongClip.getFrameLength() - 400_000);
-        // currentSongClip.loop(0);
-        currentSongClip.start();
-
         
-
+        if (setCurrentTrack()) {
+            playTrack();
+        }
         
     }
 
-
-    public boolean isPlaying() {
-        return !audioListener.isDone();
-    }
-    /**
-     * Create a clip instance from a file and set it as the current song.
-     * 
-     * @param songFile
-     */
-    public void setCurrentSong(File songFile) {
-        // Create inputStream
-        try {
-            audioInputStream = AudioSystem.getAudioInputStream(songFile);
-        } catch (UnsupportedAudioFileException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    /** Returns true if currentTrack is set successfully */
+    private boolean setCurrentTrack() {
+        if (queueIsEmpty()) {
+            return false;
         }
 
-        // getFormat
-        currentSongFormat = audioInputStream.getFormat();
-
-        // get frameLength;
-        currentSongFrames = audioInputStream.getFrameLength();
-
-        // getFrameRate
-        currentSongFrameRate = currentSongFormat.getFrameRate();
-
-        // create clip
-        try {
-            currentSongClip = AudioSystem.getClip();
-        } catch (LineUnavailableException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        // add audio listener
-        currentSongClip.addLineListener(audioListener);
-
-        // open clip
-
-        // set clip.loop
-
+        currentTrack = trackQueue.elementAt(0);
+        return true;
     }
 
-    private void queueSong(File songFile) {
-        songQueue.add(songFile);
+    public void pauseTrack() {
+
+    }
+   
+    public void queueTrack(Track track) {
+        trackQueue.add(track);
     }
 
     private void getElapsedTime() {
@@ -101,10 +59,21 @@ public class AudioPlayer {
 
     }
 
-    
+    /**
+     * If currentTrack is currently set, return true if it is playing.
+     * If currentTrack has not been set, it is not playing. 
+     * @return
+     */
+    private boolean isPlaying() {
+        try {
+            return currentTrack.isPlaying();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-    public void closeCurrentClip() {
-        currentSongClip.close();
+    private boolean queueIsEmpty() {
+        return trackQueue.size() == 0;
     }
 
 }
