@@ -18,9 +18,15 @@ public class AudioPlayer {
 
     private AudioInputStream audioInputStream;
     private AudioFormat currentSongFormat;
+    private AudioListener audioListener;
 
     private float currentSongFrameRate;
     private long currentSongFrames;
+
+
+    public AudioPlayer (AudioListener al) {
+        audioListener = al;
+    }
 
     public void playSong() {
         try {
@@ -30,10 +36,19 @@ public class AudioPlayer {
             e.printStackTrace();
         }
 
-        currentSongClip.loop(1);
+        currentSongClip.setFramePosition(currentSongClip.getFrameLength() - 400_000);
+        // currentSongClip.loop(0);
         currentSongClip.start();
+
+        
+
+        
     }
 
+
+    public boolean isPlaying() {
+        return !audioListener.isDone();
+    }
     /**
      * Create a clip instance from a file and set it as the current song.
      * 
@@ -65,6 +80,9 @@ public class AudioPlayer {
             e.printStackTrace();
         }
 
+        // add audio listener
+        currentSongClip.addLineListener(audioListener);
+
         // open clip
 
         // set clip.loop
@@ -85,5 +103,8 @@ public class AudioPlayer {
 
     
 
+    public void closeCurrentClip() {
+        currentSongClip.close();
+    }
 
 }
