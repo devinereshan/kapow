@@ -82,9 +82,13 @@ public class Track {
 
     public void playClip() {
         if (clip.isOpen()) {
-            seek(totalFrames - 400_000);
+            // seek(totalFrames - 400_000);
             clip.start();
         }
+    }
+
+    public void pauseClip() {
+            clip.stop();
     }
 
     public boolean isPlaying() {

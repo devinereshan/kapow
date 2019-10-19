@@ -2,10 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - FrontEnd",
+            "request": "launch",
+            "mainClass": "audioplayer.FrontEnd",
+            "projectName": "audioPlayer",
+            "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
+
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Main",
             "request": "launch",
             "mainClass": "audioplayer.Main",
-            "projectName": "audioPlayer"
+            "projectName": "audioPlayer",
+            "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
         }
     ]
 }

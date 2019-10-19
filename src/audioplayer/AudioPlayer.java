@@ -16,7 +16,7 @@ public class AudioPlayer {
         trackQueue = new Vector<Track>();
     }
 
-    
+
 
     private void playTrack() {
         currentTrack.playClip();
@@ -44,6 +44,7 @@ public class AudioPlayer {
     }
 
     public void pauseTrack() {
+        currentTrack.pauseClip();
 
     }
    
@@ -74,6 +75,13 @@ public class AudioPlayer {
 
     private boolean queueIsEmpty() {
         return trackQueue.size() == 0;
+    }
+
+    public void quit() {
+        pauseTrack();
+        for (Track track : trackQueue) {
+            track.closeClip();
+        }
     }
 
 }
