@@ -8,23 +8,16 @@ public class Main {
         
         if (songFile.exists()) {
 
-            AudioListener al = new AudioListener();
-            AudioPlayer ap = new AudioPlayer(al);
-
-            ap.setCurrentSong(songFile);
-            ap.playSong();
+            Track currentTrack = new Track(songFile);
+            currentTrack.playClip();
             
-            // System.out.println("loading song");
-            // while (!ap.isPlaying());
-            // System.out.println("loaded song");
-            // while (ap.isPlaying());
             
-            while (ap.isPlaying()) {
+            while (currentTrack.isPlaying()) {
 
             }
             
             System.out.println("Done");
-            ap.closeCurrentClip();
+            currentTrack.closeClip();
         }
     }
 }

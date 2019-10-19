@@ -24,8 +24,8 @@ public class AudioPlayer {
     private long currentSongFrames;
 
 
-    public AudioPlayer (AudioListener al) {
-        audioListener = al;
+    public AudioPlayer () {
+        audioListener = new AudioListener();
     }
 
     public void playSong() {
