@@ -14,8 +14,8 @@ public class AudioPlayer {
     // private int currentTrackIndex;
     private Vector<Track> trackQueue;
 
-    private final int LEFT = -1;
-    private final int RIGHT = 1;
+    private final int SEEK_LEFT = -1;
+    private final int SEEK_RIGHT = 1;
 
 
     public AudioPlayer () {
@@ -35,8 +35,9 @@ public class AudioPlayer {
             return;
         }
 
-        if (!queueIsEmpty()) {
+        if (indexHasTrack(index)) {
             currentTrack = trackQueue.elementAt(index);
+            currentTrack.reset(); // make sure track starts from the beginning. Temporary fix because of race conditions. Learn about threads. If I call currentTrack.reset before switching to a new track, the setFramePosition doesn't complete. This is verified by calling getFramePosition() on the previous track. Apparently setFramePosition() finds the current frame position by seeking for it. Some condition somewhere is interrupting the call to setFramePosition(). Right now I'm assuming it's something to do with setting currentTrack to point to the new track before the call to setFramePosition() finishes, which is odd because reference to the previous track is not actually lost. Only the reference in currentTrack is lost. In any case, I feel the most responsible way to handle this is to make the program wait for the previous track's reset() method to finish before assigning the next track to currentTrack. But maybe that's not necessary. In the meantime resetting each new track as it is assigned to current track seems to fix the issue, because threads do wait for themselves (If my assumption about this being a race condition is correct). It might be just as simple to set a startFrame member variable and make sure startFrame == getFramePosition() before doing anything with a track, but I haven't thought much on that yet. Interestingly, the tracks reset fine if they are paused before switching.
         }
     }
 
@@ -58,32 +59,42 @@ public class AudioPlayer {
 
     private void seek(int direction) {
         if (currentTrack != null) {
-            boolean playing = currentTrack.isPlaying();
+            // check if current track is playing, to start next song in same state
+            boolean playNewTrack = currentTrack.isPlaying();
+
+            // Find index of current track so verify seek direction
             int currentIndex = trackQueue.indexOf(currentTrack);
+
+            // verify that a track exists in sought index
             if (indexHasTrack(currentIndex + direction)) {
-                resetTrack(currentTrack);
-                setCurrentTrack(trackQueue.indexOf(currentTrack) + direction);
-                if (playing) {
-                    play();
-                }
+                switchTrack(direction, playNewTrack);
             }
         }
     }
 
+    private void switchTrack(int direction, boolean playNewTrack) {
+        resetTrack(currentTrack);
+        setCurrentTrack(trackQueue.indexOf(currentTrack) + direction);
+        if (playNewTrack) {
+            play();
+        }
+
+    }
+
 
     public void seekLeft() {
-        seek(LEFT);
+        seek(SEEK_LEFT);
     }
 
 
     public void seekRight() {
-        seek(RIGHT);
+        seek(SEEK_RIGHT);
     }
 
 
     private void resetTrack(Track track) {
-        track.pauseClip();
-        track.seek(0);
+        // track.pauseClip();
+        // track.seek(0);
         track.reset();
     }
 

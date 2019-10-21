@@ -17,6 +17,10 @@ public class AudioListener implements LineListener {
             done = true;
             notifyAll();
         }
+        if (eventType == Type.START || eventType == Type.OPEN) {
+            done = false;
+            notifyAll();
+        }
 
     }
 

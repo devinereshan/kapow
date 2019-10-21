@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public class FrontEnd extends Application {
 
-    private Label message;
+    private Label currentTrackName;
     private AudioPlayer audioPlayer;
 
     @Override
@@ -24,9 +24,9 @@ public class FrontEnd extends Application {
 
         audioPlayer = new AudioPlayer();
 
-        message = new Label("No Track Selected");
+        currentTrackName = new Label("No Track Selected");
 
-        message.setFont(new Font(16));
+        currentTrackName.setFont(new Font(16));
 
         Button seekLeft = new Button("<<");
         seekLeft.setOnAction(e -> seekLeft());
@@ -52,7 +52,7 @@ public class FrontEnd extends Application {
         HBox buttonBar = new HBox(20, load, seekLeft, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         BorderPane root = new BorderPane();
-        root.setCenter(message);
+        root.setCenter(currentTrackName);
         root.setBottom(buttonBar);
 
         Scene scene = new Scene(root, 500, 200);
@@ -73,7 +73,7 @@ public class FrontEnd extends Application {
         File audioFile = getAudioFile(stage);
         audioPlayer.queueTrack(audioFile);
         audioPlayer.printQueue(); // test
-        message.setText(audioPlayer.getCurrentTrackName());
+        currentTrackName.setText(audioPlayer.getCurrentTrackName());
     }
 
     private void play() {
@@ -86,12 +86,12 @@ public class FrontEnd extends Application {
 
     private void seekLeft() {
         audioPlayer.seekLeft();
-        message.setText(audioPlayer.getCurrentTrackName());
+        currentTrackName.setText(audioPlayer.getCurrentTrackName());
     }
 
     private void seekRight() {
         audioPlayer.seekRight();
-        message.setText(audioPlayer.getCurrentTrackName());
+        currentTrackName.setText(audioPlayer.getCurrentTrackName());
     }
 
 

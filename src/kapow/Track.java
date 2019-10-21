@@ -101,11 +101,14 @@ public class Track {
         if (clip.isOpen()) {
             // seek(totalFrames - 400_000);
             clip.start();
+            // audioListener.reset();
+            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\n\n", audioListener.isDone(), name, clip.getFramePosition());
         }
     }
 
     public void pauseClip() {
             clip.stop();
+            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\n", audioListener.isDone(), name);
     }
 
     public boolean isPlaying() {
@@ -139,6 +142,10 @@ public class Track {
     }
 
     public void reset() {
+        pauseClip();
+        // seek(0);
+        clip.setFramePosition(0);
         audioListener.reset();
+        System.out.format("end of track reset. current pos: %d\n", clip.getFramePosition());
     }
 }
