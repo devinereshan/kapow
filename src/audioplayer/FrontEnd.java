@@ -79,7 +79,7 @@ public class FrontEnd extends Application {
         if (audioFile != null) {
             audioPlayer.queueTrack(new Track(audioFile));
             // message.setText(audioFile.getName());
-            // message.setText(audioPlayer.getCurrentTrackName());
+            message.setText(audioPlayer.getCurrentTrackName());
         }
     }
   

@@ -21,24 +21,17 @@ public class AudioPlayer {
     }
 
     public void play() {
-        if (isPlaying()) {
-            return;
-        }
-        
-        if (setCurrentTrack()) {
+       
+        if (currentTrack != null) {
             playTrack();
         }
         
     }
 
-    /** Returns true if currentTrack is set successfully */
-    private boolean setCurrentTrack() {
-        if (queueIsEmpty()) {
-            return false;
+    private void setCurrentTrack() {
+        if (!queueIsEmpty()) {
+            currentTrack = trackQueue.elementAt(0);
         }
-
-        currentTrack = trackQueue.elementAt(0);
-        return true;
     }
 
     public String getCurrentTrackName() {
@@ -54,9 +47,9 @@ public class AudioPlayer {
    
     public void queueTrack(Track track) {
         trackQueue.add(track);
-        // if (trackQueue.size() == 1) {
-        //     currentTrack = trackQueue.elementAt(0);
-        // }
+        if (trackQueue.size() == 1) {
+            setCurrentTrack();
+        }
     }
 
     public String getElapsedTime() {
@@ -77,15 +70,6 @@ public class AudioPlayer {
 
     private void getTotalTime() {
 
-    }
-
-
-    private boolean isPlaying() {
-        try {
-            return currentTrack.isPlaying();
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private boolean queueIsEmpty() {

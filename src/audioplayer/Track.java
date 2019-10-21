@@ -32,11 +32,6 @@ public class Track {
     // Track clips should be opened at the end of the instantiation.
     // if any part of the track construction fails, the whole creation should fail and not be made available to the system.
     // Look into throwing custom exceptions.
-    
-    /**
-     * 
-     * @param trackFile
-     */
     public Track (File trackFile) {
         assert trackFile.exists();
 
