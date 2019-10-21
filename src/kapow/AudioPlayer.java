@@ -11,51 +11,82 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioPlayer {
 
     private Track currentTrack;
+    // private int currentTrackIndex;
     private Vector<Track> trackQueue;
 
- 
+    private final int LEFT = -1;
+    private final int RIGHT = 1;
 
-    // testing
-    public void printQueue() {
-        System.out.format("Tracks queued: %d\n", trackQueue.size());
-    }
 
     public AudioPlayer () {
         trackQueue = new Vector<Track>();
     }
 
 
-    private void playTrack() {
-        currentTrack.playClip();
-    }
-
-
     public void play() {
         if (currentTrack != null) {
-            playTrack();
-        }    
-    }
-
-
-    private void setCurrentTrack() {
-        if (!queueIsEmpty()) {
-            currentTrack = trackQueue.elementAt(0);
+            currentTrack.playClip();
         }
     }
+
+
+    private void setCurrentTrack(int index) {
+        if (index < 0 || index > trackQueue.size() - 1) {
+            return;
+        }
+
+        if (!queueIsEmpty()) {
+            currentTrack = trackQueue.elementAt(index);
+        }
+    }
+
 
     public String getCurrentTrackName() {
         if (currentTrack != null) {
             return currentTrack.getName();
-        } 
+        }
         return "No Track Selected";
     }
 
-    public void pauseTrack() {
+
+    public void pause() {
         if (currentTrack != null) {
             currentTrack.pauseClip();
         }
-
     }
+
+
+    private void seek(int direction) {
+        if (currentTrack != null) {
+            boolean playing = currentTrack.isPlaying();
+            int currentIndex = trackQueue.indexOf(currentTrack);
+            if (indexHasTrack(currentIndex + direction)) {
+                resetTrack(currentTrack);
+                setCurrentTrack(trackQueue.indexOf(currentTrack) + direction);
+                if (playing) {
+                    play();
+                }
+            }
+        }
+    }
+
+
+    public void seekLeft() {
+        seek(LEFT);
+    }
+
+
+    public void seekRight() {
+        seek(RIGHT);
+    }
+
+
+    private void resetTrack(Track track) {
+        track.pauseClip();
+        track.seek(0);
+        track.reset();
+    }
+
 
     private boolean isValidAudioFile(File file) {
         try {
@@ -63,29 +94,42 @@ public class AudioPlayer {
             return true;
         } catch (UnsupportedAudioFileException | IOException e) {
             return false;
-        }        
+        }
     }
-   
+
+
+    private boolean indexHasTrack(int queueIndex) {
+        try {
+            trackQueue.elementAt(queueIndex);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
 
     private Track createNewTrack(File trackFile) {
             return new Track(trackFile);
     }
 
+
     public void queueTrack(File trackFile) {
         if (isValidAudioFile(trackFile)) {
             trackQueue.add(createNewTrack(trackFile));
-         
+
             if (trackQueue.size() == 1) {
-                setCurrentTrack();
+                setCurrentTrack(0);
             }
         }
     }
+
 
     public String getElapsedTime() {
         int[] time =  convertTime(currentTrack.elapsedTime());
         return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
     }
-    
+
+
     /** Returns an int array of elapsed time in {hh, mm, ss} */
     private int[] convertTime(int timeInSeconds) {
         int [] time = new int[3];
@@ -97,16 +141,18 @@ public class AudioPlayer {
         return time;
     }
 
+
     private void getTotalTime() {
 
     }
+
 
     private boolean queueIsEmpty() {
         return trackQueue.size() == 0;
     }
 
+
     public void quit() {
-        
         for (Track track : trackQueue) {
             try {
                 track.closeClip();
@@ -115,7 +161,12 @@ public class AudioPlayer {
                 e.printStackTrace();
             }
         }
-        
+
     }
 
+
+      // testing
+    public void printQueue() {
+        System.out.format("Tracks queued: %d\n", trackQueue.size());
+    }
 }

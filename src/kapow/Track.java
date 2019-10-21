@@ -33,7 +33,7 @@ public class Track {
     // if any part of the track construction fails, the whole creation should fail and not be made available to the system.
     // Look into throwing custom exceptions.
     public Track (File trackFile) {
-        if (isValidAudioFile(trackFile)) {    
+        if (isValidAudioFile(trackFile)) {
             try {
                 setAudioListener();
                 setName(trackFile.getName());
@@ -57,7 +57,7 @@ public class Track {
             return true;
         } catch (UnsupportedAudioFileException | IOException e) {
             return false;
-        }        
+        }
     }
 
     private void setAudioListener() {
@@ -132,5 +132,9 @@ public class Track {
 
     public int elapsedTime() {
         return (int) (clip.getFramePosition() / frameRate);
+    }
+
+    public void reset() {
+        audioListener.reset();
     }
 }

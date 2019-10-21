@@ -11,9 +11,9 @@ public class Main {
 
     public static void main(String[] args) {
         String path = System.getProperty("user.home") + File.separator + "Music/Rick Astley/never_gonna_give_you_up.wav";
-        
+
         File songFile = new File(path);
-        
+
         if (songFile.exists()) {
 
             // Track track = new Track(songFile);
@@ -28,7 +28,7 @@ public class Main {
 
             String previousElapsedTime = "00:00:00";
             String elapsedTime = audioPlayer.getElapsedTime();
-                
+
             String input = "";
             while (!input.equals("q")) {
                 // if (input.equals("p")) {
@@ -47,7 +47,7 @@ public class Main {
 
                 // input = scanner.nextLine();
             }
-            
+
             audioPlayer.quit();
             System.out.println("Done");
         }

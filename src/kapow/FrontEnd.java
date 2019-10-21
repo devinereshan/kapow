@@ -16,33 +16,40 @@ import javafx.stage.Stage;
 
 public class FrontEnd extends Application {
 
-    Label message;    
+    private Label message;
+    private AudioPlayer audioPlayer;
 
     @Override
     public void start(Stage stage) {
 
-        AudioPlayer audioPlayer = new AudioPlayer();
-        
+        audioPlayer = new AudioPlayer();
+
         message = new Label("No Track Selected");
 
         message.setFont(new Font(16));
 
+        Button seekLeft = new Button("<<");
+        seekLeft.setOnAction(e -> seekLeft());
+
+        Button seekRight = new Button(">>");
+        seekRight.setOnAction(e -> seekRight());
+
         Button play = new Button("Play");
-        play.setOnAction(e -> audioPlayer.play());
+        play.setOnAction(e -> play());
 
         Button pause = new Button("Pause");
-        pause.setOnAction(e -> audioPlayer.pauseTrack());
+        pause.setOnAction(e -> pause());
 
         Button load = new Button("Load");
-        load.setOnAction(e -> loadAudioFile(stage, audioPlayer));
+        load.setOnAction(e -> loadAudioFile(stage));
 
         Button quit = new Button("Quit");
         quit.setOnAction(e -> {
-            audioPlayer.quit(); 
+            audioPlayer.quit();
             Platform.exit();
         });
 
-        HBox buttonBar = new HBox(20, load, play, pause, quit);
+        HBox buttonBar = new HBox(20, load, seekLeft, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         BorderPane root = new BorderPane();
         root.setCenter(message);
@@ -55,20 +62,38 @@ public class FrontEnd extends Application {
     }
 
 
-    File getAudioFile(Stage stage) {
+    private File getAudioFile(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser.showOpenDialog(stage);
     }
 
-    void loadAudioFile(Stage stage, AudioPlayer audioPlayer) {
+    private void loadAudioFile(Stage stage) {
         File audioFile = getAudioFile(stage);
         audioPlayer.queueTrack(audioFile);
-        audioPlayer.printQueue();       
+        audioPlayer.printQueue(); // test
         message.setText(audioPlayer.getCurrentTrackName());
     }
-  
+
+    private void play() {
+        audioPlayer.play();
+    }
+
+    private void pause() {
+        audioPlayer.pause();
+    }
+
+    private void seekLeft() {
+        audioPlayer.seekLeft();
+        message.setText(audioPlayer.getCurrentTrackName());
+    }
+
+    private void seekRight() {
+        audioPlayer.seekRight();
+        message.setText(audioPlayer.getCurrentTrackName());
+    }
+
 
     public static void main(String[] args) {
         launch(args);

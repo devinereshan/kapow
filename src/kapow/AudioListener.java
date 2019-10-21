@@ -23,5 +23,8 @@ public class AudioListener implements LineListener {
     public synchronized boolean isDone() {
         return done;
     }
-    
+
+    public void reset() {
+        done = false;
+    }
 }
