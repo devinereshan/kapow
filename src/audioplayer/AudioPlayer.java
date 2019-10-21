@@ -1,7 +1,5 @@
 package audioplayer;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 
 
@@ -43,28 +41,45 @@ public class AudioPlayer {
         return true;
     }
 
+    public String getCurrentTrackName() {
+        return currentTrack.getName();
+    }
+
     public void pauseTrack() {
-        currentTrack.pauseClip();
+        if (currentTrack != null) {
+            currentTrack.pauseClip();
+        }
 
     }
    
     public void queueTrack(Track track) {
         trackQueue.add(track);
+        // if (trackQueue.size() == 1) {
+        //     currentTrack = trackQueue.elementAt(0);
+        // }
     }
 
-    private void getElapsedTime() {
-
+    public String getElapsedTime() {
+        int[] time =  convertTime(currentTrack.elapsedTime());
+        return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+    }
+    
+    /** Returns an int array of elapsed time in {hh, mm, ss} */
+    private int[] convertTime(int timeInSeconds) {
+        int [] time = new int[3];
+        time[0] = timeInSeconds / 360;
+        timeInSeconds %= 360;
+        time[1] = timeInSeconds / 60;
+        timeInSeconds %= 60;
+        time[2] = timeInSeconds;
+        return time;
     }
 
     private void getTotalTime() {
 
     }
 
-    /**
-     * If currentTrack is currently set, return true if it is playing.
-     * If currentTrack has not been set, it is not playing. 
-     * @return
-     */
+
     private boolean isPlaying() {
         try {
             return currentTrack.isPlaying();
@@ -78,10 +93,16 @@ public class AudioPlayer {
     }
 
     public void quit() {
-        pauseTrack();
+        
         for (Track track : trackQueue) {
-            track.closeClip();
+            try {
+                track.closeClip();
+            } catch (NullPointerException e) {
+                System.err.println("Invalid clip found while closing application");
+                e.printStackTrace();
+            }
         }
+        
     }
 
 }

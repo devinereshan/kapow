@@ -17,6 +17,8 @@ public class Track {
      */
     private Clip clip;
 
+    private String name;
+
     private AudioInputStream audioInputStream;
 
     private AudioFormat audioFormat;
@@ -40,6 +42,7 @@ public class Track {
 
         try {
             audioListener = new AudioListener();
+            name = trackFile.getName();
 
             try {
                 audioInputStream = AudioSystem.getAudioInputStream(trackFile);
@@ -99,6 +102,10 @@ public class Track {
         clip.close();
     }
 
+    public String getName() {
+        return name;
+    }
+
 
     public void seek(long framePosition) {
         // Revisit this - avoid potential loss of information with explicit conversion.
@@ -107,5 +114,9 @@ public class Track {
         // over the int version: getFramePosition... because of potential loss of
         // information...
         clip.setFramePosition((int)framePosition);
+    }
+
+    public int elapsedTime() {
+        return (int) (clip.getFramePosition() / frameRate);
     }
 }
