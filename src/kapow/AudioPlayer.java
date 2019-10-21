@@ -142,8 +142,9 @@ public class AudioPlayer {
     }
 
 
-    private void getTotalTime() {
-
+    public String getLengthOfTrackInSeconds() {
+        int[] time = convertTime(currentTrack.lengthInSeconds());
+        return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
     }
 
 

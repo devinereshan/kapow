@@ -28,6 +28,7 @@ public class Main {
 
             String previousElapsedTime = "00:00:00";
             String elapsedTime = audioPlayer.getElapsedTime();
+            String lengthOfTrack = audioPlayer.getLengthOfTrackInSeconds();
 
             String input = "";
             while (!input.equals("q")) {
@@ -40,7 +41,7 @@ public class Main {
                 elapsedTime = audioPlayer.getElapsedTime();
 
                 if (!elapsedTime.equals(previousElapsedTime)) {
-                    System.out.println(elapsedTime);
+                    System.out.format("%s / %s\n", elapsedTime, lengthOfTrack);
                     previousElapsedTime = String.valueOf(elapsedTime);
                 }
 

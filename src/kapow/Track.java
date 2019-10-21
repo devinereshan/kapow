@@ -131,7 +131,11 @@ public class Track {
     }
 
     public int elapsedTime() {
-        return (int) (clip.getFramePosition() / frameRate);
+        return (int)(clip.getFramePosition() / frameRate);
+    }
+
+    public int lengthInSeconds() {
+        return (int)(totalFrames / frameRate);
     }
 
     public void reset() {
