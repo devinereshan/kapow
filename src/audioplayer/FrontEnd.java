@@ -16,24 +16,12 @@ import javafx.stage.Stage;
 
 public class FrontEnd extends Application {
 
-
-    Label message;
-    
-
+    Label message;    
 
     @Override
     public void start(Stage stage) {
 
-        // File songFile = new File("/home/bo/Music/Rick Astley/never_gonna_give_you_up.wav");
-        
-
-        // Track track = new Track(songFile);
-
         AudioPlayer audioPlayer = new AudioPlayer();
-
-        // audioPlayer.queueTrack(track);
-
-
         
         message = new Label("No Track Selected");
 
@@ -69,18 +57,16 @@ public class FrontEnd extends Application {
 
     File getAudioFile(Stage stage) {
         FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*aiff");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser.showOpenDialog(stage);
     }
 
     void loadAudioFile(Stage stage, AudioPlayer audioPlayer) {
         File audioFile = getAudioFile(stage);
-        if (audioFile != null) {
-            audioPlayer.queueTrack(new Track(audioFile));
-            // message.setText(audioFile.getName());
-            message.setText(audioPlayer.getCurrentTrackName());
-        }
+        audioPlayer.queueTrack(audioFile);
+        audioPlayer.printQueue();       
+        message.setText(audioPlayer.getCurrentTrackName());
     }
   
 

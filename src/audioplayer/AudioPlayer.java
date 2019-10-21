@@ -1,6 +1,11 @@
 package audioplayer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 public class AudioPlayer {
@@ -10,23 +15,27 @@ public class AudioPlayer {
 
  
 
+    // testing
+    public void printQueue() {
+        System.out.format("Tracks queued: %d\n", trackQueue.size());
+    }
+
     public AudioPlayer () {
         trackQueue = new Vector<Track>();
     }
-
 
 
     private void playTrack() {
         currentTrack.playClip();
     }
 
+
     public void play() {
-       
         if (currentTrack != null) {
             playTrack();
-        }
-        
+        }    
     }
+
 
     private void setCurrentTrack() {
         if (!queueIsEmpty()) {
@@ -35,7 +44,10 @@ public class AudioPlayer {
     }
 
     public String getCurrentTrackName() {
-        return currentTrack.getName();
+        if (currentTrack != null) {
+            return currentTrack.getName();
+        } 
+        return "No Track Selected";
     }
 
     public void pauseTrack() {
@@ -44,11 +56,28 @@ public class AudioPlayer {
         }
 
     }
+
+    private boolean isValidAudioFile(File file) {
+        try {
+            AudioSystem.getAudioInputStream(file);
+            return true;
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return false;
+        }        
+    }
    
-    public void queueTrack(Track track) {
-        trackQueue.add(track);
-        if (trackQueue.size() == 1) {
-            setCurrentTrack();
+
+    private Track createNewTrack(File trackFile) {
+            return new Track(trackFile);
+    }
+
+    public void queueTrack(File trackFile) {
+        if (isValidAudioFile(trackFile)) {
+            trackQueue.add(createNewTrack(trackFile));
+         
+            if (trackQueue.size() == 1) {
+                setCurrentTrack();
+            }
         }
     }
 

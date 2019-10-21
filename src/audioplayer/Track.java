@@ -33,48 +33,67 @@ public class Track {
     // if any part of the track construction fails, the whole creation should fail and not be made available to the system.
     // Look into throwing custom exceptions.
     public Track (File trackFile) {
-        assert trackFile.exists();
-
-        try {
-            audioListener = new AudioListener();
-            name = trackFile.getName();
-
+        if (isValidAudioFile(trackFile)) {    
             try {
-                audioInputStream = AudioSystem.getAudioInputStream(trackFile);
-            } catch (UnsupportedAudioFileException e) {
-                System.err.println("Not a valid audio file format");
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.err.println("Unable to open file");
+                setAudioListener();
+                setName(trackFile.getName());
+                setAudioInputStream(trackFile);
+                setAudioFormat();
+                setTotalFrames();
+                setFrameRate();
+                setClip();
+                connectClipToAudioListener();
+                openClip();
+            } catch (Exception e) {
+                System.err.println("Failed to instantiate Track object.");
                 e.printStackTrace();
             }
-
-            audioFormat = audioInputStream.getFormat();
-            totalFrames = audioInputStream.getFrameLength();
-            frameRate = audioFormat.getFrameRate();
-
-            try {
-                clip = AudioSystem.getClip();
-            } catch (LineUnavailableException e) {
-                System.err.println("Line Unavailable. Unable to acquire clip from Audio System.");
-                e.printStackTrace();
-            }
-
-            clip.addLineListener(audioListener);
-
-            try {
-                clip.open(audioInputStream);
-            } catch (LineUnavailableException e) {
-                System.err.println("Line Unavailable. Unable to open clip");
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.err.println("IOException. Unable to open clip.");
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            System.err.println("Unknown exception. Failed to instantiate Track object.");
-            e.printStackTrace();
         }
+    }
+
+    private boolean isValidAudioFile(File file) {
+        try {
+            AudioSystem.getAudioInputStream(file);
+            return true;
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return false;
+        }        
+    }
+
+    private void setAudioListener() {
+        audioListener = new AudioListener();
+    }
+
+    private void setName(String name) {
+        this.name = name;
+    }
+
+    private void setAudioInputStream(File trackFile) throws UnsupportedAudioFileException, IOException {
+        audioInputStream = AudioSystem.getAudioInputStream(trackFile);
+    }
+
+    private void setAudioFormat() {
+        audioFormat = audioInputStream.getFormat();
+    }
+
+    private void setTotalFrames() {
+        totalFrames = audioInputStream.getFrameLength();
+    }
+
+    private void setFrameRate() {
+        frameRate = audioFormat.getFrameRate();
+    }
+
+    private void setClip() throws LineUnavailableException {
+        clip = AudioSystem.getClip();
+    }
+
+    private void connectClipToAudioListener() {
+        clip.addLineListener(audioListener);
+    }
+
+    private void openClip() throws LineUnavailableException, IOException {
+        clip.open(audioInputStream);
     }
 
 
