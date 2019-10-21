@@ -1,4 +1,5 @@
-package audioplayer;
+/* Kapow! - Kool Audio Player, or whatever... */
+package kapow;
 
 import java.io.File;
 import java.util.Scanner;

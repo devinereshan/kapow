@@ -1,4 +1,4 @@
-package audioplayer;
+package kapow;
 
 import java.io.File;
 
@@ -48,9 +48,9 @@ public class FrontEnd extends Application {
         root.setCenter(message);
         root.setBottom(buttonBar);
 
-        Scene scene = new Scene(root, 450, 200);
+        Scene scene = new Scene(root, 500, 200);
         stage.setScene(scene);
-        stage.setTitle("Audio Player");
+        stage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         stage.show();
     }
 

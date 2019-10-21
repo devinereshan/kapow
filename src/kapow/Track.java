@@ -1,4 +1,4 @@
-package audioplayer;
+package kapow;
 
 import java.io.File;
 import java.io.IOException;
