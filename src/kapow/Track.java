@@ -12,9 +12,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Track {
 
-    /**
-     * The audio clip handled by this Track instance.
-     */
     private Clip clip;
 
     private String name;
@@ -23,23 +20,20 @@ public class Track {
 
     private AudioFormat audioFormat;
 
-    private AudioListener audioListener;
-
     private float frameRate;
     private long totalFrames;
 
 
     public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
-            audioListener = new AudioListener();
             this.name = trackFile.getName();
             audioInputStream = AudioSystem.getAudioInputStream(trackFile);
             audioFormat = audioInputStream.getFormat();
             totalFrames = audioInputStream.getFrameLength();
             frameRate = audioFormat.getFrameRate();
             clip = AudioSystem.getClip();
-            clip.addLineListener(audioListener);
             clip.open(audioInputStream);
+            makeReady();
         }
     }
 
@@ -57,9 +51,15 @@ public class Track {
     public void playClip() {
         if (clip.isOpen()) {
             clip.start();
-            // audioListener.reset();
 
-            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\nisPlaying: %b\n\n", audioListener.isDone(), name, clip.getFramePosition(), isPlaying());
+            // trying to guarantee that methods called after this one do not
+            // acquire the state of the clip before it has been updated
+            while (!clip.isActive()) {
+                // waiting for the clip to become active
+                System.out.println("----------");
+            }
+
+            System.out.format("playclip(),\tname: %s\nCurrent position: %d\nisPlaying: %b\nisActive %b\n\n", name, clip.getFramePosition(), isPlaying(), clip.isActive());
         }
     }
 
@@ -67,12 +67,19 @@ public class Track {
     public void pauseClip() {
             clip.stop();
 
-            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\nisPlaying %b\n", audioListener.isDone(), name, isPlaying());
+            // trying to gurantee that methods called after this one do not
+            // acquire the state of the clip before is has been updated
+            while (clip.isActive()) {
+                // waiting for the clip to become inactive
+                System.out.println("---------------");
+            }
+
+            System.out.format("pauseClip()\tname: %s\nisPlaying %b\nisActive() %b\n", name, isPlaying(), clip.isActive());
     }
 
 
     public boolean isPlaying() {
-        return !audioListener.isDone();
+        return clip.isActive();
     }
 
 
@@ -108,7 +115,6 @@ public class Track {
 
     public void makeReady() {
         resetFramePosition();
-        audioListener.reset();
     }
 
 
