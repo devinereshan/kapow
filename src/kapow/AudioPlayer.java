@@ -11,7 +11,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioPlayer {
 
     private Track currentTrack;
-    // private int currentTrackIndex;
     private Vector<Track> trackQueue;
 
     private final int SEEK_LEFT = -1;
@@ -27,6 +26,7 @@ public class AudioPlayer {
         }
     }
 
+
     private void setCurrentTrack(int index) {
         if (index < 0 || index > trackQueue.size() - 1) {
             return;
@@ -34,7 +34,7 @@ public class AudioPlayer {
 
         if (indexHasTrack(index)) {
             currentTrack = trackQueue.elementAt(index);
-            currentTrack.reset();
+            currentTrack.makeReady();
         }
     }
 
@@ -66,8 +66,9 @@ public class AudioPlayer {
         }
     }
 
+
     private void switchTrack(int direction, boolean playNewTrack) {
-        resetTrack(currentTrack);
+        stop();
         setCurrentTrack(trackQueue.indexOf(currentTrack) + direction);
         if (playNewTrack) {
             play();
@@ -83,11 +84,11 @@ public class AudioPlayer {
         seek(SEEK_RIGHT);
     }
 
-    private void resetTrack(Track track) {
-        // track.pauseClip();
-        // track.seek(0);
-        track.reset();
+
+    public void stop() {
+        currentTrack.stop();
     }
+
 
     private boolean isValidAudioFile(File file) {
         try {

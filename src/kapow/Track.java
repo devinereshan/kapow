@@ -28,10 +28,7 @@ public class Track {
     private float frameRate;
     private long totalFrames;
 
-    // Track objects should be instantiated with a valid audio file and input stream.
-    // Track clips should be opened at the end of the instantiation.
-    // if any part of the track construction fails, the whole creation should fail and not be made available to the system.
-    // Look into throwing custom exceptions.
+
     public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
             audioListener = new AudioListener();
@@ -59,25 +56,30 @@ public class Track {
 
     public void playClip() {
         if (clip.isOpen()) {
-            // seek(totalFrames - 400_000);
             clip.start();
-            audioListener.reset();
-            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\nclip.isActive: %b\n\n", audioListener.isDone(), name, clip.getFramePosition(), clip.isActive());
+            // audioListener.reset();
+
+            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\nisPlaying: %b\n\n", audioListener.isDone(), name, clip.getFramePosition(), isPlaying());
         }
     }
 
+
     public void pauseClip() {
             clip.stop();
-            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\nclip.isActive %b\n", audioListener.isDone(), name, clip.isActive());
+
+            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\nisPlaying %b\n", audioListener.isDone(), name, isPlaying());
     }
+
 
     public boolean isPlaying() {
         return !audioListener.isDone();
     }
 
+
     public void closeClip() {
         clip.close();
     }
+
 
     public String getName() {
         return name;
@@ -93,22 +95,33 @@ public class Track {
         clip.setFramePosition((int)framePosition);
     }
 
+
     public int elapsedTime() {
         return (int)(clip.getFramePosition() / frameRate);
     }
+
 
     public int lengthInSeconds() {
         return (int)(totalFrames / frameRate);
     }
 
-    public void reset() {
 
+    public void makeReady() {
+        resetFramePosition();
+        audioListener.reset();
+    }
+
+
+    public void stop() {
         pauseClip();
-        // seek(0);
+        resetFramePosition();
+    }
+
+
+    private void resetFramePosition() {
         while(clip.getFramePosition() != 0) {
             clip.setFramePosition(0);
         }
-        audioListener.reset();
-        System.out.format("end of track reset. current pos: %d\n", clip.getFramePosition());
+
     }
 }

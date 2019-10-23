@@ -15,10 +15,12 @@ public class AudioListener implements LineListener {
         Type eventType = event.getType();
         if (eventType == Type.STOP || eventType == Type.CLOSE) {
             done = true;
+            System.out.println("Audio listener received stop event.");
             notifyAll();
         }
         if (eventType == Type.START || eventType == Type.OPEN) {
             done = false;
+            System.out.println("Audio listener received start event");
             notifyAll();
         }
 
