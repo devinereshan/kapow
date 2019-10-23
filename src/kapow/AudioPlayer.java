@@ -20,9 +20,31 @@ public class AudioPlayer {
         trackQueue = new Vector<Track>();
     }
 
-    public void play() {
-        if (currentTrack != null) {
-            currentTrack.playClip();
+
+
+    public void queueTrack(File trackFile) {
+        if (isValidAudioFile(trackFile)) {
+            try {
+                trackQueue.add(new Track(trackFile));
+
+                if (trackQueue.size() == 1) {
+                    setCurrentTrack(0);
+                }
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                System.err.format("Unable to queue track");
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    private boolean isValidAudioFile(File file) {
+        try {
+            AudioSystem.getAudioInputStream(file);
+            return true;
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return false;
         }
     }
 
@@ -38,18 +60,44 @@ public class AudioPlayer {
         }
     }
 
-    public String getCurrentTrackName() {
-        if (currentTrack != null) {
-            return currentTrack.getName();
+
+    private boolean indexHasTrack(int index) {
+        if (index < 0 || index > trackQueue.size() - 1) {
+            return false;
         }
-        return "No Track Selected";
+
+        if (trackQueue.elementAt(index) != null) {
+            return true;
+        }
+
+        return false;
     }
+
+
+
+    public void play() {
+        if (currentTrack != null) {
+            currentTrack.playClip();
+        }
+    }
+
 
     public void pause() {
         if (currentTrack != null) {
             currentTrack.pauseClip();
         }
     }
+
+
+    public void seekLeft() {
+        seek(SEEK_LEFT);
+    }
+
+
+    public void seekRight() {
+        seek(SEEK_RIGHT);
+    }
+
 
     private void seek(int direction) {
         if (currentTrack != null) {
@@ -76,13 +124,16 @@ public class AudioPlayer {
 
     }
 
-    public void seekLeft() {
-        seek(SEEK_LEFT);
+
+
+    public String getCurrentTrackName() {
+        if (currentTrack != null) {
+            return currentTrack.getName();
+        }
+        return "No Track Selected";
     }
 
-    public void seekRight() {
-        seek(SEEK_RIGHT);
-    }
+
 
 
     public void stop() {
@@ -90,48 +141,6 @@ public class AudioPlayer {
     }
 
 
-    private boolean isValidAudioFile(File file) {
-        try {
-            AudioSystem.getAudioInputStream(file);
-            return true;
-        } catch (UnsupportedAudioFileException | IOException e) {
-            return false;
-        }
-    }
-
-    private boolean indexHasTrack(int index) {
-        if (index < 0 || index > trackQueue.size() - 1) {
-            return false;
-        }
-
-        if (trackQueue.elementAt(index) != null) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private Track createNewTrack(File trackFile)
-            throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-            return new Track(trackFile);
-    }
-
-
-    public void queueTrack(File trackFile) {
-        if (isValidAudioFile(trackFile)) {
-            try {
-                trackQueue.add(createNewTrack(trackFile));
-
-                if (trackQueue.size() == 1) {
-                    setCurrentTrack(0);
-                }
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                System.err.format("Unable to queue track");
-                e.printStackTrace();
-            }
-
-        }
-    }
 
 
     public String getElapsedTime() {

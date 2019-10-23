@@ -71,9 +71,11 @@ public class FrontEnd extends Application {
 
     private void loadAudioFile(Stage stage) {
         File audioFile = getAudioFile(stage);
-        audioPlayer.queueTrack(audioFile);
-        audioPlayer.printQueue(); // test
-        currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        if (audioFile != null) {
+            audioPlayer.queueTrack(audioFile);
+            audioPlayer.printQueue(); // test
+            currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        }
     }
 
     private void play() {
