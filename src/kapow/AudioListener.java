@@ -28,7 +28,7 @@ public class AudioListener implements LineListener {
         return done;
     }
 
-    public void reset() {
+    public synchronized void reset() {
         done = false;
     }
 }

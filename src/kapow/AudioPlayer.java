@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
 
 public class AudioPlayer {
 
@@ -17,18 +17,15 @@ public class AudioPlayer {
     private final int SEEK_LEFT = -1;
     private final int SEEK_RIGHT = 1;
 
-
-    public AudioPlayer () {
+    public AudioPlayer() {
         trackQueue = new Vector<Track>();
     }
-
 
     public void play() {
         if (currentTrack != null) {
             currentTrack.playClip();
         }
     }
-
 
     private void setCurrentTrack(int index) {
         if (index < 0 || index > trackQueue.size() - 1) {
@@ -37,10 +34,9 @@ public class AudioPlayer {
 
         if (indexHasTrack(index)) {
             currentTrack = trackQueue.elementAt(index);
-            currentTrack.reset(); // make sure track starts from the beginning. Temporary fix because of race conditions. Learn about threads. If I call currentTrack.reset before switching to a new track, the setFramePosition doesn't complete. This is verified by calling getFramePosition() on the previous track. Apparently setFramePosition() finds the current frame position by seeking for it. Some condition somewhere is interrupting the call to setFramePosition(). Right now I'm assuming it's something to do with setting currentTrack to point to the new track before the call to setFramePosition() finishes, which is odd because reference to the previous track is not actually lost. Only the reference in currentTrack is lost. In any case, I feel the most responsible way to handle this is to make the program wait for the previous track's reset() method to finish before assigning the next track to currentTrack. But maybe that's not necessary. In the meantime resetting each new track as it is assigned to current track seems to fix the issue, because threads do wait for themselves (If my assumption about this being a race condition is correct). It might be just as simple to set a startFrame member variable and make sure startFrame == getFramePosition() before doing anything with a track, but I haven't thought much on that yet. Interestingly, the tracks reset fine if they are paused before switching.
+            currentTrack.reset();
         }
     }
-
 
     public String getCurrentTrackName() {
         if (currentTrack != null) {
@@ -49,13 +45,11 @@ public class AudioPlayer {
         return "No Track Selected";
     }
 
-
     public void pause() {
         if (currentTrack != null) {
             currentTrack.pauseClip();
         }
     }
-
 
     private void seek(int direction) {
         if (currentTrack != null) {
@@ -81,23 +75,19 @@ public class AudioPlayer {
 
     }
 
-
     public void seekLeft() {
         seek(SEEK_LEFT);
     }
 
-
     public void seekRight() {
         seek(SEEK_RIGHT);
     }
-
 
     private void resetTrack(Track track) {
         // track.pauseClip();
         // track.seek(0);
         track.reset();
     }
-
 
     private boolean isValidAudioFile(File file) {
         try {
@@ -108,29 +98,37 @@ public class AudioPlayer {
         }
     }
 
-
-    private boolean indexHasTrack(int queueIndex) {
-        try {
-            trackQueue.elementAt(queueIndex);
-            return true;
-        } catch (Exception e) {
+    private boolean indexHasTrack(int index) {
+        if (index < 0 || index > trackQueue.size() - 1) {
             return false;
         }
 
+        if (trackQueue.elementAt(index) != null) {
+            return true;
+        }
+
+        return false;
     }
 
-    private Track createNewTrack(File trackFile) {
+    private Track createNewTrack(File trackFile)
+            throws UnsupportedAudioFileException, IOException, LineUnavailableException {
             return new Track(trackFile);
     }
 
 
     public void queueTrack(File trackFile) {
         if (isValidAudioFile(trackFile)) {
-            trackQueue.add(createNewTrack(trackFile));
+            try {
+                trackQueue.add(createNewTrack(trackFile));
 
-            if (trackQueue.size() == 1) {
-                setCurrentTrack(0);
+                if (trackQueue.size() == 1) {
+                    setCurrentTrack(0);
+                }
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                System.err.format("Unable to queue track");
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -159,11 +157,6 @@ public class AudioPlayer {
     }
 
 
-    private boolean queueIsEmpty() {
-        return trackQueue.size() == 0;
-    }
-
-
     public void quit() {
         for (Track track : trackQueue) {
             try {
@@ -180,5 +173,8 @@ public class AudioPlayer {
       // testing
     public void printQueue() {
         System.out.format("Tracks queued: %d\n", trackQueue.size());
+        for (Track track: trackQueue) {
+            System.out.println(track.getName());
+        }
     }
 }

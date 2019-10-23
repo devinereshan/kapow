@@ -32,24 +32,20 @@ public class Track {
     // Track clips should be opened at the end of the instantiation.
     // if any part of the track construction fails, the whole creation should fail and not be made available to the system.
     // Look into throwing custom exceptions.
-    public Track (File trackFile) {
+    public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
-            try {
-                setAudioListener();
-                setName(trackFile.getName());
-                setAudioInputStream(trackFile);
-                setAudioFormat();
-                setTotalFrames();
-                setFrameRate();
-                setClip();
-                connectClipToAudioListener();
-                openClip();
-            } catch (Exception e) {
-                System.err.println("Failed to instantiate Track object.");
-                e.printStackTrace();
-            }
+            audioListener = new AudioListener();
+            this.name = trackFile.getName();
+            audioInputStream = AudioSystem.getAudioInputStream(trackFile);
+            audioFormat = audioInputStream.getFormat();
+            totalFrames = audioInputStream.getFrameLength();
+            frameRate = audioFormat.getFrameRate();
+            clip = AudioSystem.getClip();
+            clip.addLineListener(audioListener);
+            clip.open(audioInputStream);
         }
     }
+
 
     private boolean isValidAudioFile(File file) {
         try {
@@ -60,55 +56,19 @@ public class Track {
         }
     }
 
-    private void setAudioListener() {
-        audioListener = new AudioListener();
-    }
-
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    private void setAudioInputStream(File trackFile) throws UnsupportedAudioFileException, IOException {
-        audioInputStream = AudioSystem.getAudioInputStream(trackFile);
-    }
-
-    private void setAudioFormat() {
-        audioFormat = audioInputStream.getFormat();
-    }
-
-    private void setTotalFrames() {
-        totalFrames = audioInputStream.getFrameLength();
-    }
-
-    private void setFrameRate() {
-        frameRate = audioFormat.getFrameRate();
-    }
-
-    private void setClip() throws LineUnavailableException {
-        clip = AudioSystem.getClip();
-    }
-
-    private void connectClipToAudioListener() {
-        clip.addLineListener(audioListener);
-    }
-
-    private void openClip() throws LineUnavailableException, IOException {
-        clip.open(audioInputStream);
-    }
-
 
     public void playClip() {
         if (clip.isOpen()) {
             // seek(totalFrames - 400_000);
             clip.start();
-            // audioListener.reset();
-            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\n\n", audioListener.isDone(), name, clip.getFramePosition());
+            audioListener.reset();
+            System.out.format("playclip(), Audio listener done: %b\tname: %s\nCurrent position: %d\nclip.isActive: %b\n\n", audioListener.isDone(), name, clip.getFramePosition(), clip.isActive());
         }
     }
 
     public void pauseClip() {
             clip.stop();
-            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\n", audioListener.isDone(), name);
+            System.out.format("pauseClip(), Audio listener done: %b\tname: %s\nclip.isActive %b\n", audioListener.isDone(), name, clip.isActive());
     }
 
     public boolean isPlaying() {
@@ -142,9 +102,12 @@ public class Track {
     }
 
     public void reset() {
+
         pauseClip();
         // seek(0);
-        clip.setFramePosition(0);
+        while(clip.getFramePosition() != 0) {
+            clip.setFramePosition(0);
+        }
         audioListener.reset();
         System.out.format("end of track reset. current pos: %d\n", clip.getFramePosition());
     }
