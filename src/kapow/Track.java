@@ -50,12 +50,13 @@ public class Track {
 
     public void playClip() {
         if (clip.isOpen()) {
+            System.out.format("start playClip() position: %d\n", clip.getFramePosition());
+
             clip.start();
 
             // trying to guarantee that methods called after this one do not
             // acquire the state of the clip before it has been updated
             while (!clip.isActive()) {
-                // waiting for the clip to become active
                 System.out.println("----------");
             }
 
@@ -70,7 +71,6 @@ public class Track {
             // trying to gurantee that methods called after this one do not
             // acquire the state of the clip before is has been updated
             while (clip.isActive()) {
-                // waiting for the clip to become inactive
                 System.out.println("---------------");
             }
 
