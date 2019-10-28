@@ -2,7 +2,6 @@ package kapow;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
@@ -11,30 +10,25 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioPlayer {
 
     private Track currentTrack;
-    private Vector<Track> trackQueue;
+
+    private Queue queue;
 
     private final int SEEK_LEFT = -1;
     private final int SEEK_RIGHT = 1;
 
-    public AudioPlayer() {
-        trackQueue = new Vector<Track>();
-    }
 
+    public AudioPlayer() {
+        queue = new Queue();
+    }
 
 
     public void queueTrack(File trackFile) {
         if (isValidAudioFile(trackFile)) {
-            try {
-                trackQueue.add(new Track(trackFile));
+            queue.addTrackFile(trackFile);
+        }
 
-                if (trackQueue.size() == 1) {
-                    setCurrentTrack(0);
-                }
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                System.err.format("Unable to queue track");
-                e.printStackTrace();
-            }
-
+        if (queue.size() == 1) {
+            loadCurrentTrack();
         }
     }
 
@@ -49,26 +43,18 @@ public class AudioPlayer {
     }
 
 
-    private void setCurrentTrack(int index) {
-        if (indexHasTrack(index)) {
-            currentTrack = trackQueue.elementAt(index);
-            currentTrack.makeReady();
+    private void loadCurrentTrack() {
+        File file = queue.getCurrentTrackFile();
+
+        if (isValidAudioFile(file)) {
+            try {
+                currentTrack = new Track(file);
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                System.err.format("Unable to set current track");
+                e.printStackTrace();
+            }
         }
     }
-
-
-    private boolean indexHasTrack(int index) {
-        if (index < 0 || index > trackQueue.size() - 1) {
-            return false;
-        }
-
-        if (trackQueue.elementAt(index) != null) {
-            return true;
-        }
-
-        return false;
-    }
-
 
 
     public void play() {
@@ -96,30 +82,27 @@ public class AudioPlayer {
 
 
     private void seek(int direction) {
-        if (currentTrack != null) {
+        if (currentTrack != null && queue.hasTrack(direction)) {
             // check if current track is playing, to start next song in same state
             boolean playNewTrack = currentTrack.isPlaying();
 
-            // Find index of current track so verify seek direction
-            int currentIndex = trackQueue.indexOf(currentTrack);
+            queue.seek(direction);
+            switchTrack();
 
-            // verify that a track exists in sought index
-            if (indexHasTrack(currentIndex + direction)) {
-                switchTrack(direction, playNewTrack);
+            if (playNewTrack) {
+                play();
             }
         }
     }
 
 
-    private void switchTrack(int direction, boolean playNewTrack) {
+    // Destroy old track object and create new one for new track
+    private void switchTrack() {
         stop();
-        setCurrentTrack(trackQueue.indexOf(currentTrack) + direction);
-        if (playNewTrack) {
-            play();
-        }
-
+        currentTrack.closeClip();
+        currentTrack = null; // some kinda garbage collection?
+        loadCurrentTrack();
     }
-
 
 
     public String getCurrentTrackName() {
@@ -130,13 +113,11 @@ public class AudioPlayer {
     }
 
 
-
-
     public void stop() {
-        currentTrack.stop();
+        if (currentTrack != null) {
+            currentTrack.stop();
+        }
     }
-
-
 
 
     public String getElapsedTime() {
@@ -164,23 +145,17 @@ public class AudioPlayer {
 
 
     public void quit() {
-        for (Track track : trackQueue) {
-            try {
-                track.closeClip();
-            } catch (NullPointerException e) {
-                System.err.println("Invalid clip found while closing application");
-                e.printStackTrace();
-            }
+        try {
+            currentTrack.closeClip();
+        } catch (NullPointerException e) {
+            System.err.println("Invalid clip found while closing application");
+            e.printStackTrace();
         }
-
     }
 
 
       // testing
     public void printQueue() {
-        System.out.format("Tracks queued: %d\n", trackQueue.size());
-        for (Track track: trackQueue) {
-            System.out.println(track.getName());
-        }
+        System.out.println(queue.toString());
     }
 }
