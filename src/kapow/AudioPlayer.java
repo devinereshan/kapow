@@ -50,10 +50,6 @@ public class AudioPlayer {
 
 
     private void setCurrentTrack(int index) {
-        if (index < 0 || index > trackQueue.size() - 1) {
-            return;
-        }
-
         if (indexHasTrack(index)) {
             currentTrack = trackQueue.elementAt(index);
             currentTrack.makeReady();
