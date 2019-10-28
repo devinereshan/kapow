@@ -34,6 +34,9 @@ public class FrontEnd extends Application {
         Button seekRight = new Button(">>");
         seekRight.setOnAction(e -> seekRight());
 
+        Button stopTrack = new Button("Stop");
+        stopTrack.setOnAction(e -> stopTrack());
+
         Button play = new Button("Play");
         play.setOnAction(e -> play());
 
@@ -49,7 +52,7 @@ public class FrontEnd extends Application {
             Platform.exit();
         });
 
-        HBox buttonBar = new HBox(20, load, seekLeft, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, load, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         BorderPane root = new BorderPane();
         root.setCenter(currentTrackName);
@@ -76,6 +79,10 @@ public class FrontEnd extends Application {
             audioPlayer.printQueue(); // test
             currentTrackName.setText(audioPlayer.getCurrentTrackName());
         }
+    }
+
+    private void stopTrack() {
+        audioPlayer.stop();
     }
 
     private void play() {
