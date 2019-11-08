@@ -7,4 +7,5 @@
 	<classpathentry kind="lib" path="/home/bo/javafx-sdk-11.0.2/lib/javafx.graphics.jar"/>
 	<classpathentry kind="lib" path="/home/bo/javafx-sdk-11.0.2/lib/javafx.controls.jar"/>
 	<classpathentry kind="lib" path="/home/bo/javafx-sdk-11.0.2/lib/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="/usr/share/java/sqlite-jdbc/sqlite-jdbc-3.27.2.1.jar"/>
 </classpath>
