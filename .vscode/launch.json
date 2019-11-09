@@ -2,19 +2,35 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - FrontEnd",
+            "name": "CodeLens (Launch) - GUI",
             "request": "launch",
-            "mainClass": "kapow.FrontEnd",
+            "mainClass": "main.player.GUI",
             "projectName": "audioPlayer",
             "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
         },
         {
             "type": "java",
-            "name": "CodeLens (Launch) - Main",
+            "name": "CodeLens (Launch) - CLI",
             "request": "launch",
-            "mainClass": "kapow.Main",
+            "mainClass": "main.player.CLI",
             "projectName": "audioPlayer",
             "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
-        }
+        },
+        // {
+        //     "type": "java",
+        //     "name": "CodeLens (Launch) - FrontEnd",
+        //     "request": "launch",
+        //     "mainClass": "kapow.FrontEnd",
+        //     "projectName": "audioPlayer",
+        //     "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
+        // },
+        // {
+        //     "type": "java",
+        //     "name": "CodeLens (Launch) - Main",
+        //     "request": "launch",
+        //     "mainClass": "kapow.Main",
+        //     "projectName": "audioPlayer",
+        //     "vmArgs": "--module-path ~/javafx-sdk-11.0.2/lib --add-modules ALL-MODULE-PATH"
+        // }
     ]
 }

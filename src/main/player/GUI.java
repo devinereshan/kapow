@@ -1,4 +1,4 @@
-package kapow;
+package main.player;
 
 import java.io.File;
 
@@ -14,7 +14,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class FrontEnd extends Application {
+public class GUI extends Application {
 
     private Label currentTrackName;
     private AudioPlayer audioPlayer;

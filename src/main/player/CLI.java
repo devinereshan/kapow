@@ -1,11 +1,13 @@
 /* Kapow! - Kool Audio Player, or whatever... */
-package kapow;
+package main.player;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Main {
+import main.database.DatabaseConnection;
+
+public class CLI {
 
     // temporary for program control
     static Scanner scanner = new Scanner(System.in);
@@ -70,6 +72,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        databaseTest();
+        // databaseTest();
+        commandLineTest();
     }
 }

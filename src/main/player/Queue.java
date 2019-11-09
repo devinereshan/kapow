@@ -1,4 +1,4 @@
-package kapow;
+package main.player;
 
 import java.io.File;
 import java.util.ArrayList;
