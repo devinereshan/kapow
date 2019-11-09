@@ -14,10 +14,8 @@ public class Main {
         try {
             DatabaseConnection databaseConnection = new DatabaseConnection();
 
-            databaseConnection.restoreFromTemplate();
-            databaseConnection.insertSampleData();
-            databaseConnection.createBackup();
-            databaseConnection.readTrackTable();
+            databaseConnection.restoreFromBackup();
+            databaseConnection.readAllTrackInfo();
         } catch (SQLException e) {
             e.printStackTrace();
         }

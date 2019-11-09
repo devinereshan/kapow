@@ -10,7 +10,11 @@ import java.sql.Statement;
 public class DatabaseConnection {
 
     private Connection getDatabaseConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:sql/music.db");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:sql/music.db");
+
+        connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
+
+        return connection;
     }
 
 
@@ -44,20 +48,22 @@ public class DatabaseConnection {
     }
 
 
-    public void readTrackTable() throws SQLException {
+    public void readAllTrackInfo() throws SQLException {
         Connection connection = getDatabaseConnection();
 
         Statement statement = connection.createStatement();
         ResultSet rs = null;
 
-        rs = statement.executeQuery("SELECT * FROM Track;");
+        rs = statement.executeQuery(
+            "SELECT Track.name, Track.duration, Artist.name, Album.name, Genre.name FROM Track JOIN Track_Artist JOIN Artist JOIN Album JOIN Track_Album JOIN Genre JOIN Track_Genre ON Track.id = Track_Artist.track_id AND Track_Artist.artist_id = Artist.id AND Track.id = Track_Album.track_id AND Track_Album.album_id = Album.id AND Track.id = Track_Genre.track_id AND Track_Genre.genre_id = Genre.id;"
+        );
 
-        System.out.format("%-30s %-15s %-1s\n",
-        "filepath", "NAME", "DURATION");
+        String format = "%-15s %-10s %-20s %-20s %-15s\n";
+        System.out.format(format, "Track Name", "Duration", "Artist", "Album", "Genre");
 
         while (rs.next()) {
-            System.out.format("%-30s %-15s %-1s\n",
-            rs.getString(1), rs.getString(2), rs.getString(3));
+            System.out.format(format,
+            rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5));
         }
 
         connection.close();
@@ -83,62 +89,4 @@ public class DatabaseConnection {
         connection.close();
     }
 
-
-    public void restoreFromTemplate() throws SQLException {
-        Connection connection =  getDatabaseConnection();
-        Statement statement = connection.createStatement();
-
-        statement.executeUpdate("restore from sql/template.db");
-
-        connection.close();
-    }
-
-
-    public void insertSampleData() throws SQLException {
-        Connection connection =  getDatabaseConnection();
-
-        Statement statement = connection.createStatement();
-        statement.setQueryTimeout(30);
-
-        try {
-            statement.executeUpdate(
-                "INSERT INTO Track(filepath, track_name, duration) VALUES" +
-                "('/path/to/song.wav', 'song', '3:12'), " +
-                "('/path/to/song2.wav', 'song2', '2:32'), " +
-                "('/path/to/song3.wav', 'song3', '4:35'), " +
-                "('/path/to/jam.wav', 'jam', '1:05'), " +
-                "('/path/to/jam2.wav', 'jam2', '2:35'), " +
-                "('/path/to/jam3.wav', 'jam3', '7:45');"
-            );
-
-            statement.executeUpdate(
-                "INSERT INTO Artist(artist_name) VALUES" +
-                "('Song Guy')," +
-                "('Jam Dude');"
-            );
-
-            statement.executeUpdate(
-                "INSERT INTO Track_Artist(filepath, artist_id) VALUES" +
-                "('/path/to/song.wav', 1), " +
-                "('/path/to/song2.wav', 1), " +
-                "('/path/to/song2.wav', 2), " +
-                "('/path/to/song3.wav', 1), " +
-                "('/path/to/jam.wav', 2), " +
-                "('/path/to/jam2.wav', 2), " +
-                "('/path/to/jam3.wav', 2);"
-            );
-
-            statement.executeUpdate(
-                "INSERT INTO Genre(genre_name) VALUES" +
-                "('Rock')," +
-                "('Country')," +
-                "('Pop');"
-            );
-        } catch (SQLException e) {
-            // System.out.println("Data already exists");
-            e.printStackTrace();
-        }
-
-        connection.close();
-    }
 }
