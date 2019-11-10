@@ -5,7 +5,9 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import main.database.DatabaseConnection;
+// import main.database.DBConnection;
+// import main.database.DatabaseConnection;
+import main.library.TrackList;
 
 public class CLI {
 
@@ -14,10 +16,13 @@ public class CLI {
 
     static void databaseTest() {
         try {
-            DatabaseConnection databaseConnection = new DatabaseConnection();
+            // DatabaseConnection databaseConnection = new DatabaseConnection();
 
-            databaseConnection.restoreFromBackup();
-            databaseConnection.readAllTrackInfo();
+            // databaseConnection.restoreFromBackup();
+            // databaseConnection.readAllTrackInfo();
+            // databaseConnection.printQuery(databaseConnection.getTrackFilePaths());
+            TrackList trackList = new TrackList();
+            trackList.buildTrackList();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,7 +77,7 @@ public class CLI {
 
 
     public static void main(String[] args) {
-        // databaseTest();
-        commandLineTest();
+        databaseTest();
+        // commandLineTest();
     }
 }
