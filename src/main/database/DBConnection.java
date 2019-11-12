@@ -15,21 +15,7 @@ public class DBConnection implements AutoCloseable {
     private ResultSet resultSet;
 
     public DBConnection () throws SQLException {
-        connection = DriverManager.getConnection("jdbc:sqlite:sql/music.db");
-    }
-
-
-    public ArrayList<Integer> getAllTrackID() throws SQLException {
-        statement = connection.createStatement();
-
-        resultSet = statement.executeQuery("SELECT id FROM Track");
-
-        ArrayList<Integer> trackIDs = new ArrayList<>();
-        while (resultSet.next()) {
-            trackIDs.add(resultSet.getInt(1));
-        }
-
-        return trackIDs;
+        connection = DriverManager.getConnection("jdbc:sqlite:sql/medium_music_test.db");
     }
 
 
@@ -101,6 +87,17 @@ public class DBConnection implements AutoCloseable {
         return getMultiValueString(query, track_id);
     }
 
+
+    public ArrayList<Integer> getIDs() throws SQLException {
+        ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM Track ORDER BY name");
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        while (rs.next()) {
+            ids.add(rs.getInt(1));
+        }
+
+        return ids;
+    }
 
 
     @Override

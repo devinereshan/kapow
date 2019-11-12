@@ -3,11 +3,12 @@ package main.player;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-// import main.database.DBConnection;
-// import main.database.DatabaseConnection;
-import main.library.TrackList;
+import main.database.DBConnection;
+import main.library.TrackRow;
+import main.library.TrackRowList;
 
 public class CLI {
 
@@ -15,14 +16,17 @@ public class CLI {
     static Scanner scanner = new Scanner(System.in);
 
     static void databaseTest() {
-        try {
-            // DatabaseConnection databaseConnection = new DatabaseConnection();
+        try (DBConnection dbConnection = new DBConnection()) {
+            TrackRowList trl = new TrackRowList();
+            ArrayList<TrackRow> trackRows = new ArrayList<>();
 
-            // databaseConnection.restoreFromBackup();
-            // databaseConnection.readAllTrackInfo();
-            // databaseConnection.printQuery(databaseConnection.getTrackFilePaths());
-            TrackList trackList = new TrackList();
-            trackList.buildTrackList();
+            for (int i = 0; i < trl.size(); i++) {
+                trackRows.add(trl.getNextTrackRow());
+                System.out.println(trackRows.get(i).toString());
+            }
+
+
+            System.out.println("Done");
         } catch (SQLException e) {
             e.printStackTrace();
         }
