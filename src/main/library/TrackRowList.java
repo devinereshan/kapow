@@ -26,7 +26,9 @@ public class TrackRowList {
 
     public TrackRow getNextTrackRow() throws SQLException {
         try (DBConnection connection = new DBConnection()) {
-            int id = trackIDs.get(currentTrackIndex++);
+            int id = trackIDs.get(currentTrackIndex);
+            currentTrackIndex += 1;
+
             return new TrackRow (
                 String.valueOf(id),
                 connection.getFilepath(id),
@@ -40,7 +42,7 @@ public class TrackRowList {
     }
 
     public boolean hasMoreTracks() {
-        return trackIDs.size() - 1 > currentTrackIndex;
+        return trackIDs.size() > currentTrackIndex;
     }
 
     public int size() {

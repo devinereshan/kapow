@@ -57,6 +57,13 @@ public class AudioPlayer {
     }
 
 
+
+    public void setAndPlay(File file) {
+        queue.quickLoadTrackFile(file);
+        switchTrack();
+        play();
+    }
+
     public void play() {
         if (currentTrack != null) {
             currentTrack.playClip();
@@ -99,7 +106,9 @@ public class AudioPlayer {
     // Destroy old track object and create new one for new track
     private void switchTrack() {
         stop();
-        currentTrack.closeClip();
+        if (currentTrack != null) {
+            currentTrack.closeClip();
+        }
         currentTrack = null; // some kinda garbage collection?
         loadCurrentTrack();
     }

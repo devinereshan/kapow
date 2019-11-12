@@ -15,7 +15,7 @@ public class DBConnection implements AutoCloseable {
     private ResultSet resultSet;
 
     public DBConnection () throws SQLException {
-        connection = DriverManager.getConnection("jdbc:sqlite:sql/medium_music_test.db");
+        connection = DriverManager.getConnection("jdbc:sqlite:rick_astley.db");
     }
 
 

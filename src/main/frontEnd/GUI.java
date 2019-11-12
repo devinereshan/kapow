@@ -74,19 +74,15 @@ public class GUI extends Application {
 
 
         final ContextMenu contextMenu = new ContextMenu();
-        // contextMenu.getItems().add(new MenuItem("play"));
-        // table.setContextMenu(contextMenu);
-        // to get selected item:
+
         MenuItem menuPlay = new MenuItem("play");
         menuPlay.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
                 loadTrackFromTable(table.getSelectionModel().getSelectedItem());
-                // label.setText("Select Menu Item 1");
             }
         });
-        // TrackRow track = table.getSelectionModel().getSelectedItem();
         contextMenu.getItems().add(menuPlay);
         table.setContextMenu(contextMenu);
 
@@ -104,8 +100,7 @@ public class GUI extends Application {
         VBox library = new VBox(table);
 
         BorderPane root = new BorderPane();
-        // root.setCenter(currentTrackName);
-        // root.setBottom(buttonBar);
+
         root.setTop(player);
         root.setCenter(library);
 
@@ -151,6 +146,12 @@ public class GUI extends Application {
     private void loadTrackFromTable(TrackRow track) {
         System.out.println("ContextMenu event");
         System.out.println(track.toString());
+        File audioFile = new File(track.getFilepath());
+        if (audioFile != null) {
+            audioPlayer.setAndPlay(audioFile);
+            audioPlayer.printQueue(); // test
+            currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        }
     }
 
     private File getAudioFile(Stage stage) {

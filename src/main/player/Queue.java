@@ -26,6 +26,16 @@ public class Queue {
         }
     }
 
+    // Insert track into queue to be played immediately
+    public void quickLoadTrackFile(File file) {
+        if (currentIndex == 0) {
+            addTrackFile(file);
+        } else {
+            trackFiles.add(currentIndex + 1, file);
+            setCurrentFile(currentIndex + 1);
+        }
+    }
+
 
     private void setCurrentFile(int index) {
         if (indexHasTrack(index)) {
