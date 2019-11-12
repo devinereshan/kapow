@@ -146,7 +146,9 @@ public class AudioPlayer {
 
     public void quit() {
         try {
-            currentTrack.closeClip();
+            if (currentTrack != null) {
+                currentTrack.closeClip();
+            }
         } catch (NullPointerException e) {
             System.err.println("Invalid clip found while closing application");
             e.printStackTrace();
