@@ -1,6 +1,7 @@
 package main.frontend;
 
 import java.io.File;
+import java.sql.SQLException;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,40 +12,45 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import main.database.DBConnection;
 
 public class TrackImportBox {
-    final Stage importBox = new Stage();
-    GridPane root = new GridPane();
+    private final Stage importBox = new Stage();
+    private GridPane root = new GridPane();
 
-    String filepath = "No File Selected.";
+    private String filepath = "No File Selected.";
+    private String trackName;
+    private String artistName;
+    private String albumName;
+    private String genreName;
 
-    Label file = new Label("File:");
-    Label filepathLabel = new Label(filepath);
-    Label artist = new Label("Artist Name:");
-    Label album = new Label("Album Name:");
-    Label track = new Label("Track Name:");
-    Label genre = new Label("Genre:");
+    private Label file = new Label("File:");
+    private Label filepathLabel = new Label(filepath);
+    private Label artist = new Label("Artist Name:");
+    private Label album = new Label("Album Name:");
+    private Label track = new Label("Track Name:");
+    private Label genre = new Label("Genre:");
 
-    TextField artistField = new TextField();
-    TextField albumField = new TextField();
-    TextField trackField = new TextField();
-    TextField genreField = new TextField();
-    Button browseFile = new Button("Browse");
-    Button submit = new Button("Submit");
-    Button cancel = new Button("Cancel");
+    private TextField artistField = new TextField();
+    private TextField albumField = new TextField();
+    private TextField trackField = new TextField();
+    private TextField genreField = new TextField();
+    private Button browseFile = new Button("Browse");
+    private Button submit = new Button("Submit");
+    private Button cancel = new Button("Cancel");
 
-    int row = 0;
+    private int row = 0;
 
-
-
-    public TrackImportBox(Stage primaryStage) {
-        importBox.initModality(Modality.APPLICATION_MODAL);
-        importBox.initOwner(primaryStage);
+    public TrackImportBox() {
+        // importBox.initModality(Modality.APPLICATION_MODAL);
+        // importBox.initOwner(primaryStage);
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
 
         browseFile.setOnAction(e -> loadAudioFile(importBox));
+        cancel.setOnAction(e -> importBox.close());
+        submit.setOnAction(e -> submitInfo());
 
         root.add(browseFile, 0, row++);
         root.add(file, 0, row);
@@ -64,14 +70,43 @@ public class TrackImportBox {
 
         importBox.setTitle("Import Track");
         importBox.setScene(scene);
+        // importBox.show();
+
+    }
+
+
+    public void open(Stage primaryStage) {
+        importBox.initModality(Modality.APPLICATION_MODAL);
+        importBox.initOwner(primaryStage);
         importBox.show();
 
+    }
+
+
+    public void submitInfo() {
+        if (filepath == null) {
+            System.out.println("Must provide a valid filepath");
+            return;
+        }
+
+        trackName = trackField.getText();
+        artistName = artistField.getText();
+        albumName = albumField.getText();
+        genreName = genreField.getText();
+        System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
+
+        try (DBConnection connection = new DBConnection()) {
+            connection.addTrackToDB(filepath, trackName, artistName, albumName, genreName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
     private void loadAudioFile(Stage stage) {
         File audioFile = getAudioFile(stage);
         if (audioFile != null) {
+            // TODO: assert that audioFile is actually an audiofile
             filepath = audioFile.toString();
             filepathLabel.setText(filepath);
         }
