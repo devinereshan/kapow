@@ -1,4 +1,4 @@
-package main.frontEnd;
+package main.frontend;
 
 import java.io.File;
 import java.sql.SQLException;
