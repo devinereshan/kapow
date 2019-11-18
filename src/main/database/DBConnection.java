@@ -100,10 +100,35 @@ public class DBConnection implements AutoCloseable {
     }
 
 
-    public void addTrackToDB(String filepath, String trackName, String ArtistName, String albumName, String genreName) {
+    private boolean filepathExists(String filepath) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT * FROM Track WHERE filepath = ? LIMIT 1");
+        System.out.println(filepath);
+        preparedStatement.setString(1, filepath);
+
+        resultSet = preparedStatement.executeQuery();
+
+        // System.out.println("rs != null: " + rs != null);
+        if (resultSet.next()) {
+            // not empty, filepath exists
+            return true;
+        }
+
+        // empty, filepath doesn't exist
+        return false;
+    }
+
+    public void addTrackToDB(String filepath, String trackName, String ArtistName, String albumName, String genreName)
+            throws SQLException {
         // TODO: create index on filepath in database to avoid duplicate track references
         // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
 
+        if (filepathExists(filepath)) {
+            // track already exists. Notify user somehow, then return
+            System.out.println("Track already Exists");
+            return;
+        }
+
+        System.out.println("track does not yet exist");
         // if filepath not in database,
         // calculate song duration
         // start transaction
