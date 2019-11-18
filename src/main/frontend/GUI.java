@@ -1,4 +1,4 @@
-package main.frontEnd;
+package main.frontend;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -60,7 +60,7 @@ public class GUI extends Application {
 
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage primaryStage) {
 
         audioPlayer = new AudioPlayer();
 
@@ -69,7 +69,7 @@ public class GUI extends Application {
         currentTrackName.setFont(new Font(16));
 
 
-        mapButtons(stage);
+        mapButtons(primaryStage);
         assignColumnValues();
 
 
@@ -87,11 +87,22 @@ public class GUI extends Application {
         table.setContextMenu(contextMenu);
 
 
+        Button import_track = new Button("Import");
+        import_track.setOnAction(
+            new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    TrackImportBox trackImportBox = new TrackImportBox(primaryStage);
+                }
+            });
+
+
+
 
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, load, seekLeft, stopTrack, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, import_track, load, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
@@ -105,9 +116,9 @@ public class GUI extends Application {
         root.setCenter(library);
 
         Scene scene = new Scene(root, 500, 200);
-        stage.setScene(scene);
-        stage.setTitle("Kapow! - Kool Audio Player, or whatever...");
-        stage.show();
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
+        primaryStage.show();
 
         try {
             while (trackRowList.hasMoreTracks()) {
