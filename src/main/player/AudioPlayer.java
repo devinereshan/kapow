@@ -109,7 +109,7 @@ public class AudioPlayer {
         if (currentTrack != null) {
             currentTrack.closeClip();
         }
-        currentTrack = null; // some kinda garbage collection?
+        currentTrack = null;
         loadCurrentTrack();
     }
 
