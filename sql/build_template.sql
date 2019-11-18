@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS Track (
     name  TEXT NOT NULL,
     duration    TEXT
 );
+CREATE INDEX Track_Filepath_Index ON Track (filepath);
 CREATE TABLE IF NOT EXISTS Album (
     id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name        TEXT NOT NULL

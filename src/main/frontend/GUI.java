@@ -52,6 +52,8 @@ public class GUI extends Application {
     TableColumn<TrackRow,String> artistsCol = new TableColumn<>("Artists");
     TableColumn<TrackRow,String> albumsCol = new TableColumn<>("Albums");
     TableColumn<TrackRow,String> genresCol = new TableColumn<>("Genres");
+    TrackImportBox trackImportBox;
+
 
 
     public static void main(String[] args) {
@@ -92,7 +94,8 @@ public class GUI extends Application {
             new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    TrackImportBox trackImportBox = new TrackImportBox(primaryStage);
+                    trackImportBox = new TrackImportBox();
+                    trackImportBox.open(primaryStage);
                 }
             });
 
