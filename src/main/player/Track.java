@@ -88,11 +88,6 @@ public class Track implements AutoCloseable {
     }
 
 
-    // public void closeClip() {
-    //     clip.close();
-    // }
-
-
     public String getName() {
         return name;
     }
