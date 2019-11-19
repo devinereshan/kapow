@@ -24,6 +24,19 @@ public class TrackRowList {
         }
     }
 
+    public void refresh() {
+        // System.out.println(trackIDs.get(currentTrackIndex - 1));
+        try (DBConnection connection = new DBConnection()) {
+            trackIDs.addAll(connection.getNewIDs(trackIDs.get(currentTrackIndex - 1)));
+
+            // temp for verification
+            printAllTrackIDs();
+        } catch (SQLException e) {
+            System.out.println("Exception while updating trackIDs");
+            e.printStackTrace();
+        }
+    }
+
     public TrackRow getNextTrackRow() throws SQLException {
         try (DBConnection connection = new DBConnection()) {
             int id = trackIDs.get(currentTrackIndex);
@@ -47,5 +60,11 @@ public class TrackRowList {
 
     public int size() {
         return trackIDs.size();
+    }
+
+    private void printAllTrackIDs() {
+        for (Integer id: trackIDs) {
+            System.out.println(id);
+        }
     }
 }

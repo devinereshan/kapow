@@ -89,7 +89,7 @@ public class DBConnection implements AutoCloseable {
 
 
     public ArrayList<Integer> getIDs() throws SQLException {
-        ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM Track ORDER BY name");
+        ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM Track ORDER BY id");
         ArrayList<Integer> ids = new ArrayList<>();
 
         while (rs.next()) {
@@ -97,6 +97,20 @@ public class DBConnection implements AutoCloseable {
         }
 
         return ids;
+    }
+
+
+    public ArrayList<Integer> getNewIDs(int previousID) throws SQLException {
+        resultSet = connection.createStatement().executeQuery("SELECT id FROM TRACK WHERE id > " + previousID + " ORDER BY id");
+
+        ArrayList<Integer> newIDs = new ArrayList<>();
+
+        while(resultSet.next()) {
+            newIDs.add(resultSet.getInt(1));
+        }
+
+        return newIDs;
+
     }
 
 
@@ -201,8 +215,8 @@ public class DBConnection implements AutoCloseable {
         connection.createStatement().executeQuery("Select * from Track_Genre");
 
 
-        connection.rollback();
-        // connection.commit();
+        // connection.rollback();
+        connection.commit();
     }
 
     @Override
