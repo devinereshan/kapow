@@ -102,7 +102,7 @@ public class GUI extends Application {
 
         // temp for testing
         Button refresh = new Button("Refresh");
-        refresh.setOnAction(e -> trackRowList.refresh());
+        refresh.setOnAction(e -> refreshTable());
 
 
 
@@ -128,6 +128,11 @@ public class GUI extends Application {
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         primaryStage.show();
 
+        refreshTable();
+    }
+
+
+    private void refreshTable() {
         try {
             while (trackRowList.hasMoreTracks()) {
                 trackRows.add(trackRowList.getNextTrackRow());
@@ -135,8 +140,8 @@ public class GUI extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
+    }
 
     private void mapButtons(Stage stage) {
         seekLeft.setOnAction(e -> seekLeft());
