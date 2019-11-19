@@ -10,7 +10,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Track {
+public class Track implements AutoCloseable {
 
     private Clip clip;
 
@@ -23,6 +23,10 @@ public class Track {
     private float frameRate;
     private long totalFrames;
 
+    private int hours;
+    private int minutes;
+    private int seconds;
+
 
     public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
@@ -33,6 +37,7 @@ public class Track {
             frameRate = audioFormat.getFrameRate();
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
+            calculateLength();
             makeReady();
         }
     }
@@ -83,9 +88,9 @@ public class Track {
     }
 
 
-    public void closeClip() {
-        clip.close();
-    }
+    // public void closeClip() {
+    //     clip.close();
+    // }
 
 
     public String getName() {
@@ -113,6 +118,31 @@ public class Track {
     }
 
 
+    private void calculateLength() {
+        int lengthInSeconds = lengthInSeconds();
+        hours = lengthInSeconds / 3600;
+        lengthInSeconds %= 3600;
+        minutes = lengthInSeconds / 60;
+        lengthInSeconds %= 60;
+        seconds = lengthInSeconds;
+    }
+
+
+    public int getHours() {
+        return hours;
+    }
+
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+
+    public int getSeconds() {
+        return seconds;
+    }
+
+
     public void makeReady() {
         resetFramePosition();
     }
@@ -129,5 +159,10 @@ public class Track {
             clip.setFramePosition(0);
         }
 
+    }
+
+    @Override
+    public void close() {
+        clip.close();
     }
 }
