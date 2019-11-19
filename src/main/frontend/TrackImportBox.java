@@ -149,7 +149,7 @@ public class TrackImportBox {
 
     private boolean existsInDB(String filepath) {
         try (DBConnection connection = new DBConnection()) {
-            if (connection.filepathExists(filepath)) {
+            if (connection.valueExists("Track", "filepath", filepath)) {
                 return true;
             }
         } catch (SQLException e) {
