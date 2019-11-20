@@ -107,7 +107,7 @@ public class AudioPlayer {
     private void switchTrack() {
         stop();
         if (currentTrack != null) {
-            currentTrack.closeClip();
+            currentTrack.close();
         }
         currentTrack = null;
         loadCurrentTrack();
@@ -156,7 +156,7 @@ public class AudioPlayer {
     public void quit() {
         try {
             if (currentTrack != null) {
-                currentTrack.closeClip();
+                currentTrack.close();
             }
         } catch (NullPointerException e) {
             System.err.println("Invalid clip found while closing application");

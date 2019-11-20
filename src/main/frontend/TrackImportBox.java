@@ -1,7 +1,12 @@
 package main.frontend;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -13,12 +18,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.TrackRowList;
+import main.player.Track;
 
 public class TrackImportBox {
     private final Stage importBox = new Stage();
     private GridPane root = new GridPane();
 
     private String filepath = "No File Selected.";
+    private String duration;
     private String trackName;
     private String artistName;
     private String albumName;
@@ -39,9 +47,11 @@ public class TrackImportBox {
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
 
+    TrackRowList trackRowList;
+
     private int row = 0;
 
-    public TrackImportBox() {
+    public TrackImportBox(TrackRowList trackRowList) {
         // importBox.initModality(Modality.APPLICATION_MODAL);
         // importBox.initOwner(primaryStage);
         root.setVgap(10);
@@ -72,6 +82,8 @@ public class TrackImportBox {
         importBox.setScene(scene);
         // importBox.show();
 
+        this.trackRowList = trackRowList;
+
     }
 
 
@@ -96,17 +108,36 @@ public class TrackImportBox {
         System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
 
         try (DBConnection connection = new DBConnection()) {
-            connection.addTrackToDB(filepath, trackName, artistName, albumName, genreName);
+            connection.addTrackToDB(filepath, duration, trackName, artistName, albumName, genreName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // TODO: close import window
+        // refresh table view to show new track
+
+        trackRowList.refresh();
+
+        importBox.close();
     }
 
 
     private void loadAudioFile(Stage stage) {
         File audioFile = getAudioFile(stage);
         if (audioFile != null) {
-            // TODO: assert that audioFile is actually an audiofile
+            if (!isValidAudioFile(audioFile)) {
+                System.err.println("Not a valid audio file");
+                return;
+            }
+
+            if (existsInDB(audioFile.toString())) {
+                System.err.println("Track already exists");
+                // show details about the track so user can find it
+                return;
+            }
+
+            duration = getTrackLength(audioFile);
+
             filepath = audioFile.toString();
             filepathLabel.setText(filepath);
         }
@@ -117,5 +148,41 @@ public class TrackImportBox {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser.showOpenDialog(stage);
+    }
+
+    private boolean isValidAudioFile(File file) {
+        try {
+            AudioSystem.getAudioInputStream(file);
+            return true;
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return false;
+        }
+    }
+
+    private boolean existsInDB(String filepath) {
+        try (DBConnection connection = new DBConnection()) {
+            if (connection.valueExists("Track", "filepath", filepath)) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Unable to connect to database");
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private String getTrackLength(File audioFile) {
+        try (Track tempTrack = new Track(audioFile)) {
+            int hours = tempTrack.getHours();
+            if (hours > 0) {
+                return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
+            }
+            return String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
+
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.err.println("Unable to determine track length");
+        }
+        return "--:--:--";
     }
 }

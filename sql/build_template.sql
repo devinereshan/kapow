@@ -2,7 +2,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS Track (
     id          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     filepath    TEXT NOT NULL UNIQUE,
-    name  TEXT NOT NULL,
+    name        TEXT NOT NULL,
     duration    TEXT
 );
 CREATE INDEX Track_Filepath_Index ON Track (filepath);

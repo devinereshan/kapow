@@ -94,10 +94,15 @@ public class GUI extends Application {
             new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    trackImportBox = new TrackImportBox();
+                    trackImportBox = new TrackImportBox(trackRowList);
                     trackImportBox.open(primaryStage);
                 }
-            });
+            }
+        );
+
+        // temp for testing
+        Button refresh = new Button("Refresh");
+        refresh.setOnAction(e -> refreshTable());
 
 
 
@@ -105,7 +110,7 @@ public class GUI extends Application {
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, import_track, load, seekLeft, stopTrack, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, refresh, import_track, load, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
@@ -123,6 +128,11 @@ public class GUI extends Application {
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         primaryStage.show();
 
+        refreshTable();
+    }
+
+
+    private void refreshTable() {
         try {
             while (trackRowList.hasMoreTracks()) {
                 trackRows.add(trackRowList.getNextTrackRow());
@@ -130,8 +140,8 @@ public class GUI extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
 
+    }
 
     private void mapButtons(Stage stage) {
         seekLeft.setOnAction(e -> seekLeft());
