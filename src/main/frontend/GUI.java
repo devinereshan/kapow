@@ -115,7 +115,7 @@ public class GUI extends Application {
             }
         });
         MenuItem importTrack = new MenuItem("import track");
-        menuPlay.setOnAction(new EventHandler<ActionEvent>() {
+        importTrack.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent event) {
