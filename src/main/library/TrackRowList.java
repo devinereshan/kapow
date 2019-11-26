@@ -52,7 +52,7 @@ public class TrackRowList {
             currentTrackIndex += 1;
 
             return new TrackRow (
-                String.valueOf(id),
+                id,
                 connection.getFilepath(id),
                 connection.getName(id),
                 connection.getDuration(id),
@@ -74,6 +74,25 @@ public class TrackRowList {
     private void printAllTrackIDs() {
         for (Integer id: trackIDs) {
             System.out.println(id);
+        }
+    }
+
+    public void deleteTrack(TrackRow trackToDelete) {
+        try (DBConnection connection = new DBConnection()) {
+            // System.out.println("Trackrows size before removal: " + trackRows.size());
+            int trackID = trackToDelete.getId();
+            connection.removeTrackFromDB(trackID);
+            // System.out.format("size: %d, IDs before removal", trackIDs.size());
+            // printAllTrackIDs();
+            // trackIDs.remove(trackID);
+            trackIDs.remove(trackIDs.indexOf(trackID));
+            // System.out.format("size: %d, IDs after removal", trackIDs.size());
+            // printAllTrackIDs();
+            trackRows.remove(trackToDelete);
+            currentTrackIndex -= 1;
+            // System.out.println("Trackrows size after removal: " + trackRows.size());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

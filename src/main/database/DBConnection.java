@@ -44,6 +44,15 @@ public class DBConnection implements AutoCloseable {
         return queryForString("name", track_id);
     }
 
+    public String getName(String filepath) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT name FROM Track WHERE filepath = ?");
+        preparedStatement.setString(1, filepath);
+        resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getString(1);
+    }
+
 
     public String getDuration(int track_id) throws SQLException {
         return queryForString("duration", track_id);
@@ -217,7 +226,33 @@ public class DBConnection implements AutoCloseable {
 
         // connection.rollback();
         connection.commit();
+
+        connection.setAutoCommit(true);
     }
+
+
+    public void removeTrackFromDB(int trackID) throws SQLException {
+        connection.setAutoCommit(false);
+
+        // preparedStatement = connection.prepareStatement("DELETE FROM")
+        deleteFromTable(trackID, "track_id", "Track_Genre");
+        deleteFromTable(trackID, "track_id", "Track_Album");
+        deleteFromTable(trackID, "track_id", "Track_Artist");
+        deleteFromTable(trackID, "id", "Track");
+
+        connection.commit();
+
+        connection.setAutoCommit(true);
+    }
+
+
+    private void deleteFromTable(int trackID, String idName, String tableName) throws SQLException {
+        preparedStatement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE " + idName + " = ?");
+        preparedStatement.setInt(1, trackID);
+
+        preparedStatement.executeUpdate();
+    }
+
 
     @Override
     public void close() throws SQLException {

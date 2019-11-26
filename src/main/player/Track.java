@@ -2,6 +2,7 @@ package main.player;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -9,6 +10,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import main.database.DBConnection;
 
 public class Track implements AutoCloseable {
 
@@ -30,7 +33,8 @@ public class Track implements AutoCloseable {
 
     public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
-            this.name = trackFile.getName();
+            this.name = getTrackName(trackFile.toString());
+            // this.name = trackFile.getName();
             audioInputStream = AudioSystem.getAudioInputStream(trackFile);
             audioFormat = audioInputStream.getFormat();
             totalFrames = audioInputStream.getFrameLength();
@@ -52,6 +56,18 @@ public class Track implements AutoCloseable {
         }
     }
 
+
+    private String getTrackName(String filepath) {
+        try (DBConnection connection = new DBConnection()) {
+            String name = connection.getName(filepath);
+            if (name != null) {
+                return name;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Unkown Track Name";
+    }
 
     public void playClip() {
         if (clip.isOpen()) {

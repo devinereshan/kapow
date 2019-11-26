@@ -114,6 +114,7 @@ public class GUI extends Application {
                 loadTrackFromTable(table.getSelectionModel().getSelectedItem());
             }
         });
+
         MenuItem importTrack = new MenuItem("import track");
         importTrack.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -123,14 +124,21 @@ public class GUI extends Application {
                 trackImportBox.open(primaryStage);
             }
         });
+
+        MenuItem delete = new MenuItem("delete");
+        delete.setOnAction(e -> deleteTrack(table.getSelectionModel().getSelectedItem()));
+
         contextMenu.getItems().add(menuPlay);
         contextMenu.getItems().add(importTrack);
-
-
+        contextMenu.getItems().add(delete);
 
         table.setContextMenu(contextMenu);
     }
 
+
+    public void deleteTrack(TrackRow trackToDelete) {
+        trackRowList.deleteTrack(trackToDelete);
+    }
 
     private void mapButtons(Stage stage) {
         seekLeft.setOnAction(e -> seekLeft());
@@ -157,13 +165,10 @@ public class GUI extends Application {
     }
 
     private void loadTrackFromTable(TrackRow track) {
-        System.out.println("ContextMenu event");
-        System.out.println(track.toString());
         File audioFile = new File(track.getFilepath());
         if (audioFile != null) {
             audioPlayer.setAndPlay(audioFile);
-            audioPlayer.printQueue(); // test
-            currentTrackName.setText(audioPlayer.getCurrentTrackName());
+            currentTrackName.setText(track.getName() + " - " + track.getArtists());
         }
     }
 
