@@ -3,15 +3,21 @@ package main.library;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import main.database.DBConnection;
 
 public class TrackRowList {
     private ArrayList<Integer> trackIDs;
     private int currentTrackIndex = 0;
+    public ObservableList<TrackRow> trackRows = FXCollections.observableArrayList();
 
     public TrackRowList () {
         try {
             trackIDs = getTrackIDs();
+            while (hasMoreTracks()) {
+                trackRows.add(getNextTrackRow());
+            }
         } catch (SQLException e) {
             System.err.println("Unable to access track ids");
             e.printStackTrace();
@@ -31,6 +37,9 @@ public class TrackRowList {
 
             // temp for verification
             printAllTrackIDs();
+            while (hasMoreTracks()) {
+                trackRows.add(getNextTrackRow());
+            }
         } catch (SQLException e) {
             System.out.println("Exception while updating trackIDs");
             e.printStackTrace();

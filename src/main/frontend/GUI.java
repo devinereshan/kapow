@@ -1,12 +1,9 @@
 package main.frontend;
 
 import java.io.File;
-import java.sql.SQLException;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -44,7 +41,6 @@ public class GUI extends Application {
 
     // Table view additions
     private TableView<TrackRow> table = new TableView<>();
-    private final ObservableList<TrackRow> trackRows = FXCollections.observableArrayList();
     private final TrackRowList trackRowList = new TrackRowList();
 
     TableColumn<TrackRow,String> nameCol = new TableColumn<>("Name");
@@ -54,6 +50,8 @@ public class GUI extends Application {
     TableColumn<TrackRow,String> genresCol = new TableColumn<>("Genres");
     TrackImportBox trackImportBox;
 
+
+    private final ContextMenu contextMenu = new ContextMenu();
 
 
     public static void main(String[] args) {
@@ -75,42 +73,16 @@ public class GUI extends Application {
         assignColumnValues();
 
 
-        final ContextMenu contextMenu = new ContextMenu();
+        buildContextMenu(primaryStage);
 
-        MenuItem menuPlay = new MenuItem("play");
-        menuPlay.setOnAction(new EventHandler<ActionEvent>() {
 
-            @Override
-            public void handle(ActionEvent event) {
-                loadTrackFromTable(table.getSelectionModel().getSelectedItem());
-            }
-        });
-        contextMenu.getItems().add(menuPlay);
         table.setContextMenu(contextMenu);
-
-
-        Button import_track = new Button("Import");
-        import_track.setOnAction(
-            new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    trackImportBox = new TrackImportBox(trackRowList);
-                    trackImportBox.open(primaryStage);
-                }
-            }
-        );
-
-        // temp for testing
-        Button refresh = new Button("Refresh");
-        refresh.setOnAction(e -> refreshTable());
-
-
 
 
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, refresh, import_track, load, seekLeft, stopTrack, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, load, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
@@ -128,20 +100,37 @@ public class GUI extends Application {
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         primaryStage.show();
 
-        refreshTable();
+
     }
 
 
-    private void refreshTable() {
-        try {
-            while (trackRowList.hasMoreTracks()) {
-                trackRows.add(trackRowList.getNextTrackRow());
+
+    private void buildContextMenu(Stage primaryStage) {
+        MenuItem menuPlay = new MenuItem("play");
+        menuPlay.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                loadTrackFromTable(table.getSelectionModel().getSelectedItem());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
+        MenuItem importTrack = new MenuItem("import track");
+        menuPlay.setOnAction(new EventHandler<ActionEvent>() {
 
+            @Override
+            public void handle(ActionEvent event) {
+                trackImportBox = new TrackImportBox(trackRowList);
+                trackImportBox.open(primaryStage);
+            }
+        });
+        contextMenu.getItems().add(menuPlay);
+        contextMenu.getItems().add(importTrack);
+
+
+
+        table.setContextMenu(contextMenu);
     }
+
 
     private void mapButtons(Stage stage) {
         seekLeft.setOnAction(e -> seekLeft());
@@ -164,7 +153,7 @@ public class GUI extends Application {
         albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         table.getColumns().setAll(nameCol, durationCol, artistsCol, albumsCol, genresCol);
-        table.setItems(trackRows);
+        table.setItems(trackRowList.trackRows);
     }
 
     private void loadTrackFromTable(TrackRow track) {
