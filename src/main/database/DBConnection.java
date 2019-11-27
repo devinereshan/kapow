@@ -44,6 +44,15 @@ public class DBConnection implements AutoCloseable {
         return queryForString("name", track_id);
     }
 
+    public String getName(String filepath) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT name FROM Track WHERE filepath = ?");
+        preparedStatement.setString(1, filepath);
+        resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getString(1);
+    }
+
 
     public String getDuration(int track_id) throws SQLException {
         return queryForString("duration", track_id);
@@ -130,7 +139,7 @@ public class DBConnection implements AutoCloseable {
     }
 
 
-    private int getID(String table, String field, String value) throws SQLException {
+    public int getID(String table, String field, String value) throws SQLException {
         preparedStatement = connection.prepareStatement("SELECT id FROM " + table + " WHERE " + field + " = ?");
         preparedStatement.setString(1, value);
 
@@ -156,6 +165,15 @@ public class DBConnection implements AutoCloseable {
 
     private void addIDPair(String table, int trackID, int pairID) throws SQLException {
         preparedStatement = connection.prepareStatement("INSERT INTO " + table + " VALUES (?, ?)");
+        preparedStatement.setInt(1, trackID);
+        preparedStatement.setInt(2, pairID);
+
+        preparedStatement.executeUpdate();
+    }
+
+
+    private void removeIDPair(String table, int trackID, String pairName, int pairID) throws SQLException {
+        preparedStatement = connection.prepareStatement("DELETE FROM " + table + " WHERE track_id = ? AND " + pairName + " = ?");
         preparedStatement.setInt(1, trackID);
         preparedStatement.setInt(2, pairID);
 
@@ -217,7 +235,102 @@ public class DBConnection implements AutoCloseable {
 
         // connection.rollback();
         connection.commit();
+
+        connection.setAutoCommit(true);
     }
+
+
+    public void removeTrackFromDB(int trackID) throws SQLException {
+        connection.setAutoCommit(false);
+
+        // preparedStatement = connection.prepareStatement("DELETE FROM")
+        deleteFromTable(trackID, "track_id", "Track_Genre");
+        deleteFromTable(trackID, "track_id", "Track_Album");
+        deleteFromTable(trackID, "track_id", "Track_Artist");
+        deleteFromTable(trackID, "id", "Track");
+
+        connection.commit();
+
+        connection.setAutoCommit(true);
+    }
+
+
+    private void deleteFromTable(int trackID, String idName, String tableName) throws SQLException {
+        preparedStatement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE " + idName + " = ?");
+        preparedStatement.setInt(1, trackID);
+
+        preparedStatement.executeUpdate();
+    }
+
+
+    public void updateTrackName(String name, int trackID) throws SQLException {
+        preparedStatement = connection.prepareStatement("UPDATE Track SET name = ? WHERE id = ?");
+        preparedStatement.setString(1, name);
+        preparedStatement.setInt(2, trackID);
+
+        preparedStatement.executeUpdate();
+    }
+
+    public void updateTrackArtist(String oldArtistName, String newArtistName, int trackID) throws SQLException {
+        // remove old track_artist id pair
+        int oldArtistID = getID("Artist", "name", oldArtistName);
+        removeIDPair("Track_Artist", trackID, "artist_id", oldArtistID);
+
+        // add artistName and get ID;
+        addUniqueValue("Artist", "name", newArtistName);
+        int newArtistID = getID("Artist", "name", newArtistName);
+
+        addIDPair("Track_Artist", trackID, newArtistID);
+    }
+
+
+    public void updateTrackAlbum(String oldAlbumName, String newAlbumName, int trackID) throws SQLException {
+        int oldAlbumID = getID("Album", "name", oldAlbumName);
+        removeIDPair("Track_Album", trackID, "album_id", oldAlbumID);
+
+        addUniqueValue("Album", "name", newAlbumName);
+        int newAlbumID = getID("Album", "name", newAlbumName);
+
+        addIDPair("Track_Album", trackID, newAlbumID);
+    }
+
+
+    public void updateTrackGenre(String oldGenreName, String newGenreName, int trackID) throws SQLException {
+        int oldGenreID = getID("Genre", "name", oldGenreName);
+        removeIDPair("Track_Genre", trackID, "genre_id", oldGenreID);
+
+        addUniqueValue("Genre", "name", newGenreName);
+        int newGenreID = getID("Genre", "name", newGenreName);
+
+        addIDPair("Track_Genre", trackID, newGenreID);
+    }
+
+    // public void updateTrackInfo(String filepath, String trackName, String artistName, String albumName, String genreName) throws SQLException {
+    //     // verify that filepath is in database
+    //     if (!valueExists("Track", "filepath", filepath)) {
+    //         System.out.println("Track not in database. Unable to update information.");
+    //         return;
+    //     }
+
+    //     int trackID = getID("Track", "filepath", filepath);
+
+    //     connection.setAutoCommit(false);
+
+    //     // update all fields
+    //     updateField("Track", "name", trackName, "id", trackID);
+
+    //     // if artistName doesn't exist, add artist
+    //     // get artist ID and add track_artist pairing
+    //     addUniqueValue("Artist", "name", artistName);
+    //     int artistID = getID("Artist", "name", artistName);
+    //     updateField("Track_Artist", "name", trackName, "id", trackID);
+    // }
+
+    // private void updateField(String table, String field, String value, String conditionField, int trackID) throws SQLException {
+    //     preparedStatement = connection.prepareStatement("UPDATE " + table + " SET " + field +  " = ? WHERE " + conditionField + " = ? LIMIT 1");
+    //     preparedStatement.setString(1, value);
+    //     preparedStatement.setInt(2, trackID);
+    // }
 
     @Override
     public void close() throws SQLException {

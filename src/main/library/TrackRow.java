@@ -1,7 +1,7 @@
 package main.library;
 
 public class TrackRow {
-    private String id;
+    private int id;
     private String filepath;
     private String name;
     private String duration;
@@ -9,7 +9,7 @@ public class TrackRow {
     private String albums;
     private String genres;
 
-    public TrackRow(String id, String filepath, String name, String duration, String artists, String albums, String genres) {
+    public TrackRow(int id, String filepath, String name, String duration, String artists, String albums, String genres) {
         this.id = id;
         this.filepath = filepath;
         this.name = name;
@@ -23,7 +23,7 @@ public class TrackRow {
     // toString for testing
     @Override
     public String toString() {
-        return String.format("%s %s %s %s %s %s %s", id, filepath, name, duration, artists, albums, genres);
+        return String.format("%d %s %s %s %s %s %s", id, filepath, name, duration, artists, albums, genres);
     }
 
     public String getAlbums() {
@@ -47,7 +47,7 @@ public class TrackRow {
         return genres;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -55,4 +55,20 @@ public class TrackRow {
         return name;
     }
 
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlbums(String albums) {
+        this.albums = albums;
+    }
+
+    public void setArtists(String artists) {
+        this.artists = artists;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
 }
