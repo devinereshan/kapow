@@ -64,7 +64,8 @@ public class Track implements AutoCloseable {
                 return name;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            System.out.println("Track does not exist in database. Unknown Track name");
         }
         return "Unkown Track Name";
     }

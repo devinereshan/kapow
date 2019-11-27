@@ -49,6 +49,7 @@ public class GUI extends Application {
     TableColumn<TrackRow,String> albumsCol = new TableColumn<>("Albums");
     TableColumn<TrackRow,String> genresCol = new TableColumn<>("Genres");
     TrackImportBox trackImportBox;
+    TrackEditBox trackEditBox;
 
 
     private final ContextMenu contextMenu = new ContextMenu();
@@ -125,12 +126,23 @@ public class GUI extends Application {
             }
         });
 
+        MenuItem editTrack = new MenuItem("edit track");
+        editTrack.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                trackEditBox = new TrackEditBox(table.getSelectionModel().getSelectedItem());
+                trackEditBox.open(primaryStage);
+            }
+        });
+
         MenuItem delete = new MenuItem("delete");
         delete.setOnAction(e -> deleteTrack(table.getSelectionModel().getSelectedItem()));
 
         contextMenu.getItems().add(menuPlay);
         contextMenu.getItems().add(importTrack);
         contextMenu.getItems().add(delete);
+        contextMenu.getItems().add(editTrack);
 
         table.setContextMenu(contextMenu);
     }

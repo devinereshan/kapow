@@ -55,4 +55,20 @@ public class TrackRow {
         return name;
     }
 
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlbums(String albums) {
+        this.albums = albums;
+    }
+
+    public void setArtists(String artists) {
+        this.artists = artists;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
 }
