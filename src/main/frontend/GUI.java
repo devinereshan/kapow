@@ -178,11 +178,6 @@ public class GUI extends Application {
     }
 
     private void loadTrackFromTable(Track track) {
-        if (track == null) {
-            System.out.println("GUI: Track is null");
-        } else {
-            System.out.println("GUI: Track is not null");
-        }
         audioPlayer.setAndPlay(track);
         currentTrackName.setText(track.getName() + " - " + track.getArtists());
     }

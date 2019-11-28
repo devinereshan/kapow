@@ -73,6 +73,14 @@ public class AudioPlayer {
                 playing = true;
             }
         });
+
+        currentTrackPlayer.setOnStopped(new Runnable() {
+            @Override
+            public void run() {
+                playing = false;
+            }
+        });
+
     }
 
 
