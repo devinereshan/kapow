@@ -118,26 +118,26 @@ public class TrackEditBox {
             // connection.updateTrackInfo(filepath, trackName, artistName, albumName, genreName);
 
             int trackID = connection.getID("Track", "filepath", filepath);
-            if (trackName != track.getText()) {
-                connection.updateTrackName(track.getText(), trackID);
-                trackRow.setName(track.getText());
+            if (trackName != trackField.getText()) {
+                connection.updateTrackName(trackField.getText(), trackID);
+                trackRow.setName(trackField.getText());
             }
 
-            if (artistName != artist.getText()) {
+            if (artistName != artistField.getText()) {
                 //TODO: remove old Track_Artist ID pair
                 //add new ID pair
-                connection.updateTrackArtist(artistName, artist.getText(), trackID);
-                trackRow.setArtists(artist.getText());
+                connection.updateTrackArtist(artistName, artistField.getText(), trackID);
+                trackRow.setArtists(artistField.getText());
             }
 
-            if (albumName != album.getText()) {
-                connection.updateTrackAlbum(albumName, album.getText(), trackID);
-                trackRow.setAlbums(album.getText());
+            if (albumName != albumField.getText()) {
+                connection.updateTrackAlbum(albumName, albumField.getText(), trackID);
+                trackRow.setAlbums(albumField.getText());
             }
 
-            if (genreName != genre.getText()) {
-                connection.updateTrackGenre(genreName, genre.getText(), trackID);
-                trackRow.setGenres(genre.getText());
+            if (genreName != genreField.getText()) {
+                connection.updateTrackGenre(genreName, genreField.getText(), trackID);
+                trackRow.setGenres(genreField.getText());
             }
         } catch (SQLException e) {
             e.printStackTrace();

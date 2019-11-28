@@ -1,22 +1,27 @@
 package main.library;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class TrackRow {
     private int id;
-    private String filepath;
-    private String name;
-    private String duration;
-    private String artists;
-    private String albums;
-    private String genres;
+    private SimpleStringProperty filepath;
+    private SimpleStringProperty name;
+    private SimpleStringProperty duration;
+    private SimpleStringProperty artists;
+    private SimpleStringProperty albums;
+    private SimpleStringProperty genres;
 
     public TrackRow(int id, String filepath, String name, String duration, String artists, String albums, String genres) {
         this.id = id;
-        this.filepath = filepath;
-        this.name = name;
-        this.duration = duration;
-        this.artists = artists;
-        this.albums = albums;
-        this. genres = genres;
+        this.filepath = new SimpleStringProperty(filepath);
+        this.name = new SimpleStringProperty(name);
+        this.duration = new SimpleStringProperty(duration);
+        this.artists = new SimpleStringProperty(artists);
+        this.albums = new SimpleStringProperty(albums);
+        this.genres = new SimpleStringProperty(genres);
+
+
     }
 
 
@@ -27,24 +32,24 @@ public class TrackRow {
     }
 
     public String getAlbums() {
-        return albums;
+        return albums.get();
     }
 
     public String getArtists() {
-        return artists;
+        return artists.get();
     }
 
     public String getDuration() {
-        return duration;
+        return duration.get();
     }
 
     public String getFilepath() {
-        return filepath;
+        return filepath.get();
     }
 
 
     public String getGenres() {
-        return genres;
+        return genres.get();
     }
 
     public int getId() {
@@ -52,23 +57,28 @@ public class TrackRow {
     }
 
     public String getName() {
-        return name;
+        return name.get();
     }
 
 
     public void setName(String name) {
-        this.name = name;
+        this.name.set(name);
     }
 
     public void setAlbums(String albums) {
-        this.albums = albums;
+        this.albums.set(albums);
     }
 
     public void setArtists(String artists) {
-        this.artists = artists;
+        this.artists.set(artists);
     }
 
     public void setGenres(String genres) {
-        this.genres = genres;
+        this.genres.set(genres);
     }
+
+    public StringProperty nameProperty() { return name; }
+    public StringProperty albumsProperty() { return albums; }
+    public StringProperty artistsProperty() { return artists; }
+    public StringProperty genresProperty() { return genres; }
 }
