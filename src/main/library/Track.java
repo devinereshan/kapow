@@ -3,7 +3,7 @@ package main.library;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class TrackRow {
+public class Track {
     private int id;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
@@ -12,7 +12,7 @@ public class TrackRow {
     private SimpleStringProperty albums;
     private SimpleStringProperty genres;
 
-    public TrackRow(int id, String filepath, String name, String duration, String artists, String albums, String genres) {
+    public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres) {
         this.id = id;
         this.filepath = new SimpleStringProperty(filepath);
         this.name = new SimpleStringProperty(name);

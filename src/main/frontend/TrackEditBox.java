@@ -1,12 +1,6 @@
 package main.frontend;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -14,13 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
-import main.library.TrackRow;
-import main.library.TrackRowList;
-import main.player.Track;
+import main.library.Track;
 
 public class TrackEditBox {
     private final Stage editBox = new Stage();
@@ -36,7 +27,7 @@ public class TrackEditBox {
     private Label filepathLabel;
     private Label artist = new Label("Artist Name:");
     private Label album = new Label("Album Name:");
-    private Label track = new Label("Track Name:");
+    private Label trackLabel = new Label("Track Name:");
     private Label genre = new Label("Genre:");
 
     private TextField artistField = new TextField();
@@ -46,12 +37,11 @@ public class TrackEditBox {
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
 
-    TrackRowList trackRowList;
-    TrackRow trackRow;
+    Track track;
 
     private int row = 0;
 
-    public TrackEditBox(TrackRow trackRow) {
+    public TrackEditBox(Track track) {
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -59,21 +49,21 @@ public class TrackEditBox {
         cancel.setOnAction(e -> editBox.close());
         submit.setOnAction(e -> submitInfo());
 
-        this.trackRow = trackRow;
-        filepath = trackRow.getFilepath();
+        this.track = track;
+        filepath = track.getFilepath();
         filepathLabel = new Label(filepath);
-        artistName = trackRow.getArtists();
+        artistName = track.getArtists();
         artistField.setText(artistName);
-        albumName = trackRow.getAlbums();
+        albumName = track.getAlbums();
         albumField.setText(albumName);
-        trackName = trackRow.getName();
+        trackName = track.getName();
         trackField.setText(trackName);
-        genreName = trackRow.getGenres();
+        genreName = track.getGenres();
         genreField.setText(genreName);
 
         root.add(file, 0, row);
         root.add(filepathLabel, 2, row++);
-        root.add(track, 0, row);
+        root.add(trackLabel, 0, row);
         root.add(trackField, 2, row++);
         root.add(artist, 0, row);
         root.add(artistField, 2, row++);
@@ -89,7 +79,6 @@ public class TrackEditBox {
         editBox.setTitle("Edit Track");
         editBox.setScene(scene);
 
-        // this.trackRowList = trackRowList;
     }
 
 
@@ -107,44 +96,33 @@ public class TrackEditBox {
             return;
         }
 
-
-        // trackName = trackField.getText();
-        // artistName = artistField.getText();
-        // albumName = albumField.getText();
-        // genreName = genreField.getText();
-        // System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
-
+        // TODO: this set of update transactions should be atomic
         try (DBConnection connection = new DBConnection()) {
-            // connection.updateTrackInfo(filepath, trackName, artistName, albumName, genreName);
 
             int trackID = connection.getID("Track", "filepath", filepath);
             if (trackName != trackField.getText()) {
                 connection.updateTrackName(trackField.getText(), trackID);
-                trackRow.setName(trackField.getText());
+                track.setName(trackField.getText());
             }
 
             if (artistName != artistField.getText()) {
-                //TODO: remove old Track_Artist ID pair
-                //add new ID pair
                 connection.updateTrackArtist(artistName, artistField.getText(), trackID);
-                trackRow.setArtists(artistField.getText());
+                track.setArtists(artistField.getText());
             }
 
             if (albumName != albumField.getText()) {
                 connection.updateTrackAlbum(albumName, albumField.getText(), trackID);
-                trackRow.setAlbums(albumField.getText());
+                track.setAlbums(albumField.getText());
             }
 
             if (genreName != genreField.getText()) {
                 connection.updateTrackGenre(genreName, genreField.getText(), trackID);
-                trackRow.setGenres(genreField.getText());
+                track.setGenres(genreField.getText());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
-        // trackRow.refresh();
 
         editBox.close();
     }

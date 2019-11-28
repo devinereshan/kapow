@@ -1,6 +1,6 @@
 package main.frontend;
 
-import java.io.File;
+// import java.io.File;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,10 +21,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
+// import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import main.library.TrackRow;
-import main.library.TrackRowList;
+import main.library.Track;
+import main.library.TrackList;
 import main.player.AudioPlayer;
 
 public class GUI extends Application {
@@ -32,7 +33,7 @@ public class GUI extends Application {
     private final Button stopTrack = new Button("Stop");
     private final Button play = new Button("Play");
     private final Button pause = new Button("Pause");
-    private final Button load = new Button("Load");
+    // private final Button load = new Button("Load");
     private final Button quit = new Button("Quit");
 
     private Label currentTrackName;
@@ -40,14 +41,14 @@ public class GUI extends Application {
 
 
     // Table view additions
-    private TableView<TrackRow> table = new TableView<>();
-    private final TrackRowList trackRowList = new TrackRowList();
+    private TableView<Track> table = new TableView<>();
+    private final TrackList trackList = new TrackList();
 
-    TableColumn<TrackRow,String> nameCol = new TableColumn<>("Name");
-    TableColumn<TrackRow,String> durationCol = new TableColumn<>("Duration");
-    TableColumn<TrackRow,String> artistsCol = new TableColumn<>("Artists");
-    TableColumn<TrackRow,String> albumsCol = new TableColumn<>("Albums");
-    TableColumn<TrackRow,String> genresCol = new TableColumn<>("Genres");
+    TableColumn<Track,String> nameCol = new TableColumn<>("Name");
+    TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
+    TableColumn<Track,String> artistsCol = new TableColumn<>("Artists");
+    TableColumn<Track,String> albumsCol = new TableColumn<>("Albums");
+    TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
     TrackImportBox trackImportBox;
     TrackEditBox trackEditBox;
 
@@ -83,11 +84,14 @@ public class GUI extends Application {
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, load, seekLeft, stopTrack, play, pause, seekRight, quit);
+        Slider elapsedTimeBar = new Slider(0, 1, 0);
+
+
+        HBox buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
-        VBox player = new VBox(trackName, buttonBar);
+        VBox player = new VBox(trackName, elapsedTimeBar, buttonBar);
 
         VBox library = new VBox(table);
 
@@ -121,7 +125,7 @@ public class GUI extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                trackImportBox = new TrackImportBox(trackRowList);
+                trackImportBox = new TrackImportBox(trackList);
                 trackImportBox.open(primaryStage);
             }
         });
@@ -148,8 +152,8 @@ public class GUI extends Application {
     }
 
 
-    public void deleteTrack(TrackRow trackToDelete) {
-        trackRowList.deleteTrack(trackToDelete);
+    public void deleteTrack(Track trackToDelete) {
+        trackList.deleteTrack(trackToDelete);
     }
 
     private void mapButtons(Stage stage) {
@@ -158,7 +162,7 @@ public class GUI extends Application {
         stopTrack.setOnAction(e -> stopTrack());
         pause.setOnAction(e -> pause());
         play.setOnAction(e -> play());
-        load.setOnAction(e -> loadAudioFile(stage));
+        // load.setOnAction(e -> loadAudioFile(stage));
         quit.setOnAction(e -> {
             audioPlayer.quit();
             Platform.exit();
@@ -173,32 +177,40 @@ public class GUI extends Application {
         albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         table.getColumns().setAll(nameCol, durationCol, artistsCol, albumsCol, genresCol);
-        table.setItems(trackRowList.trackRows);
+        table.setItems(trackList.tracks);
     }
 
-    private void loadTrackFromTable(TrackRow track) {
-        File audioFile = new File(track.getFilepath());
-        if (audioFile != null) {
-            audioPlayer.setAndPlay(audioFile);
-            currentTrackName.setText(track.getName() + " - " + track.getArtists());
+    private void loadTrackFromTable(Track track) {
+        if (track == null) {
+            System.out.println("GUI: Track is null");
+        } else {
+            System.out.println("GUI: Track is not null");
         }
+        audioPlayer.setAndPlay(track);
+        currentTrackName.setText(track.getName() + " - " + track.getArtists());
+        // File audioFile = new File(track.getFilepath());
+        // if (audioFile != null) {
+        //     audioPlayer.setAndPlay(audioFile);
+        // }
     }
 
-    private File getAudioFile(Stage stage) {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
-        fileChooser.getExtensionFilters().add(extFilter);
-        return fileChooser.showOpenDialog(stage);
-    }
+    // private File getAudioFile(Stage stage) {
+    //     FileChooser fileChooser = new FileChooser();
+    //     FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
+    //     fileChooser.getExtensionFilters().add(extFilter);
+    //     return fileChooser.showOpenDialog(stage);
+    // }
 
-    private void loadAudioFile(Stage stage) {
-        File audioFile = getAudioFile(stage);
-        if (audioFile != null) {
-            audioPlayer.queueTrack(audioFile);
-            audioPlayer.printQueue(); // test
-            currentTrackName.setText(audioPlayer.getCurrentTrackName());
-        }
-    }
+    // private void loadAudioFile(Stage stage) {
+        // File audioFile = getAudioFile(stage);
+        // if (audioFile != null) {
+        //     audioPlayer.queueTrack(audioFile);
+        //     audioPlayer.printQueue(); // test
+        //     System.out.println("printed Queue");
+        //     currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        //     System.out.println("got name");
+        // }
+    // }
 
     private void stopTrack() {
         audioPlayer.stop();
@@ -214,14 +226,21 @@ public class GUI extends Application {
 
     private void seekLeft() {
         audioPlayer.seekLeft();
-        currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        // currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        updatecurrentTrackName(audioPlayer.getCurrentTrack());
     }
 
     private void seekRight() {
         audioPlayer.seekRight();
-        currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        // currentTrackName.setText(audioPlayer.getCurrentTrackName());
+        updatecurrentTrackName(audioPlayer.getCurrentTrack());
     }
 
 
+    private void updatecurrentTrackName(Track track) {
+        if (track != null) {
+            currentTrackName.setText(track.getName() + " - " + track.getArtists());
+        }
+    }
 
 }
