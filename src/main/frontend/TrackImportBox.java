@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import main.database.DBConnection;
 import main.library.TrackList;
 import main.player.OldTrack;
-import main.library.Track;
 
 public class TrackImportBox {
     private final Stage importBox = new Stage();
@@ -53,8 +52,6 @@ public class TrackImportBox {
     private int row = 0;
 
     public TrackImportBox(TrackList trackList) {
-        // importBox.initModality(Modality.APPLICATION_MODAL);
-        // importBox.initOwner(primaryStage);
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -81,7 +78,6 @@ public class TrackImportBox {
 
         importBox.setTitle("Import Track");
         importBox.setScene(scene);
-        // importBox.show();
 
         this.trackList = trackList;
 
@@ -113,9 +109,6 @@ public class TrackImportBox {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // TODO: close import window
-        // refresh table view to show new track
 
         trackList.refresh();
 

@@ -74,7 +74,7 @@ public class CLI {
                 // input = scanner.nextLine();
             }
 
-            audioPlayer.quit();
+            // audioPlayer.quit();
             System.out.println("Done");
         }
     }

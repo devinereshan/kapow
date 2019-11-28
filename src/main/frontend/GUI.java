@@ -21,7 +21,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-// import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.library.Track;
 import main.library.TrackList;
@@ -33,7 +32,6 @@ public class GUI extends Application {
     private final Button stopTrack = new Button("Stop");
     private final Button play = new Button("Play");
     private final Button pause = new Button("Pause");
-    // private final Button load = new Button("Load");
     private final Button quit = new Button("Quit");
 
     private Label currentTrackName;
@@ -162,7 +160,6 @@ public class GUI extends Application {
         stopTrack.setOnAction(e -> stopTrack());
         pause.setOnAction(e -> pause());
         play.setOnAction(e -> play());
-        // load.setOnAction(e -> loadAudioFile(stage));
         quit.setOnAction(e -> {
             audioPlayer.quit();
             Platform.exit();
@@ -188,29 +185,8 @@ public class GUI extends Application {
         }
         audioPlayer.setAndPlay(track);
         currentTrackName.setText(track.getName() + " - " + track.getArtists());
-        // File audioFile = new File(track.getFilepath());
-        // if (audioFile != null) {
-        //     audioPlayer.setAndPlay(audioFile);
-        // }
     }
 
-    // private File getAudioFile(Stage stage) {
-    //     FileChooser fileChooser = new FileChooser();
-    //     FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff", "*.au");
-    //     fileChooser.getExtensionFilters().add(extFilter);
-    //     return fileChooser.showOpenDialog(stage);
-    // }
-
-    // private void loadAudioFile(Stage stage) {
-        // File audioFile = getAudioFile(stage);
-        // if (audioFile != null) {
-        //     audioPlayer.queueTrack(audioFile);
-        //     audioPlayer.printQueue(); // test
-        //     System.out.println("printed Queue");
-        //     currentTrackName.setText(audioPlayer.getCurrentTrackName());
-        //     System.out.println("got name");
-        // }
-    // }
 
     private void stopTrack() {
         audioPlayer.stop();
@@ -226,13 +202,11 @@ public class GUI extends Application {
 
     private void seekLeft() {
         audioPlayer.seekLeft();
-        // currentTrackName.setText(audioPlayer.getCurrentTrackName());
         updatecurrentTrackName(audioPlayer.getCurrentTrack());
     }
 
     private void seekRight() {
         audioPlayer.seekRight();
-        // currentTrackName.setText(audioPlayer.getCurrentTrackName());
         updatecurrentTrackName(audioPlayer.getCurrentTrack());
     }
 
