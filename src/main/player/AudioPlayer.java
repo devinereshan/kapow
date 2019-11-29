@@ -9,7 +9,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import main.library.Track;
-import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -25,7 +24,6 @@ public class AudioPlayer {
     private boolean autoPlay = false;
     private boolean playing;
 
-    // private Slider elapsedTimeSlider;
     private ElapsedTimeListener elapsedTimeListener;
 
     private Queue queue;
@@ -41,10 +39,6 @@ public class AudioPlayer {
         this.elapsedTimeListener = elapsedTimeListener;
         queue = new Queue();
     }
-
-    // public void setElapsedTimeListener(ElapsedTimeListener elapsedTimeListener) {
-    // this.elapsedTimeListener = elapsedTimeListener;
-    // }
 
     private void loadTrack(Track track) {
         if (playing) {
@@ -70,17 +64,14 @@ public class AudioPlayer {
         currentTrackPlayer = new MediaPlayer(currentTrackMedia);
 
         if (elapsedTimeListener != null) {
+            // Update database so each track has an int record of length in seconds so this isn't necessary
             try (OldTrack tempTimeFix = new OldTrack(new File(currentTrack.getFilepath()))) {
-                // OldTrack tempTimeFix = new OldTrack(new File(currentTrack.getFilepath()));
                 int timeInSeconds = tempTimeFix.lengthInSeconds();
                 System.out.println("Time in seconds: " + timeInSeconds);
                 elapsedTimeListener.setNewTrackDimensions(timeInSeconds);
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-            // elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
         }
 
         currentTrackPlayer.setOnReady(new Runnable() {
@@ -116,26 +107,18 @@ public class AudioPlayer {
 
         currentTrackPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
-            public void invalidated(Observable ov) {
-                // updatesValues();
+            public void invalidated(Observable observable) {
                 Platform.runLater(new Runnable() {
                     public void run() {
-                        // Updating to the new elapsedTimeSlider value
-                        // This will move the slider while running your video
                         if (elapsedTimeListener == null) {
                             return;
                         }
 
-                        elapsedTimeListener.updateElapsedTimeFields((int) currentTrackPlayer.getCurrentTime().toSeconds());
-
-                        // elapsedTimeSlider.setValue(mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis() * 100);
+                        elapsedTimeListener.updateElapsedTimeFields( currentTrackPlayer.getCurrentTime().toSeconds());
                     }
                 });
             }
         });
-
-        // currentTrackPlayer.currentTimeProperty().addListener(elapsedTimeListener);
-
     }
 
 

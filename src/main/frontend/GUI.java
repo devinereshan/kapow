@@ -52,6 +52,7 @@ public class GUI extends Application {
     TrackEditBox trackEditBox;
 
     private ElapsedTimeListener elapsedTimeListener;
+    Slider elapsedTimeBar = new Slider(0, 1, 0);
 
 
     private final ContextMenu contextMenu = new ContextMenu();
@@ -65,7 +66,6 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        Slider elapsedTimeBar = new Slider(0, 1, 0);
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
 
         audioPlayer = new AudioPlayer(elapsedTimeListener);
@@ -90,10 +90,6 @@ public class GUI extends Application {
 
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
-
-        // Slider elapsedTimeBar = new Slider(0, 1, 0);
-        // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
-
 
         HBox buttonBar = new HBox(20, tempTimeButton, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);

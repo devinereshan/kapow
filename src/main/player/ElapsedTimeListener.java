@@ -2,15 +2,13 @@ package main.player;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Slider;
 
 public class ElapsedTimeListener {
     private final int HOURS = 0;
     private final int MINUTES = 1;
     private final int SECONDS = 2;
-    private int elapsedTimeInSeconds = 0;
-    private int totalTimeInSeconds = 0;
+    private double elapsedTimeInSeconds = 0;
     private SimpleStringProperty totalTime = new SimpleStringProperty();
     private SimpleStringProperty elapsedTime = new SimpleStringProperty();
     private Slider elapsedTimeSlider;
@@ -19,26 +17,23 @@ public class ElapsedTimeListener {
         this.elapsedTimeSlider = elapsedTimeSlider;
     }
 
-    public void updateElapsedTimeFields(int elapsedTime) {
-        elapsedTimeInSeconds = elapsedTime;
-        setElapsedTime(elapsedTimeInSeconds);
-        elapsedTimeSlider.setValue((int) (elapsedTimeInSeconds / totalTimeInSeconds * 100));
 
+    public void updateElapsedTimeFields(double elapsedTime) {
+        System.out.println("Updating elapsed time: " + elapsedTime);
+        elapsedTimeInSeconds = elapsedTime;
+        setElapsedTime((int) elapsedTimeInSeconds);
+
+        elapsedTimeSlider.setValue(elapsedTime);
     }
 
-    // public void setTotalTimeInSeconds(double totalTimeInSeconds) {
-    //     elapsedTimeSlider.setMax(totalTimeInSeconds);
-    // }
 
-    public void setNewTrackDimensions(int totalTimeInSeconds) {
-        this.totalTimeInSeconds = totalTimeInSeconds;
-        setTotalTime(totalTimeInSeconds);
+    public void setNewTrackDimensions(double totalTimeInSeconds) {
+        setTotalTime((int) totalTimeInSeconds);
         setElapsedTime(0);
         elapsedTimeSlider.setMin(0);
         elapsedTimeSlider.setMax(totalTimeInSeconds);
         elapsedTimeSlider.setValue(0);
     }
-
 
 
     public void setElapsedTime(String time) {
