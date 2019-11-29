@@ -7,19 +7,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.database.DBConnection;
 
-public class TrackRowList {
+public class TrackList {
     private ArrayList<Integer> trackIDs;
     private int currentTrackIndex = 0;
-    public ObservableList<TrackRow> trackRows = FXCollections.observableArrayList();
+    public ObservableList<Track> tracks = FXCollections.observableArrayList();
 
-    public TrackRowList () {
+    public TrackList () {
         try {
             trackIDs = getTrackIDs();
             while (hasMoreTracks()) {
-                trackRows.add(getNextTrackRow());
+                tracks.add(getNextTrackRow());
             }
         } catch (SQLException e) {
-            System.err.println("Unable to access track ids");
+            System.err.println("Unable to access tracks ids");
             e.printStackTrace();
         }
     }
@@ -38,7 +38,7 @@ public class TrackRowList {
             // temp for verification
             printAllTrackIDs();
             while (hasMoreTracks()) {
-                trackRows.add(getNextTrackRow());
+                tracks.add(getNextTrackRow());
             }
         } catch (SQLException e) {
             System.out.println("Exception while updating trackIDs");
@@ -46,12 +46,12 @@ public class TrackRowList {
         }
     }
 
-    public TrackRow getNextTrackRow() throws SQLException {
+    public Track getNextTrackRow() throws SQLException {
         try (DBConnection connection = new DBConnection()) {
             int id = trackIDs.get(currentTrackIndex);
             currentTrackIndex += 1;
 
-            return new TrackRow (
+            return new Track (
                 id,
                 connection.getFilepath(id),
                 connection.getName(id),
@@ -77,9 +77,9 @@ public class TrackRowList {
         }
     }
 
-    public void deleteTrack(TrackRow trackToDelete) {
+    public void deleteTrack(Track trackToDelete) {
         try (DBConnection connection = new DBConnection()) {
-            // System.out.println("Trackrows size before removal: " + trackRows.size());
+            // System.out.println("Trackrows size before removal: " + tracks.size());
             int trackID = trackToDelete.getId();
             connection.removeTrackFromDB(trackID);
             // System.out.format("size: %d, IDs before removal", trackIDs.size());
@@ -88,9 +88,9 @@ public class TrackRowList {
             trackIDs.remove(trackIDs.indexOf(trackID));
             // System.out.format("size: %d, IDs after removal", trackIDs.size());
             // printAllTrackIDs();
-            trackRows.remove(trackToDelete);
+            tracks.remove(trackToDelete);
             currentTrackIndex -= 1;
-            // System.out.println("Trackrows size after removal: " + trackRows.size());
+            // System.out.println("Trackrows size after removal: " + tracks.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -13,7 +13,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import main.database.DBConnection;
 
-public class Track implements AutoCloseable {
+public class OldTrack implements AutoCloseable {
 
     private Clip clip;
 
@@ -31,7 +31,7 @@ public class Track implements AutoCloseable {
     private int seconds;
 
 
-    public Track (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+    public OldTrack (File trackFile) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         if (isValidAudioFile(trackFile)) {
             this.name = getTrackName(trackFile.toString());
             // this.name = trackFile.getName();

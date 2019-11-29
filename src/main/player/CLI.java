@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import main.database.DBConnection;
-import main.library.TrackRow;
-import main.library.TrackRowList;
+import main.library.Track;
+import main.library.TrackList;
 
 public class CLI {
 
@@ -17,8 +17,8 @@ public class CLI {
 
     static void databaseTest() {
         try (DBConnection dbConnection = new DBConnection()) {
-            TrackRowList trl = new TrackRowList();
-            ArrayList<TrackRow> trackRows = new ArrayList<>();
+            TrackList trl = new TrackList();
+            ArrayList<Track> trackRows = new ArrayList<>();
 
             for (int i = 0; i < trl.size(); i++) {
                 trackRows.add(trl.getNextTrackRow());
@@ -43,38 +43,38 @@ public class CLI {
 
             // Track track = new Track(songFile);
 
-            AudioPlayer audioPlayer = new AudioPlayer();
+            // AudioPlayer audioPlayer = new AudioPlayer();
 
-            audioPlayer.queueTrack(songFile);
+            // audioPlayer.queueTrack(songFile);
 
 
 
-            audioPlayer.play();
+            // audioPlayer.play();
 
-            String previousElapsedTime = "00:00:00";
-            String elapsedTime = audioPlayer.getElapsedTime();
-            String lengthOfTrack = audioPlayer.getLengthOfTrackInSeconds();
+            // String previousElapsedTime = "00:00:00";
+            // String elapsedTime = audioPlayer.getElapsedTime();
+            // // String lengthOfTrack = audioPlayer.getLengthOfTrackInSeconds();
 
-            String input = "";
-            while (!input.equals("q")) {
-                // if (input.equals("p")) {
-                //     audioPlayer.pauseTrack();
-                // } else if (input.equals("s")) {
-                //     audioPlayer.play();
+            // String input = "";
+            // while (!input.equals("q")) {
+            //     // if (input.equals("p")) {
+            //     //     audioPlayer.pauseTrack();
+            //     // } else if (input.equals("s")) {
+            //     //     audioPlayer.play();
+            //     // }
+
+            //     elapsedTime = audioPlayer.getElapsedTime();
+
+                // if (!elapsedTime.equals(previousElapsedTime)) {
+                //     // System.out.format("%s / %s\n", elapsedTime, lengthOfTrack);
+                //     previousElapsedTime = String.valueOf(elapsedTime);
                 // }
-
-                elapsedTime = audioPlayer.getElapsedTime();
-
-                if (!elapsedTime.equals(previousElapsedTime)) {
-                    System.out.format("%s / %s\n", elapsedTime, lengthOfTrack);
-                    previousElapsedTime = String.valueOf(elapsedTime);
-                }
 
 
                 // input = scanner.nextLine();
-            }
+            // }
 
-            audioPlayer.quit();
+            // audioPlayer.quit();
             System.out.println("Done");
         }
     }

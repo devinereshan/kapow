@@ -18,8 +18,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
-import main.library.TrackRowList;
-import main.player.Track;
+import main.library.TrackList;
+import main.player.OldTrack;
 
 public class TrackImportBox {
     private final Stage importBox = new Stage();
@@ -47,13 +47,11 @@ public class TrackImportBox {
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
 
-    TrackRowList trackRowList;
+    TrackList trackList;
 
     private int row = 0;
 
-    public TrackImportBox(TrackRowList trackRowList) {
-        // importBox.initModality(Modality.APPLICATION_MODAL);
-        // importBox.initOwner(primaryStage);
+    public TrackImportBox(TrackList trackList) {
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -80,9 +78,8 @@ public class TrackImportBox {
 
         importBox.setTitle("Import Track");
         importBox.setScene(scene);
-        // importBox.show();
 
-        this.trackRowList = trackRowList;
+        this.trackList = trackList;
 
     }
 
@@ -113,10 +110,7 @@ public class TrackImportBox {
             e.printStackTrace();
         }
 
-        // TODO: close import window
-        // refresh table view to show new track
-
-        trackRowList.refresh();
+        trackList.refresh();
 
         importBox.close();
     }
@@ -173,7 +167,7 @@ public class TrackImportBox {
     }
 
     private String getTrackLength(File audioFile) {
-        try (Track tempTrack = new Track(audioFile)) {
+        try (OldTrack tempTrack = new OldTrack(audioFile)) {
             int hours = tempTrack.getHours();
             if (hours > 0) {
                 return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
