@@ -1,20 +1,38 @@
 package main.player;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Slider;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 public class ElapsedTimeListener {
     private final int HOURS = 0;
     private final int MINUTES = 1;
     private final int SECONDS = 2;
     private double elapsedTimeInSeconds = 0;
-    private SimpleStringProperty totalTime = new SimpleStringProperty();
-    private SimpleStringProperty elapsedTime = new SimpleStringProperty();
+    private SimpleStringProperty totalTime = new SimpleStringProperty("--:--");
+    private SimpleStringProperty elapsedTime = new SimpleStringProperty("--:--");
     private Slider elapsedTimeSlider;
 
     public ElapsedTimeListener(Slider elapsedTimeSlider) {
         this.elapsedTimeSlider = elapsedTimeSlider;
+
+    }
+
+
+    public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
+        elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
+            public void invalidated(Observable observable) {
+                if (elapsedTimeSlider.isPressed()) {
+                    mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue()));
+                }
+            }
+        });
+
     }
 
 

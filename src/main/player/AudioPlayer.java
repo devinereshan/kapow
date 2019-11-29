@@ -114,11 +114,25 @@ public class AudioPlayer {
                             return;
                         }
 
+                        System.out.println("Duration test: " + currentTrackPlayer.getMedia().getDuration());
                         elapsedTimeListener.updateElapsedTimeFields( currentTrackPlayer.getCurrentTime().toSeconds());
                     }
                 });
             }
         });
+
+
+        if (elapsedTimeListener != null) {
+            elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
+        }
+        // elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
+        //     public void invalidated(Observable ov) {
+        //         if (elapsedTimeSlider.isPressed()) { // It would set the elapsedTimeSlider
+        //             // as specified by user by pressing
+        //             mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(elapsedTimeSlider.getValue() / 100));
+        //         }
+        //     }
+        // });
     }
 
 

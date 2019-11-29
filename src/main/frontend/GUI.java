@@ -19,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -53,6 +54,8 @@ public class GUI extends Application {
 
     private ElapsedTimeListener elapsedTimeListener;
     Slider elapsedTimeBar = new Slider(0, 1, 0);
+    private Label elapsedTime = new Label("--:--");
+    private Label totalTime = new Label("--:--");
 
 
     private final ContextMenu contextMenu = new ContextMenu();
@@ -67,6 +70,8 @@ public class GUI extends Application {
     public void start(Stage primaryStage) {
 
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+        elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
+        totalTime.textProperty().bind(elapsedTimeListener.totalTimeProperty());
 
         audioPlayer = new AudioPlayer(elapsedTimeListener);
 
@@ -91,11 +96,16 @@ public class GUI extends Application {
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
+        HBox timeBox = new HBox( elapsedTime, elapsedTimeBar, totalTime);
+        HBox.setHgrow(elapsedTimeBar, Priority.ALWAYS);
+        timeBox.setAlignment(Pos.CENTER);
+
         HBox buttonBar = new HBox(20, tempTimeButton, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
-        VBox player = new VBox(trackName, elapsedTimeBar, buttonBar);
+        // VBox player = new VBox(trackName, elapsedTimeBar, buttonBar);
+        VBox player = new VBox(trackName, timeBox, buttonBar);
 
         VBox library = new VBox(table);
 
