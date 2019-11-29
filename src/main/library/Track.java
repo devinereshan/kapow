@@ -81,4 +81,10 @@ public class Track {
     public StringProperty albumsProperty() { return albums; }
     public StringProperty artistsProperty() { return artists; }
     public StringProperty genresProperty() { return genres; }
+
+
+    // implement this later:
+    public int getLengthInSeconds() {
+        return 100;
+    }
 }

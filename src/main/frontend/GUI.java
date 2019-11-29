@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import main.library.Track;
 import main.library.TrackList;
 import main.player.AudioPlayer;
+import main.player.ElapsedTimeListener;
 
 public class GUI extends Application {
     private final Button seekLeft = new Button("<<");
@@ -50,6 +51,8 @@ public class GUI extends Application {
     TrackImportBox trackImportBox;
     TrackEditBox trackEditBox;
 
+    private ElapsedTimeListener elapsedTimeListener;
+
 
     private final ContextMenu contextMenu = new ContextMenu();
 
@@ -62,7 +65,10 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        audioPlayer = new AudioPlayer();
+        Slider elapsedTimeBar = new Slider(0, 1, 0);
+        elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+
+        audioPlayer = new AudioPlayer(elapsedTimeListener);
 
         currentTrackName = new Label("No Track Selected");
 
@@ -73,6 +79,9 @@ public class GUI extends Application {
         assignColumnValues();
 
 
+        Button tempTimeButton = new Button("Showtime");
+        tempTimeButton.setOnAction(e -> printTime());
+
         buildContextMenu(primaryStage);
 
 
@@ -82,10 +91,11 @@ public class GUI extends Application {
         HBox trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        Slider elapsedTimeBar = new Slider(0, 1, 0);
+        // Slider elapsedTimeBar = new Slider(0, 1, 0);
+        // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
 
 
-        HBox buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, tempTimeButton, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
@@ -106,6 +116,10 @@ public class GUI extends Application {
 
     }
 
+
+    private void printTime() {
+        System.out.println(audioPlayer.getElapsedTimeInSeconds());
+    }
 
 
     private void buildContextMenu(Stage primaryStage) {

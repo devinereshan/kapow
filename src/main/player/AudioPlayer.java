@@ -1,12 +1,21 @@
 package main.player;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import main.library.Track;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
+import main.library.Track;
+import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.application.Platform;
 
 public class AudioPlayer {
 
@@ -16,16 +25,26 @@ public class AudioPlayer {
     private boolean autoPlay = false;
     private boolean playing;
 
+    // private Slider elapsedTimeSlider;
+    private ElapsedTimeListener elapsedTimeListener;
+
     private Queue queue;
 
     private final int SEEK_LEFT = -1;
     private final int SEEK_RIGHT = 1;
 
-
     public AudioPlayer() {
         queue = new Queue();
     }
 
+    public AudioPlayer(ElapsedTimeListener elapsedTimeListener) {
+        this.elapsedTimeListener = elapsedTimeListener;
+        queue = new Queue();
+    }
+
+    // public void setElapsedTimeListener(ElapsedTimeListener elapsedTimeListener) {
+    // this.elapsedTimeListener = elapsedTimeListener;
+    // }
 
     private void loadTrack(Track track) {
         if (playing) {
@@ -49,6 +68,20 @@ public class AudioPlayer {
 
         currentTrackMedia = new Media(filepath.toUri().toString());
         currentTrackPlayer = new MediaPlayer(currentTrackMedia);
+
+        if (elapsedTimeListener != null) {
+            try (OldTrack tempTimeFix = new OldTrack(new File(currentTrack.getFilepath()))) {
+                // OldTrack tempTimeFix = new OldTrack(new File(currentTrack.getFilepath()));
+                int timeInSeconds = tempTimeFix.lengthInSeconds();
+                System.out.println("Time in seconds: " + timeInSeconds);
+                elapsedTimeListener.setNewTrackDimensions(timeInSeconds);
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            // elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
+        }
 
         currentTrackPlayer.setOnReady(new Runnable() {
             @Override
@@ -80,6 +113,28 @@ public class AudioPlayer {
                 playing = false;
             }
         });
+
+        currentTrackPlayer.currentTimeProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable ov) {
+                // updatesValues();
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        // Updating to the new elapsedTimeSlider value
+                        // This will move the slider while running your video
+                        if (elapsedTimeListener == null) {
+                            return;
+                        }
+
+                        elapsedTimeListener.updateElapsedTimeFields((int) currentTrackPlayer.getCurrentTime().toSeconds());
+
+                        // elapsedTimeSlider.setValue(mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis() * 100);
+                    }
+                });
+            }
+        });
+
+        // currentTrackPlayer.currentTimeProperty().addListener(elapsedTimeListener);
 
     }
 
@@ -151,11 +206,13 @@ public class AudioPlayer {
     }
 
 
-    public String getLengthOfTrackInSeconds() {
+    public String getElapsedTimeInSeconds() {
         return String.valueOf(currentTrackPlayer.getCurrentTime().toSeconds());
         // int[] time = convertTime(currentTrack.lengthInSeconds());
         // return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
     }
+
+
 
 
     public void quit() {
