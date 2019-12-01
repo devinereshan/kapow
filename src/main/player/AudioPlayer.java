@@ -14,7 +14,6 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.application.Platform;
 
 public class AudioPlayer {
 
@@ -22,7 +21,6 @@ public class AudioPlayer {
     private Media currentTrackMedia;
     private MediaPlayer currentTrackPlayer;
     private boolean autoPlay = false;
-    private boolean playing;
 
     private ElapsedTimeListener elapsedTimeListener;
 
@@ -41,14 +39,8 @@ public class AudioPlayer {
     }
 
     private void loadTrack(Track track) {
-        if (playing) {
-            autoPlay = true;
-        } else {
-            autoPlay = false;
-        }
 
         if (currentTrack != null) {
-            stop();
             currentTrackPlayer.dispose();
         }
 
@@ -66,9 +58,7 @@ public class AudioPlayer {
         if (elapsedTimeListener != null) {
             // Update database so each track has an int record of length in seconds so this isn't necessary
             try (OldTrack tempTimeFix = new OldTrack(new File(currentTrack.getFilepath()))) {
-                int timeInSeconds = tempTimeFix.lengthInSeconds();
-                System.out.println("Time in seconds: " + timeInSeconds);
-                elapsedTimeListener.setNewTrackDimensions(timeInSeconds);
+                elapsedTimeListener.setNewTrackDimensions(tempTimeFix.lengthInSeconds());
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                 e.printStackTrace();
             }
@@ -78,61 +68,22 @@ public class AudioPlayer {
             @Override
             public void run() {
                 if (autoPlay) {
-                    currentTrackPlayer.play();
-                    playing = true;
+                    play();
                 }
-            }
-        });
-
-        currentTrackPlayer.setOnPaused(new Runnable() {
-            @Override
-            public void run() {
-                playing = false;
-            }
-        });
-
-        currentTrackPlayer.setOnPlaying(new Runnable() {
-            @Override
-            public void run() {
-                playing = true;
-            }
-        });
-
-        currentTrackPlayer.setOnStopped(new Runnable() {
-            @Override
-            public void run() {
-                playing = false;
             }
         });
 
         currentTrackPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                Platform.runLater(new Runnable() {
-                    public void run() {
-                        if (elapsedTimeListener == null) {
-                            return;
-                        }
+                if (elapsedTimeListener == null) {
+                    return;
+                }
 
-                        System.out.println("Duration test: " + currentTrackPlayer.getMedia().getDuration());
-                        elapsedTimeListener.updateElapsedTimeFields( currentTrackPlayer.getCurrentTime().toSeconds());
-                    }
-                });
+                elapsedTimeListener.updateElapsedTimeFields( currentTrackPlayer.getCurrentTime().toSeconds());
             }
         });
 
-
-        if (elapsedTimeListener != null) {
-            elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
-        }
-        // elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
-        //     public void invalidated(Observable ov) {
-        //         if (elapsedTimeSlider.isPressed()) { // It would set the elapsedTimeSlider
-        //             // as specified by user by pressing
-        //             mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(elapsedTimeSlider.getValue() / 100));
-        //         }
-        //     }
-        // });
     }
 
 
@@ -159,7 +110,7 @@ public class AudioPlayer {
     public void play() {
         if (currentTrackPlayer != null) {
             currentTrackPlayer.play();
-            currentTrackPlayer.setAutoPlay(true);
+            autoPlay = true;
         }
     }
 
@@ -167,6 +118,7 @@ public class AudioPlayer {
     public void pause() {
         if (currentTrackPlayer != null) {
             currentTrackPlayer.pause();
+            autoPlay = false;
         }
     }
 
@@ -192,24 +144,9 @@ public class AudioPlayer {
     public void stop() {
         if (currentTrackPlayer != null) {
             currentTrackPlayer.stop();
+            autoPlay = false;
         }
     }
-
-
-    public String getElapsedTime() {
-        return String.valueOf(currentTrackPlayer.getCurrentTime());
-        // int[] time =  convertTime(currentTrack.elapsedTime());
-        // return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
-    }
-
-
-    public String getElapsedTimeInSeconds() {
-        return String.valueOf(currentTrackPlayer.getCurrentTime().toSeconds());
-        // int[] time = convertTime(currentTrack.lengthInSeconds());
-        // return String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
-    }
-
-
 
 
     public void quit() {
