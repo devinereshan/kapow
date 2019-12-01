@@ -20,8 +20,6 @@ public class Track {
         this.artists = new SimpleStringProperty(artists);
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
-
-
     }
 
 

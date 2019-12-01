@@ -31,9 +31,12 @@ public class TrackList {
     }
 
     public void refresh() {
-        // System.out.println(trackIDs.get(currentTrackIndex - 1));
         try (DBConnection connection = new DBConnection()) {
-            trackIDs.addAll(connection.getNewIDs(trackIDs.get(currentTrackIndex - 1)));
+            if (currentTrackIndex == 0) {
+                trackIDs.addAll(connection.getNewIDs(0));
+            } else {
+                trackIDs.addAll(connection.getNewIDs(trackIDs.get(currentTrackIndex - 1)));
+            }
 
             // temp for verification
             printAllTrackIDs();

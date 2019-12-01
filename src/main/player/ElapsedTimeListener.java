@@ -35,13 +35,16 @@ public class ElapsedTimeListener {
 
 
     public void updateElapsedTimeFields(double elapsedTime) {
+        // This is where the memory leak is. Updating the slider value.
+        // elapsedTimeSlider.setValue(elapsedTime);
+        // elapsedTimeSlider.adjustValue(elapsedTime);
+        // System.out.println(elapsedTimeSlider.isCache());
+
         if ((int) elapsedTime > previousElapsedTime) {
             setElapsedTime((int) elapsedTime);
             previousElapsedTime = (int) elapsedTime;
         }
 
-        // This is where the memory leak is. Updating the slider value.
-        // elapsedTimeSlider.setValue(elapsedTime);
     }
 
 
