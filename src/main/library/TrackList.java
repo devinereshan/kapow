@@ -82,18 +82,11 @@ public class TrackList {
 
     public void deleteTrack(Track trackToDelete) {
         try (DBConnection connection = new DBConnection()) {
-            // System.out.println("Trackrows size before removal: " + tracks.size());
             int trackID = trackToDelete.getId();
             connection.removeTrackFromDB(trackID);
-            // System.out.format("size: %d, IDs before removal", trackIDs.size());
-            // printAllTrackIDs();
-            // trackIDs.remove(trackID);
             trackIDs.remove(trackIDs.indexOf(trackID));
-            // System.out.format("size: %d, IDs after removal", trackIDs.size());
-            // printAllTrackIDs();
             tracks.remove(trackToDelete);
             currentTrackIndex -= 1;
-            // System.out.println("Trackrows size after removal: " + tracks.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
