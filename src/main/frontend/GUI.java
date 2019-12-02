@@ -1,6 +1,5 @@
 package main.frontend;
 
-// import java.io.File;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -84,9 +83,6 @@ public class GUI extends Application {
         assignColumnValues();
 
 
-        Button tempTimeButton = new Button("Showtime");
-        tempTimeButton.setOnAction(e -> printTime());
-
         buildContextMenu(primaryStage);
 
 
@@ -100,11 +96,10 @@ public class GUI extends Application {
         HBox.setHgrow(elapsedTimeBar, Priority.ALWAYS);
         timeBox.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, tempTimeButton, seekLeft, stopTrack, play, pause, seekRight, quit);
+        HBox buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight, quit);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPadding(new Insets(10));
 
-        // VBox player = new VBox(trackName, elapsedTimeBar, buttonBar);
         VBox player = new VBox(trackName, timeBox, buttonBar);
 
         VBox library = new VBox(table);
@@ -117,14 +112,16 @@ public class GUI extends Application {
         Scene scene = new Scene(root, 500, 200);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
+        // primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        //     @Override
+        //     public void handle(WindowEvent t) {
+        //         Platform.exit();
+        //         // System.exit(0);
+        //     }
+        // });
         primaryStage.show();
 
 
-    }
-
-
-    private void printTime() {
-        System.out.println(audioPlayer.getElapsedTimeInSeconds());
     }
 
 
@@ -134,7 +131,9 @@ public class GUI extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                loadTrackFromTable(table.getSelectionModel().getSelectedItem());
+                if (table.getSelectionModel().getSelectedItem() != null) {
+                    loadTrackFromTable(table.getSelectionModel().getSelectedItem());
+                }
             }
         });
 

@@ -19,7 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
 import main.library.TrackList;
-import main.player.OldTrack;
+import main.player.TrackLengthCalculator;
 
 public class TrackImportBox {
     private final Stage importBox = new Stage();
@@ -167,7 +167,7 @@ public class TrackImportBox {
     }
 
     private String getTrackLength(File audioFile) {
-        try (OldTrack tempTrack = new OldTrack(audioFile)) {
+        try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(audioFile)) {
             int hours = tempTrack.getHours();
             if (hours > 0) {
                 return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());

@@ -31,9 +31,12 @@ public class TrackList {
     }
 
     public void refresh() {
-        // System.out.println(trackIDs.get(currentTrackIndex - 1));
         try (DBConnection connection = new DBConnection()) {
-            trackIDs.addAll(connection.getNewIDs(trackIDs.get(currentTrackIndex - 1)));
+            if (currentTrackIndex == 0) {
+                trackIDs.addAll(connection.getNewIDs(0));
+            } else {
+                trackIDs.addAll(connection.getNewIDs(trackIDs.get(currentTrackIndex - 1)));
+            }
 
             // temp for verification
             printAllTrackIDs();
@@ -79,18 +82,11 @@ public class TrackList {
 
     public void deleteTrack(Track trackToDelete) {
         try (DBConnection connection = new DBConnection()) {
-            // System.out.println("Trackrows size before removal: " + tracks.size());
             int trackID = trackToDelete.getId();
             connection.removeTrackFromDB(trackID);
-            // System.out.format("size: %d, IDs before removal", trackIDs.size());
-            // printAllTrackIDs();
-            // trackIDs.remove(trackID);
             trackIDs.remove(trackIDs.indexOf(trackID));
-            // System.out.format("size: %d, IDs after removal", trackIDs.size());
-            // printAllTrackIDs();
             tracks.remove(trackToDelete);
             currentTrackIndex -= 1;
-            // System.out.println("Trackrows size after removal: " + tracks.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }
