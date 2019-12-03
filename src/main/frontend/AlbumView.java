@@ -27,7 +27,7 @@ public class AlbumView {
         numberOfTracksCol.setCellValueFactory(new PropertyValueFactory<>("numberOfTracks"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         tableView.getColumns().setAll(nameCol, artistsCol, numberOfTracksCol, genresCol);
-        tableView.setItems(albumList.albums);
+        tableView.setItems(albumList.getAlbums());
     }
 
     public TableView<Album> getTableView() {

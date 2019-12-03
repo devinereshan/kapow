@@ -23,6 +23,12 @@ public class TrackList {
         }
     }
 
+    // constructor for single album or artist track list
+    public TrackList(int parentID) {
+
+    }
+
+
     private ArrayList<Integer> getTrackIDs() throws SQLException {
         try (DBConnection connection = new DBConnection()) {
             return connection.getIDs();
@@ -33,11 +39,6 @@ public class TrackList {
     public void addTrack(Track newTrack) {
         tracks.add(newTrack);
         trackIDs.add(newTrack.getId());
-    }
-
-
-    public int size() {
-        return trackIDs.size();
     }
 
 

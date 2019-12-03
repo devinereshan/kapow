@@ -11,19 +11,12 @@ import main.library.Album;
 public class AlbumList {
     private ArrayList<Integer> albumIDs;
     // private int currentAlbumIndex;
-    public ObservableList<Album> albums = FXCollections.observableArrayList();
+    private ObservableList<Album> albums = FXCollections.observableArrayList();
 
 
     public AlbumList() {
         try (DBConnection connection = new DBConnection()) {
             albumIDs = connection.getAlbumIDs();
-
-            // start a new thread here so the player doesn't have to wait on loading the enitre library
-            // while (albumIDs.size() > albums.size()) {
-            //     int id = albumIDs.get(currentAlbumIndex);
-            //     albums.add(connection.getAlbum(id));
-            //     currentAlbumIndex += 1;
-            // }
 
             for (Integer albumID : albumIDs) {
                 albums.add(connection.getAlbum(albumID));
@@ -36,5 +29,9 @@ public class AlbumList {
     // construct an albumList instance for a single artist
     public AlbumList(int artistID) {
 
+    }
+
+    public ObservableList<Album> getAlbums() {
+        return albums;
     }
 }
