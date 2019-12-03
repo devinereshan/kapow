@@ -141,7 +141,8 @@ public class TrackImportBox {
     }
 
     public void updateViews(Track newTrack) {
-        trackList.refresh();
+        // trackList.refresh();
+        trackList.addTrack(newTrack);
         // albumView.update(newTrack.getId());
     }
 

@@ -20,10 +20,10 @@ public class CLI {
             TrackList trl = new TrackList();
             ArrayList<Track> trackRows = new ArrayList<>();
 
-            for (int i = 0; i < trl.size(); i++) {
-                trackRows.add(trl.getNextTrackRow());
-                System.out.println(trackRows.get(i).toString());
-            }
+            // for (int i = 0; i < trl.size(); i++) {
+            //     trackRows.add(trl.getNextTrackRow());
+            //     System.out.println(trackRows.get(i).toString());
+            // }
 
 
             System.out.println("Done");

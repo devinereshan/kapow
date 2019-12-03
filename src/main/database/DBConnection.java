@@ -144,6 +144,44 @@ public class DBConnection implements AutoCloseable {
         return ids;
     }
 
+    public Track getTrack(int id) throws SQLException {
+        String filepath = getFilepath(id);
+        String name = getName(id);
+        String duration = getDuration(id);
+        String artists = getArtists(id);
+        String albums = getAlbums(id);
+        String genres = getGenres(id);
+        int lengthInSeconds = getLengthInSeconds(id);
+        // int indexInAlbum = getIndexInAlbum(id);
+
+        return new Track(id, filepath, name, duration, artists, albums, genres, lengthInSeconds);
+    }
+
+
+    public Track getAlbumTrack(int trackID, int albumID) throws SQLException {
+        String filepath = getFilepath(trackID);
+        String name = getName(trackID);
+        String duration = getDuration(trackID);
+        String artists = getArtists(trackID);
+        String albums = getAlbums(trackID);
+        String genres = getGenres(trackID);
+        int lengthInSeconds = getLengthInSeconds(trackID);
+        int indexInAlbum = getIndexInAlbum(trackID, albumID);
+
+        return new Track(trackID, filepath, name, duration, artists, albums, genres, lengthInSeconds, indexInAlbum);
+    }
+
+    private int getIndexInAlbum(int trackID, int albumID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT index_in_album FROM Track_Album WHERE track_id = ? AND album_id = ?");
+        preparedStatement.setInt(1, trackID);
+        preparedStatement.setInt(2, albumID);
+        resultSet = preparedStatement.executeQuery();
+
+        resultSet.next();
+
+        return resultSet.getInt(1);
+    }
+
     public Album getAlbum(int id) throws SQLException {
         String name;
         String artists;
