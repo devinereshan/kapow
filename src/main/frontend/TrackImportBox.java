@@ -134,9 +134,15 @@ public class TrackImportBox {
             e.printStackTrace();
         }
 
-        trackList.refresh();
+        updateViews(newTrack);
+        // trackList.refresh();
 
         importBox.close();
+    }
+
+    public void updateViews(Track newTrack) {
+        trackList.refresh();
+        // albumView.update(newTrack.getId());
     }
 
 

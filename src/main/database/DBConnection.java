@@ -160,7 +160,6 @@ public class DBConnection implements AutoCloseable {
     }
 
     private String getAlbumArtists(int album_id) throws SQLException {
-        // String query = "SELECT Artist.name from Artist JOIN Album_Artist ON Artist.id = Album_Artist.artist_id WHERE album_id = ?";
         String query = "SELECT Artist.name from Artist WHERE Artist.id IN (SELECT artist_id from Track_Artist WHERE track_id IN (SELECT track_id from Track_Album WHERE album_id = ?))";
 
 

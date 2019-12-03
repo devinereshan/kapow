@@ -132,13 +132,6 @@ public class GUI extends Application {
         Scene scene = new Scene(root, 500, 200);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
-        // primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-        //     @Override
-        //     public void handle(WindowEvent t) {
-        //         Platform.exit();
-        //         // System.exit(0);
-        //     }
-        // });
         primaryStage.show();
 
 
