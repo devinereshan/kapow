@@ -8,6 +8,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -33,17 +35,20 @@ public class TrackImportBox {
     private String artistName;
     private String albumName;
     private String genreName;
+    private int indexInAlbum;
 
     private Label file = new Label("File:");
     private Label filepathLabel = new Label(filepath);
     private Label artist = new Label("Artist Name:");
     private Label album = new Label("Album Name:");
     private Label track = new Label("Track Name:");
+    private Label trackNumber = new Label("Track Number:");
     private Label genre = new Label("Genre:");
 
     private TextField artistField = new TextField();
     private TextField albumField = new TextField();
     private TextField trackField = new TextField();
+    private TextField trackNumberField = new TextField();
     private TextField genreField = new TextField();
     private Button browseFile = new Button("Browse");
     private Button submit = new Button("Submit");
@@ -62,6 +67,16 @@ public class TrackImportBox {
         cancel.setOnAction(e -> importBox.close());
         submit.setOnAction(e -> submitInfo());
 
+        trackNumberField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    trackNumberField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
         root.add(browseFile, 0, row++);
         root.add(file, 0, row);
         root.add(filepathLabel, 2, row++);
@@ -71,6 +86,8 @@ public class TrackImportBox {
         root.add(artistField, 2, row++);
         root.add(album, 0, row);
         root.add(albumField, 2, row++);
+        root.add(trackNumber, 0, row);
+        root.add(trackNumberField, 2, row++);
         root.add(genre, 0, row);
         root.add(genreField, 2, row++);
         root.add(submit, 0, row);
@@ -104,9 +121,10 @@ public class TrackImportBox {
         artistName = artistField.getText();
         albumName = albumField.getText();
         genreName = genreField.getText();
+        indexInAlbum = Integer.parseInt(trackNumberField.getText());
         System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
 
-        Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds);
+        Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds, indexInAlbum);
 
         try (DBConnection connection = new DBConnection()) {
             // connection.addTrackToDB(filepath, duration, trackName, artistName, albumName, genreName);

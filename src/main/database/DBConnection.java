@@ -183,6 +183,15 @@ public class DBConnection implements AutoCloseable {
         preparedStatement.executeUpdate();
     }
 
+    private void addTrackAlbumPair(int trackID, int albumID, int indexInAlbum) throws SQLException {
+        preparedStatement = connection.prepareStatement("INSERT INTO Track_Album VALUES (?, ?, ?)");
+        preparedStatement.setInt(1, trackID);
+        preparedStatement.setInt(2, albumID);
+        preparedStatement.setInt(3, indexInAlbum);
+
+        preparedStatement.executeUpdate();
+    }
+
 
     private void removeIDPair(String table, int trackID, String pairName, int pairID) throws SQLException {
         preparedStatement = connection.prepareStatement("DELETE FROM " + table + " WHERE track_id = ? AND " + pairName + " = ?");
@@ -262,6 +271,7 @@ public class DBConnection implements AutoCloseable {
     String artistName = newTrack.getArtists();
     String albumName = newTrack.getAlbums();
     String genreName = newTrack.getGenres();
+    int indexInAlbum = newTrack.getIndexInAlbum();
     int lengthInSeconds = newTrack.getLengthInSeconds();
 
     if (valueExists("Track", "filepath", filepath)) {
@@ -304,8 +314,10 @@ public class DBConnection implements AutoCloseable {
     // add ID pairs
     System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
     addIDPair("Track_Artist", trackID, artistID);
+
     System.out.format("Adding to track_album: %d %d\n", trackID, albumID);
-    addIDPair("Track_Album", trackID, albumID);
+
+    addTrackAlbumPair(trackID, albumID, indexInAlbum);
     System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
     addIDPair("Track_Genre", trackID, genreID);
 

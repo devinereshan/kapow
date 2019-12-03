@@ -38,7 +38,7 @@ public class Track {
     }
 
 
-    public Track(String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds) {
+    public Track(String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
         this.lengthInSeconds = lengthInSeconds;
         this.filepath = new SimpleStringProperty(filepath);
         this.name = new SimpleStringProperty(name);
