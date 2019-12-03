@@ -13,6 +13,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -102,12 +104,27 @@ public class GUI extends Application {
 
         VBox player = new VBox(trackName, timeBox, buttonBar);
 
-        VBox library = new VBox(table);
+        TabPane views = new TabPane();
+        Tab trackView = new Tab("Tracks");
+        Tab albumView = new Tab("Albums");
+        Tab artistView = new Tab("Artists");
+
+        trackView.setContent(table);
+        views.getTabs().add(trackView);
+        views.getTabs().add(albumView);
+        views.getTabs().add(artistView);
+
+        trackView.setClosable(false);
+        albumView.setClosable(false);
+        artistView.setClosable(false);
+        // VBox library = new VBox(table);
+
 
         BorderPane root = new BorderPane();
 
         root.setTop(player);
-        root.setCenter(library);
+        // root.setCenter(library);
+        root.setCenter(views);
 
         Scene scene = new Scene(root, 500, 200);
         primaryStage.setScene(scene);
