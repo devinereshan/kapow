@@ -70,7 +70,7 @@ public class AudioPlayer {
                     return;
                 }
 
-                elapsedTimeListener.updateElapsedTimeFields( currentTrackPlayer.getCurrentTime().toSeconds());
+                elapsedTimeListener.updateElapsedTimeFields(currentTrackPlayer.getCurrentTime().toSeconds());
             }
         });
 
@@ -135,6 +135,7 @@ public class AudioPlayer {
         if (currentTrackPlayer != null) {
             currentTrackPlayer.stop();
             autoPlay = false;
+            elapsedTimeListener.resetElapsedTime();
         }
     }
 

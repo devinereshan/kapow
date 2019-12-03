@@ -33,6 +33,10 @@ public class ElapsedTimeListener {
 
     // }
 
+    public void resetElapsedTime() {
+        setElapsedTime(0);
+        previousElapsedTime = 0;
+    }
 
     public void updateElapsedTimeFields(double elapsedTime) {
         // This is where the memory leak is. Updating the slider value.
@@ -50,7 +54,7 @@ public class ElapsedTimeListener {
 
     public void setNewTrackDimensions(double totalTimeInSeconds) {
         setTotalTime((int) totalTimeInSeconds);
-        setElapsedTime(0);
+        resetElapsedTime();
         elapsedTimeSlider.setMin(0);
         elapsedTimeSlider.setMax(totalTimeInSeconds);
         elapsedTimeSlider.setValue(0);
