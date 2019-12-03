@@ -1,12 +1,7 @@
 package main.player;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import main.library.Track;
 import javafx.scene.media.Media;
@@ -56,13 +51,7 @@ public class AudioPlayer {
         currentTrackPlayer = new MediaPlayer(currentTrackMedia);
 
         if (elapsedTimeListener != null) {
-            // Update database so each track has an int record of length in seconds so this isn't necessary
-            System.out.println("Length in seconds test: " + currentTrack.getLengthInSeconds());
-            try (TrackLengthCalculator tempTimeFix = new TrackLengthCalculator(new File(currentTrack.getFilepath()))) {
-                elapsedTimeListener.setNewTrackDimensions(tempTimeFix.lengthInSeconds());
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
+            elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
         }
 
         currentTrackPlayer.setOnReady(new Runnable() {

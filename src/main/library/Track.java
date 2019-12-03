@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 public class Track {
     private int id;
     private int lengthInSeconds;
+    private int indexInAlbum = 0;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
     private SimpleStringProperty duration;
@@ -24,6 +25,18 @@ public class Track {
         this.lengthInSeconds = lengthInSeconds;
     }
 
+    public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
+        this.id = id;
+        this.filepath = new SimpleStringProperty(filepath);
+        this.name = new SimpleStringProperty(name);
+        this.duration = new SimpleStringProperty(duration);
+        this.artists = new SimpleStringProperty(artists);
+        this.albums = new SimpleStringProperty(albums);
+        this.genres = new SimpleStringProperty(genres);
+        this.lengthInSeconds = lengthInSeconds;
+        this.indexInAlbum = indexInAlbum;
+    }
+
 
     public Track(String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds) {
         this.lengthInSeconds = lengthInSeconds;
@@ -34,6 +47,7 @@ public class Track {
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
     }
+
 
     // toString for testing
     @Override
@@ -71,6 +85,11 @@ public class Track {
     }
 
 
+    public int getIndexInAlbum() {
+        return indexInAlbum;
+    }
+
+
     public void setID(int id) {
         this.id = id;
     }
@@ -90,6 +109,10 @@ public class Track {
 
     public void setGenres(String genres) {
         this.genres.set(genres);
+    }
+
+    public void setPositionInAlbum(int position) {
+        this.indexInAlbum = position;
     }
 
     public StringProperty nameProperty() { return name; }

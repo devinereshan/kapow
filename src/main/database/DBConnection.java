@@ -192,64 +192,64 @@ public class DBConnection implements AutoCloseable {
         preparedStatement.executeUpdate();
     }
 
-    public void addTrackToDB(String filepath, String duration, String trackName, String artistName, String albumName, String genreName)
-            throws SQLException {
-        // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
+    // public void addTrackToDB(String filepath, String duration, String trackName, String artistName, String albumName, String genreName)
+    //         throws SQLException {
+    //     // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
 
-        if (valueExists("Track", "filepath", filepath)) {
-            // track already exists. Notify user somehow, then return
-            System.out.println("Track already Exists");
-            return;
-        }
+    //     if (valueExists("Track", "filepath", filepath)) {
+    //         // track already exists. Notify user somehow, then return
+    //         System.out.println("Track already Exists");
+    //         return;
+    //     }
 
-        connection.setAutoCommit(false);
+    //     connection.setAutoCommit(false);
 
-        PreparedStatement insertTrack = connection.prepareStatement("INSERT INTO Track(filepath, name, duration) VALUES(?, ?, ?)");
-        insertTrack.setString(1, filepath);
-        insertTrack.setString(2, trackName);
-        insertTrack.setString(3, duration);
+    //     PreparedStatement insertTrack = connection.prepareStatement("INSERT INTO Track(filepath, name, duration) VALUES(?, ?, ?)");
+    //     insertTrack.setString(1, filepath);
+    //     insertTrack.setString(2, trackName);
+    //     insertTrack.setString(3, duration);
 
-        insertTrack.executeUpdate();
+    //     insertTrack.executeUpdate();
 
-        int trackID = getID("Track", "filepath", filepath);
-        System.out.println("trackID: " + trackID);
-
-
-        addUniqueValue("Artist", "name", artistName);
-        int artistID = getID("Artist", "name", artistName);
-
-        System.out.println("artist ID: " + artistID);
+    //     int trackID = getID("Track", "filepath", filepath);
+    //     System.out.println("trackID: " + trackID);
 
 
-        addUniqueValue("Album", "name", albumName);
-        int albumID = getID("Album", "name", albumName);
+    //     addUniqueValue("Artist", "name", artistName);
+    //     int artistID = getID("Artist", "name", artistName);
 
-        System.out.println("album ID: " + albumID);
-
-
-        addUniqueValue("Genre", "name", genreName);
-        int genreID = getID("Genre", "name", genreName);
-
-        System.out.println("genre ID: " + genreID);
-
-        // add ID pairs
-        System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
-        addIDPair("Track_Artist", trackID, artistID);
-        System.out.format("Adding to track_album: %d %d\n", trackID, albumID);
-        addIDPair("Track_Album", trackID, albumID);
-        System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
-        addIDPair("Track_Genre", trackID, genreID);
-
-        connection.createStatement().executeQuery("Select * from Track_Artist");
-        connection.createStatement().executeQuery("Select * from Track_Album");
-        connection.createStatement().executeQuery("Select * from Track_Genre");
+    //     System.out.println("artist ID: " + artistID);
 
 
-        // connection.rollback();
-        connection.commit();
+    //     addUniqueValue("Album", "name", albumName);
+    //     int albumID = getID("Album", "name", albumName);
 
-        connection.setAutoCommit(true);
-    }
+    //     System.out.println("album ID: " + albumID);
+
+
+    //     addUniqueValue("Genre", "name", genreName);
+    //     int genreID = getID("Genre", "name", genreName);
+
+    //     System.out.println("genre ID: " + genreID);
+
+    //     // add ID pairs
+    //     System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
+    //     addIDPair("Track_Artist", trackID, artistID);
+    //     System.out.format("Adding to track_album: %d %d\n", trackID, albumID);
+    //     addIDPair("Track_Album", trackID, albumID);
+    //     System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
+    //     addIDPair("Track_Genre", trackID, genreID);
+
+    //     connection.createStatement().executeQuery("Select * from Track_Artist");
+    //     connection.createStatement().executeQuery("Select * from Track_Album");
+    //     connection.createStatement().executeQuery("Select * from Track_Genre");
+
+
+    //     // connection.rollback();
+    //     connection.commit();
+
+    //     connection.setAutoCommit(true);
+    // }
 
 
 

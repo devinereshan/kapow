@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Genre (
 CREATE TABLE IF NOT EXISTS Track_Album (
     track_id    INTEGER,
     album_id    INTEGER,
-    -- index_in_album  INTEGER,
+    index_in_album  INTEGER,
     PRIMARY KEY(track_id, album_id),
     FOREIGN KEY(album_id) REFERENCES Album(id),
     FOREIGN KEY(track_id) REFERENCES Track(id)
