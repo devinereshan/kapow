@@ -40,7 +40,7 @@ public class AudioPlayer {
 
     private void loadTrack(Track track) {
 
-        if (currentTrack != null) {
+        if (currentTrackPlayer != null) {
             currentTrackPlayer.dispose();
         }
 
@@ -57,6 +57,7 @@ public class AudioPlayer {
 
         if (elapsedTimeListener != null) {
             // Update database so each track has an int record of length in seconds so this isn't necessary
+            System.out.println("Length in seconds test: " + currentTrack.getLengthInSeconds());
             try (TrackLengthCalculator tempTimeFix = new TrackLengthCalculator(new File(currentTrack.getFilepath()))) {
                 elapsedTimeListener.setNewTrackDimensions(tempTimeFix.lengthInSeconds());
             } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {

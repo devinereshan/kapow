@@ -18,6 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.Track;
 import main.library.TrackList;
 import main.player.TrackLengthCalculator;
 
@@ -27,6 +28,7 @@ public class TrackImportBox {
 
     private String filepath = "No File Selected.";
     private String duration;
+    private int lengthInSeconds = 0;
     private String trackName;
     private String artistName;
     private String albumName;
@@ -104,8 +106,12 @@ public class TrackImportBox {
         genreName = genreField.getText();
         System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
 
+        Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds);
+
         try (DBConnection connection = new DBConnection()) {
-            connection.addTrackToDB(filepath, duration, trackName, artistName, albumName, genreName);
+            // connection.addTrackToDB(filepath, duration, trackName, artistName, albumName, genreName);
+            connection.addTrackToDB(newTrack);
+            newTrack.setID(connection.getID("Track", "filepath", filepath));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -130,7 +136,8 @@ public class TrackImportBox {
                 return;
             }
 
-            duration = getTrackLength(audioFile);
+            // duration = getTrackLength(audioFile);
+            setLengthVariables(audioFile);
 
             filepath = audioFile.toString();
             filepathLabel.setText(filepath);
@@ -166,17 +173,36 @@ public class TrackImportBox {
         return false;
     }
 
-    private String getTrackLength(File audioFile) {
+    // private String setDuration(File audioFile) {
+    //     try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(audioFile)) {
+    //         int hours = tempTrack.getHours();
+    //         if (hours > 0) {
+    //             return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
+    //         }
+    //         return String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
+
+    //     } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+    //         System.err.println("Unable to determine track length");
+    //     }
+    //     return "--:--:--";
+    // }
+
+    private void setLengthVariables(File audioFile) {
         try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(audioFile)) {
+            lengthInSeconds = tempTrack.lengthInSeconds();
             int hours = tempTrack.getHours();
             if (hours > 0) {
-                return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
+                duration = String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
             }
-            return String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
+            duration = String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
 
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             System.err.println("Unable to determine track length");
         }
-        return "--:--:--";
+
+        if (duration == null) {
+            duration = "--:--:--";
+        }
     }
+
 }

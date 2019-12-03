@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import main.library.Track;
+
 public class DBConnection implements AutoCloseable {
     private Connection connection;
     private PreparedStatement preparedStatement;
@@ -42,6 +44,16 @@ public class DBConnection implements AutoCloseable {
 
     public String getName(int track_id) throws SQLException {
         return queryForString("name", track_id);
+    }
+
+
+    public int getLengthInSeconds(int track_id) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT length_in_seconds FROM Track WHERE id = ?");
+        preparedStatement.setInt(1, track_id);
+        resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt(1);
     }
 
     public String getName(String filepath) throws SQLException {
@@ -238,6 +250,78 @@ public class DBConnection implements AutoCloseable {
 
         connection.setAutoCommit(true);
     }
+
+
+
+    public void addTrackToDB(Track newTrack) throws SQLException {
+    // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
+
+    String filepath = newTrack.getFilepath();
+    String trackName = newTrack.getName();
+    String duration = newTrack.getDuration();
+    String artistName = newTrack.getArtists();
+    String albumName = newTrack.getAlbums();
+    String genreName = newTrack.getGenres();
+    int lengthInSeconds = newTrack.getLengthInSeconds();
+
+    if (valueExists("Track", "filepath", filepath)) {
+        // track already exists. Notify user somehow, then return
+        System.out.println("Track already Exists");
+        return;
+    }
+
+    connection.setAutoCommit(false);
+
+    PreparedStatement insertTrack = connection.prepareStatement("INSERT INTO Track(filepath, name, duration, length_in_seconds) VALUES(?, ?, ?, ?)");
+    insertTrack.setString(1, filepath);
+    insertTrack.setString(2, trackName);
+    insertTrack.setString(3, duration);
+    insertTrack.setInt(4, lengthInSeconds);
+
+    insertTrack.executeUpdate();
+
+    int trackID = getID("Track", "filepath", filepath);
+    System.out.println("trackID: " + trackID);
+
+
+    addUniqueValue("Artist", "name", artistName);
+    int artistID = getID("Artist", "name", artistName);
+
+    System.out.println("artist ID: " + artistID);
+
+
+    addUniqueValue("Album", "name", albumName);
+    int albumID = getID("Album", "name", albumName);
+
+    System.out.println("album ID: " + albumID);
+
+
+    addUniqueValue("Genre", "name", genreName);
+    int genreID = getID("Genre", "name", genreName);
+
+    System.out.println("genre ID: " + genreID);
+
+    // add ID pairs
+    System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
+    addIDPair("Track_Artist", trackID, artistID);
+    System.out.format("Adding to track_album: %d %d\n", trackID, albumID);
+    addIDPair("Track_Album", trackID, albumID);
+    System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
+    addIDPair("Track_Genre", trackID, genreID);
+
+    connection.createStatement().executeQuery("Select * from Track_Artist");
+    connection.createStatement().executeQuery("Select * from Track_Album");
+    connection.createStatement().executeQuery("Select * from Track_Genre");
+
+
+    // connection.rollback();
+    connection.commit();
+
+    connection.setAutoCommit(true);
+    }
+
+
+
 
 
     public void removeTrackFromDB(int trackID) throws SQLException {

@@ -61,7 +61,8 @@ public class TrackList {
                 connection.getDuration(id),
                 connection.getArtists(id),
                 connection.getAlbums(id),
-                connection.getGenres(id)
+                connection.getGenres(id),
+                connection.getLengthInSeconds(id)
             );
         }
     }
