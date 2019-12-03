@@ -104,18 +104,21 @@ public class GUI extends Application {
 
         VBox player = new VBox(trackName, timeBox, buttonBar);
 
+        AlbumView albumView = new AlbumView();
         TabPane views = new TabPane();
         Tab trackView = new Tab("Tracks");
-        Tab albumView = new Tab("Albums");
+        Tab albumViewTab = new Tab("Albums");
         Tab artistView = new Tab("Artists");
 
         trackView.setContent(table);
+        albumViewTab.setContent(albumView.getTableView());
+
         views.getTabs().add(trackView);
-        views.getTabs().add(albumView);
+        views.getTabs().add(albumViewTab);
         views.getTabs().add(artistView);
 
         trackView.setClosable(false);
-        albumView.setClosable(false);
+        albumViewTab.setClosable(false);
         artistView.setClosable(false);
         // VBox library = new VBox(table);
 
