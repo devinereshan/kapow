@@ -10,7 +10,6 @@ import main.library.Album;
 
 public class AlbumList {
     private ArrayList<Integer> albumIDs;
-    // private int currentAlbumIndex;
     private ObservableList<Album> albums = FXCollections.observableArrayList();
 
 
@@ -33,5 +32,18 @@ public class AlbumList {
 
     public ObservableList<Album> getAlbums() {
         return albums;
+    }
+
+    public void update(int albumID) {
+        try (DBConnection connection = new DBConnection()) {
+            for (Album album : albums) {
+                if (album.getId() == albumID) {
+                    albums.remove(album);
+                    albums.add(connection.getAlbum(albumID));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

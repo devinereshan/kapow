@@ -20,8 +20,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.MediaListHandler;
 import main.library.Track;
-import main.library.TrackList;
 import main.player.TrackLengthCalculator;
 
 public class TrackImportBox {
@@ -53,12 +53,12 @@ public class TrackImportBox {
     private Button browseFile = new Button("Browse");
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
-
-    TrackList trackList;
+    MediaListHandler mediaListHandler;
 
     private int row = 0;
 
-    public TrackImportBox(TrackList trackList) {
+    public TrackImportBox(MediaListHandler mediaListHandler) {
+        this.mediaListHandler = mediaListHandler;
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -97,9 +97,6 @@ public class TrackImportBox {
 
         importBox.setTitle("Import Track");
         importBox.setScene(scene);
-
-        this.trackList = trackList;
-
     }
 
 
@@ -126,24 +123,23 @@ public class TrackImportBox {
 
         Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds, indexInAlbum);
 
+        int albumID = 0;
         try (DBConnection connection = new DBConnection()) {
-            // connection.addTrackToDB(filepath, duration, trackName, artistName, albumName, genreName);
             connection.addTrackToDB(newTrack);
             newTrack.setID(connection.getID("Track", "filepath", filepath));
+            albumID = connection.getAlbumID(albumName, newTrack.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        updateViews(newTrack);
-        // trackList.refresh();
+        updateViews(newTrack, albumID);
 
         importBox.close();
     }
 
-    public void updateViews(Track newTrack) {
-        // trackList.refresh();
-        trackList.addTrack(newTrack);
-        // albumView.update(newTrack.getId());
+    public void updateViews(Track newTrack, int albumID) {
+        mediaListHandler.updateAlbumList(albumID);
+        mediaListHandler.updateTrackList(newTrack);
     }
 
 
@@ -161,7 +157,6 @@ public class TrackImportBox {
                 return;
             }
 
-            // duration = getTrackLength(audioFile);
             setLengthVariables(audioFile);
 
             filepath = audioFile.toString();
@@ -198,19 +193,6 @@ public class TrackImportBox {
         return false;
     }
 
-    // private String setDuration(File audioFile) {
-    //     try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(audioFile)) {
-    //         int hours = tempTrack.getHours();
-    //         if (hours > 0) {
-    //             return String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
-    //         }
-    //         return String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
-
-    //     } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-    //         System.err.println("Unable to determine track length");
-    //     }
-    //     return "--:--:--";
-    // }
 
     private void setLengthVariables(File audioFile) {
         try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(audioFile)) {

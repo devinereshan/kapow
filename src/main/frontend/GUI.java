@@ -3,8 +3,6 @@ package main.frontend;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,17 +13,15 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import main.library.MediaListHandler;
 import main.library.Track;
-import main.library.TrackList;
 import main.player.AudioPlayer;
 import main.player.ElapsedTimeListener;
 
@@ -41,15 +37,7 @@ public class GUI extends Application {
     private AudioPlayer audioPlayer;
 
 
-    // Table view additions
-    private TableView<Track> table = new TableView<>();
-    private final TrackList trackList = new TrackList();
-
-    TableColumn<Track,String> nameCol = new TableColumn<>("Name");
-    TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
-    TableColumn<Track,String> artistsCol = new TableColumn<>("Artists");
-    TableColumn<Track,String> albumsCol = new TableColumn<>("Albums");
-    TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
+    private TableView<Track> table;
     TrackImportBox trackImportBox;
     TrackEditBox trackEditBox;
 
@@ -59,7 +47,12 @@ public class GUI extends Application {
     private Label totalTime = new Label("--:--");
 
 
+    TrackView trackView;
+
     private final ContextMenu contextMenu = new ContextMenu();
+
+
+    MediaListHandler mediaListHandler = new MediaListHandler();
 
 
     public static void main(String[] args) {
@@ -82,13 +75,11 @@ public class GUI extends Application {
 
 
         mapButtons(primaryStage);
-        assignColumnValues();
 
 
+        trackView = new TrackView(mediaListHandler.getMainTrackList());
+        table = trackView.getTableView();
         buildContextMenu(primaryStage);
-
-
-        table.setContextMenu(contextMenu);
 
 
         HBox trackName = new HBox(20, currentTrackName);
@@ -104,71 +95,45 @@ public class GUI extends Application {
 
         VBox player = new VBox(trackName, timeBox, buttonBar);
 
-        AlbumView albumView = new AlbumView();
+        AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList());
         TabPane views = new TabPane();
-        Tab trackView = new Tab("Tracks");
+        Tab trackViewTab = new Tab("Tracks");
         Tab albumViewTab = new Tab("Albums");
-        Tab artistView = new Tab("Artists");
+        Tab artistViewTab = new Tab("Artists");
 
-        trackView.setContent(table);
+        trackViewTab.setContent(trackView.getTableView());
         albumViewTab.setContent(albumView.getTableView());
 
-        views.getTabs().add(trackView);
+        views.getTabs().add(trackViewTab);
         views.getTabs().add(albumViewTab);
-        views.getTabs().add(artistView);
+        views.getTabs().add(artistViewTab);
 
-        trackView.setClosable(false);
+        trackViewTab.setClosable(false);
         albumViewTab.setClosable(false);
-        artistView.setClosable(false);
-        // VBox library = new VBox(table);
+        artistViewTab.setClosable(false);
 
 
         BorderPane root = new BorderPane();
 
         root.setTop(player);
-        // root.setCenter(library);
         root.setCenter(views);
 
         Scene scene = new Scene(root, 500, 200);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         primaryStage.show();
-
-
     }
 
 
     private void buildContextMenu(Stage primaryStage) {
         MenuItem menuPlay = new MenuItem("play");
-        menuPlay.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                if (table.getSelectionModel().getSelectedItem() != null) {
-                    loadTrackFromTable(table.getSelectionModel().getSelectedItem());
-                }
-            }
-        });
+        menuPlay.setOnAction(e -> playSelectedTrack());
 
         MenuItem importTrack = new MenuItem("import track");
-        importTrack.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                trackImportBox = new TrackImportBox(trackList);
-                trackImportBox.open(primaryStage);
-            }
-        });
+        importTrack.setOnAction(e -> importNewTrack(primaryStage));
 
         MenuItem editTrack = new MenuItem("edit track");
-        editTrack.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                trackEditBox = new TrackEditBox(table.getSelectionModel().getSelectedItem());
-                trackEditBox.open(primaryStage);
-            }
-        });
+        editTrack.setOnAction(e -> editTrack(primaryStage));
 
         MenuItem delete = new MenuItem("delete");
         delete.setOnAction(e -> deleteTrack(table.getSelectionModel().getSelectedItem()));
@@ -181,9 +146,23 @@ public class GUI extends Application {
         table.setContextMenu(contextMenu);
     }
 
+    public void editTrack(Stage primaryStage) {
+        trackEditBox = new TrackEditBox(table.getSelectionModel().getSelectedItem());
+        trackEditBox.open(primaryStage);
+    }
 
+    public void importNewTrack(Stage primaryStage) {
+        trackImportBox = new TrackImportBox(mediaListHandler);
+        trackImportBox.open(primaryStage);
+    }
+
+    public void playSelectedTrack() {
+        if (table.getSelectionModel().getSelectedItem() != null) {
+            loadTrackFromTable(table.getSelectionModel().getSelectedItem());
+        }
+    }
     public void deleteTrack(Track trackToDelete) {
-        trackList.deleteTrack(trackToDelete);
+        trackView.deleteTrack(trackToDelete);
     }
 
     private void mapButtons(Stage stage) {
@@ -198,16 +177,6 @@ public class GUI extends Application {
         });
     }
 
-
-    private void assignColumnValues() {
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
-        artistsCol.setCellValueFactory(new PropertyValueFactory<>("artists"));
-        albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
-        genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
-        table.getColumns().setAll(nameCol, durationCol, artistsCol, albumsCol, genresCol);
-        table.setItems(trackList.tracks);
-    }
 
     private void loadTrackFromTable(Track track) {
         audioPlayer.setAndPlay(track);

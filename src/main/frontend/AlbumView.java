@@ -16,8 +16,8 @@ public class AlbumView {
     TableColumn<Album,String> genresCol = new TableColumn<>("Genres");
 
 
-    public AlbumView() {
-        albumList = new AlbumList();
+    public AlbumView(AlbumList albumList) {
+        this.albumList = albumList;
         assignColumnValues();
     }
 

@@ -5,17 +5,12 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Album {
     private int id;
-    // private SimpleStringProperty info;
     private SimpleStringProperty name;
     private SimpleStringProperty artists;
     private SimpleIntegerProperty numberOfTracks;
     private SimpleStringProperty genres;
     private SimpleStringProperty info;
 
-    // public Album(int id, String info) {
-    //     this.id = id;
-    //     // this.info.set(info);
-    // }
 
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
         System.out.println(id);
@@ -43,7 +38,6 @@ public class Album {
 
         String infoString = String.format("Name: %s, Artists: %s, Tracks: %d, Genres: %s", getName(), getArtists(), getNumberOfTracks(), getGenres());
         this.info = new SimpleStringProperty(infoString);
-        // info.set(infoString);
     }
 
 

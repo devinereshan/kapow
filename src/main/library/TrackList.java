@@ -13,7 +13,7 @@ public class TrackList {
 
     public TrackList () {
         try (DBConnection connection = new DBConnection()) {
-            trackIDs = getTrackIDs();
+            trackIDs = connection.getIDs();
             for (Integer trackID : trackIDs) {
                 tracks.add(connection.getTrack(trackID));
             }
@@ -26,13 +26,6 @@ public class TrackList {
     // constructor for single album or artist track list
     public TrackList(int parentID) {
 
-    }
-
-
-    private ArrayList<Integer> getTrackIDs() throws SQLException {
-        try (DBConnection connection = new DBConnection()) {
-            return connection.getIDs();
-        }
     }
 
 
@@ -51,5 +44,10 @@ public class TrackList {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public ObservableList<Track> getTracks() {
+        return tracks;
     }
 }
