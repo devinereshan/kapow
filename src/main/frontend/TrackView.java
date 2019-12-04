@@ -2,8 +2,10 @@ package main.frontend;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -13,6 +15,8 @@ import main.library.TrackList;
 public class TrackView {
     private final TrackList trackList;
     private TableView<Track> tableView = new TableView<>();
+    // private final ContextMenu contextMenu = new ContextMenu();
+
 
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
@@ -20,10 +24,23 @@ public class TrackView {
     TableColumn<Track,String> albumsCol = new TableColumn<>("Albums");
     TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
 
+    private final AudioPlayerView audioPlayerView;
 
-    public TrackView(TrackList trackList) {
+
+    public TrackView(TrackList trackList, AudioPlayerView audioPlayerView) {
         this.trackList = trackList;
         assignColumnValues();
+        this.audioPlayerView = audioPlayerView;
+
+        tableView.setRowFactory(tv -> {
+            TableRow<Track> track = new TableRow<>();
+            track.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!track.isEmpty())) {
+                    audioPlayerView.loadTrackFromTable(track.getItem());
+                }
+            });
+            return track;
+        });
     }
 
 

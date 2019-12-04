@@ -27,25 +27,27 @@ import main.player.ElapsedTimeListener;
 import javafx.scene.control.TableRow;
 
 public class GUI extends Application {
-    private final Button seekLeft = new Button("<<");
-    private final Button seekRight = new Button(">>");
-    private final Button stopTrack = new Button("Stop");
-    private final Button play = new Button("Play");
-    private final Button pause = new Button("Pause");
+    // private final Button seekLeft = new Button("<<");
+    // private final Button seekRight = new Button(">>");
+    // private final Button stopTrack = new Button("Stop");
+    // private final Button play = new Button("Play");
+    // private final Button pause = new Button("Pause");
     private final Button quit = new Button("Quit");
 
-    private Label currentTrackName;
-    private AudioPlayer audioPlayer;
+    // private Label currentTrackName;
+    // private AudioPlayer audioPlayer;
 
 
     private TableView<Track> table;
     TrackImportBox trackImportBox;
     TrackEditBox trackEditBox;
+    TabPane views = new TabPane();
+
 
     private ElapsedTimeListener elapsedTimeListener;
-    Slider elapsedTimeBar = new Slider(0, 1, 0);
-    private Label elapsedTime = new Label("--:--");
-    private Label totalTime = new Label("--:--");
+    // Slider elapsedTimeBar = new Slider(0, 1, 0);
+    // private Label elapsedTime = new Label("--:--");
+    // private Label totalTime = new Label("--:--");
 
 
     TrackView trackView;
@@ -54,6 +56,7 @@ public class GUI extends Application {
 
 
     MediaListHandler mediaListHandler = new MediaListHandler();
+    AudioPlayerView audioPlayerView;
 
 
     public static void main(String[] args) {
@@ -64,50 +67,51 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
-        elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
-        totalTime.textProperty().bind(elapsedTimeListener.totalTimeProperty());
+        // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+        // elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
+        // totalTime.textProperty().bind(elapsedTimeListener.totalTimeProperty());
 
-        audioPlayer = new AudioPlayer(elapsedTimeListener);
+        // audioPlayer = new AudioPlayer(elapsedTimeListener);
 
-        currentTrackName = new Label("No Track Selected");
+        // currentTrackName = new Label("No Track Selected");
 
-        currentTrackName.setFont(new Font(16));
-
-
-        mapButtons(primaryStage);
+        // currentTrackName.setFont(new Font(16));
 
 
-        trackView = new TrackView(mediaListHandler.getMainTrackList());
+        // mapButtons(primaryStage);
+
+        audioPlayerView = new AudioPlayerView();
+
+        trackView = new TrackView(mediaListHandler.getMainTrackList(), audioPlayerView);
         table = trackView.getTableView();
         buildContextMenu(primaryStage);
 
-        table.setRowFactory(tv -> {
-            TableRow<Track> track = new TableRow<>();
-            track.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!track.isEmpty())) {
-                    loadTrackFromTable(track.getItem());
-                }
-            });
-            return track;
-        });
+        // table.setRowFactory(tv -> {
+        //     TableRow<Track> track = new TableRow<>();
+        //     track.setOnMouseClicked(event -> {
+        //         if (event.getClickCount() == 2 && (!track.isEmpty())) {
+        //             loadTrackFromTable(track.getItem());
+        //         }
+        //     });
+        //     return track;
+        // });
 
 
-        HBox trackName = new HBox(20, currentTrackName);
-        trackName.setAlignment(Pos.CENTER);
+        // HBox trackName = new HBox(20, currentTrackName);
+        // trackName.setAlignment(Pos.CENTER);
 
-        HBox timeBox = new HBox( elapsedTime, elapsedTimeBar, totalTime);
-        HBox.setHgrow(elapsedTimeBar, Priority.ALWAYS);
-        timeBox.setAlignment(Pos.CENTER);
+        // HBox timeBox = new HBox( elapsedTime, elapsedTimeBar, totalTime);
+        // // HBox.setHgrow(elapsedTimeBar, Priority.ALWAYS);
+        // timeBox.setAlignment(Pos.CENTER);
 
-        HBox buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight, quit);
-        buttonBar.setAlignment(Pos.CENTER);
-        buttonBar.setPadding(new Insets(10));
+        // HBox buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight, quit);
+        // buttonBar.setAlignment(Pos.CENTER);
+        // buttonBar.setPadding(new Insets(10));
 
-        VBox player = new VBox(trackName, timeBox, buttonBar);
+        // VBox player = new VBox(trackName, timeBox, buttonBar);
 
-        AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList());
-        TabPane views = new TabPane();
+        AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList(), audioPlayerView);
+        // TabPane views = new TabPane();
         Tab trackViewTab = new Tab("Tracks");
         Tab albumViewTab = albumView.getTab();
         Tab artistViewTab = new Tab("Artists");
@@ -122,13 +126,16 @@ public class GUI extends Application {
         albumViewTab.setClosable(false);
         artistViewTab.setClosable(false);
 
+        // views.setContextMenu(contextMenu);
 
         BorderPane root = new BorderPane();
 
-        root.setTop(player);
+
+        root.setTop(audioPlayerView.getMainContainer());
         root.setCenter(views);
 
         Scene scene = new Scene(root, 500, 200);
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");
         primaryStage.show();
@@ -153,7 +160,8 @@ public class GUI extends Application {
         contextMenu.getItems().add(delete);
         contextMenu.getItems().add(editTrack);
 
-        table.setContextMenu(contextMenu);
+        // table.setContextMenu(contextMenu);
+        views.setContextMenu(contextMenu);
     }
 
     public void editTrack(Stage primaryStage) {
@@ -168,7 +176,7 @@ public class GUI extends Application {
 
     public void playSelectedTrack() {
         if (table.getSelectionModel().getSelectedItem() != null) {
-            loadTrackFromTable(table.getSelectionModel().getSelectedItem());
+            audioPlayerView.loadTrackFromTable(table.getSelectionModel().getSelectedItem());
         }
     }
     public void deleteTrack(Track track) {
@@ -176,52 +184,52 @@ public class GUI extends Application {
         mediaListHandler.deleteTrack(track);
     }
 
-    private void mapButtons(Stage stage) {
-        seekLeft.setOnAction(e -> seekLeft());
-        seekRight.setOnAction(e -> seekRight());
-        stopTrack.setOnAction(e -> stopTrack());
-        pause.setOnAction(e -> pause());
-        play.setOnAction(e -> play());
-        quit.setOnAction(e -> {
-            audioPlayer.quit();
-            Platform.exit();
-        });
-    }
+    // private void mapButtons() {
+    //     seekLeft.setOnAction(e -> seekLeft());
+    //     seekRight.setOnAction(e -> seekRight());
+    //     stopTrack.setOnAction(e -> stopTrack());
+    //     pause.setOnAction(e -> pause());
+    //     play.setOnAction(e -> play());
+    //     quit.setOnAction(e -> {
+    //         audioPlayer.quit();
+    //         Platform.exit();
+    //     });
+    // }
 
 
-    private void loadTrackFromTable(Track track) {
-        audioPlayer.setAndPlay(track);
-        currentTrackName.setText(track.getName() + " - " + track.getArtists());
-    }
+    // private void loadTrackFromTable(Track track) {
+    //     audioPlayer.setAndPlay(track);
+    //     currentTrackName.setText(track.getName() + " - " + track.getArtists());
+    // }
 
 
-    private void stopTrack() {
-        audioPlayer.stop();
-    }
+    // private void stopTrack() {
+    //     audioPlayer.stop();
+    // }
 
-    private void play() {
-        audioPlayer.play();
-    }
+    // private void play() {
+    //     audioPlayer.play();
+    // }
 
-    private void pause() {
-        audioPlayer.pause();
-    }
+    // private void pause() {
+    //     audioPlayer.pause();
+    // }
 
-    private void seekLeft() {
-        audioPlayer.seekLeft();
-        updatecurrentTrackName(audioPlayer.getCurrentTrack());
-    }
+    // private void seekLeft() {
+    //     audioPlayer.seekLeft();
+    //     updatecurrentTrackName(audioPlayer.getCurrentTrack());
+    // }
 
-    private void seekRight() {
-        audioPlayer.seekRight();
-        updatecurrentTrackName(audioPlayer.getCurrentTrack());
-    }
+    // private void seekRight() {
+    //     audioPlayer.seekRight();
+    //     updatecurrentTrackName(audioPlayer.getCurrentTrack());
+    // }
 
 
-    private void updatecurrentTrackName(Track track) {
-        if (track != null) {
-            currentTrackName.setText(track.getName() + " - " + track.getArtists());
-        }
-    }
+    // private void updatecurrentTrackName(Track track) {
+    //     if (track != null) {
+    //         currentTrackName.setText(track.getName() + " - " + track.getArtists());
+    //     }
+    // }
 
 }

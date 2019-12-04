@@ -12,6 +12,7 @@ import main.library.Album;
 import main.library.AlbumList;
 import main.library.Track;
 import main.library.TrackList;
+import main.player.AudioPlayer;
 
 public class AlbumView {
     private AlbumList albumList;
@@ -26,10 +27,12 @@ public class AlbumView {
     TableColumn<Album,String> genresCol = new TableColumn<>("Genres");
     private TrackView localTrackView;
     private TableView<Track> localTrackViewTable;
+    private AudioPlayerView audioPlayerView;
 
 
-    public AlbumView(AlbumList albumList) {
+    public AlbumView(AlbumList albumList, AudioPlayerView audioPlayerView) {
         this.albumList = albumList;
+        this.audioPlayerView = audioPlayerView;
         assignColumnValues();
         setupVisualComponents();
         makeInteractive();
@@ -83,7 +86,7 @@ public class AlbumView {
     }
     public void switchToLocalTrackView(Album album) {
         System.out.println("Local Track View");
-        localTrackView = new TrackView(new TrackList(album.getId(), "album"));
+        localTrackView = new TrackView(new TrackList(album.getId(), "album"), audioPlayerView);
         localTrackViewTable = localTrackView.getTableView();
         currentAlbumLabel.setText(album.getName() + " - " + album.getArtists());
         allAlbumsButton.setVisible(true);
