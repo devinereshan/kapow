@@ -12,7 +12,6 @@ import main.library.Album;
 import main.library.AlbumList;
 import main.library.Track;
 import main.library.TrackList;
-import main.player.AudioPlayer;
 
 public class AlbumView {
     private AlbumList albumList;
@@ -80,6 +79,7 @@ public class AlbumView {
         if (albumViewContents.getChildren().contains(localTrackViewTable)) {
             albumViewContents.getChildren().set(2, albumViewTable);
             allAlbumsButton.setVisible(false);
+            currentAlbumLabel.setText("All Albums");
             localTrackViewTable = null;
             localTrackView = null;
         }

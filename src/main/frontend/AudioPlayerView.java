@@ -32,10 +32,6 @@ public class AudioPlayerView {
     private HBox buttonBar;
     VBox mainContainer;
 
-    // public AudioPlayerView(AudioPlayer audioPlayer) {
-    //     this.audioPlayer = audioPlayer;
-    // }
-
     public AudioPlayerView() {
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
         audioPlayer = new AudioPlayer(elapsedTimeListener);
@@ -50,7 +46,6 @@ public class AudioPlayerView {
         trackName.setAlignment(Pos.CENTER);
 
         timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
-        // HBox.setHgrow(elapsedTimeBar, Priority.ALWAYS);
         timeBox.setAlignment(Pos.CENTER);
 
         buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight);
