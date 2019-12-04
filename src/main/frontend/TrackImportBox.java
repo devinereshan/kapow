@@ -104,7 +104,6 @@ public class TrackImportBox {
         importBox.initModality(Modality.APPLICATION_MODAL);
         importBox.initOwner(primaryStage);
         importBox.show();
-
     }
 
 
@@ -123,23 +122,15 @@ public class TrackImportBox {
 
         Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds, indexInAlbum);
 
-        int albumID = 0;
         try (DBConnection connection = new DBConnection()) {
             connection.addTrackToDB(newTrack);
             newTrack.setID(connection.getID("Track", "filepath", filepath));
-            albumID = connection.getAlbumID(albumName, newTrack.getId());
+            mediaListHandler.addTrackToLists(newTrack);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        updateViews(newTrack, albumID);
-
         importBox.close();
-    }
-
-    public void updateViews(Track newTrack, int albumID) {
-        mediaListHandler.updateAlbumList(albumID);
-        mediaListHandler.updateTrackList(newTrack);
     }
 
 

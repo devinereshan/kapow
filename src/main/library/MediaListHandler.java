@@ -1,5 +1,9 @@
 package main.library;
 
+import java.sql.SQLException;
+
+import main.database.DBConnection;
+
 public class MediaListHandler {
     TrackList mainTrackList;
     AlbumList mainAlbumList;
@@ -20,15 +24,32 @@ public class MediaListHandler {
         return mainTrackList;
     }
 
-    public void updateTrackList(Track track) {
-        mainTrackList.addTrack(track);
+
+    public void addTrackToLists(Track track) {
+        try (DBConnection connection = new DBConnection()) {
+            int albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            mainTrackList.addTrack(track);
+            mainAlbumList.update(albumID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void updateAlbumList(int albumID) {
-        mainAlbumList.update(albumID);
-    }
 
-    public void updateLists() {
-        // TODO
+    public void deleteTrack(Track track) {
+        int albumID = 0;
+        try (DBConnection connection = new DBConnection()) {
+            albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        mainTrackList.deleteTrack(track);
+
+        if (albumID == 0) {
+            System.err.println("Unable to access database to update album view");
+        } else {
+            mainAlbumList.update(albumID);
+        }
     }
 }

@@ -161,8 +161,9 @@ public class GUI extends Application {
             loadTrackFromTable(table.getSelectionModel().getSelectedItem());
         }
     }
-    public void deleteTrack(Track trackToDelete) {
-        trackView.deleteTrack(trackToDelete);
+    public void deleteTrack(Track track) {
+        // trackView.deleteTrack(trackToDelete);
+        mediaListHandler.deleteTrack(track);
     }
 
     private void mapButtons(Stage stage) {
