@@ -24,6 +24,7 @@ import main.library.MediaListHandler;
 import main.library.Track;
 import main.player.AudioPlayer;
 import main.player.ElapsedTimeListener;
+import javafx.scene.control.TableRow;
 
 public class GUI extends Application {
     private final Button seekLeft = new Button("<<");
@@ -80,6 +81,16 @@ public class GUI extends Application {
         trackView = new TrackView(mediaListHandler.getMainTrackList());
         table = trackView.getTableView();
         buildContextMenu(primaryStage);
+
+        table.setRowFactory(tv -> {
+            TableRow<Track> track = new TableRow<>();
+            track.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!track.isEmpty())) {
+                    loadTrackFromTable(track.getItem());
+                }
+            });
+            return track;
+        });
 
 
         HBox trackName = new HBox(20, currentTrackName);

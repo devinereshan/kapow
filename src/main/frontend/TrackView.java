@@ -13,9 +13,6 @@ import main.library.TrackList;
 public class TrackView {
     private final TrackList trackList;
     private TableView<Track> tableView = new TableView<>();
-    // public ObservableList<Track> tracks = FXCollections.observableArrayList();
-
-
 
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
@@ -26,7 +23,6 @@ public class TrackView {
 
     public TrackView(TrackList trackList) {
         this.trackList = trackList;
-        // tracks = trackList.tracks;
         assignColumnValues();
     }
 
@@ -48,59 +44,4 @@ public class TrackView {
     public void deleteTrack(Track track) {
         trackList.deleteTrack(track);
     }
-
-
-    // private void buildContextMenu(Stage primaryStage) {
-    //     MenuItem menuPlay = new MenuItem("play");
-        // menuPlay.setOnAction(new EventHandler<ActionEvent>() {
-
-        //     @Override
-        //     public void handle(ActionEvent event) {
-        //         if (table.getSelectionModel().getSelectedItem() != null) {
-        //             loadTrackFromTable(table.getSelectionModel().getSelectedItem());
-        //         }
-        //     }
-        // });
-    //     menuPlay.setOnAction(e -> playSelectedTrack());
-
-    //     MenuItem importTrack = new MenuItem("import track");
-    //     importTrack.setOnAction(new EventHandler<ActionEvent>() {
-
-    //         @Override
-    //         public void handle(ActionEvent event) {
-    //             trackImportBox = new TrackImportBox();
-    //             trackImportBox.open(primaryStage);
-    //         }
-    //     });
-
-    //     MenuItem editTrack = new MenuItem("edit track");
-    //     editTrack.setOnAction(new EventHandler<ActionEvent>() {
-
-    //         @Override
-    //         public void handle(ActionEvent event) {
-    //             trackEditBox = new TrackEditBox(table.getSelectionModel().getSelectedItem());
-    //             trackEditBox.open(primaryStage);
-    //         }
-    //     });
-
-    //     MenuItem delete = new MenuItem("delete");
-    //     delete.setOnAction(e -> deleteTrack(table.getSelectionModel().getSelectedItem()));
-
-    //     contextMenu.getItems().add(menuPlay);
-    //     contextMenu.getItems().add(importTrack);
-    //     contextMenu.getItems().add(delete);
-    //     contextMenu.getItems().add(editTrack);
-
-    //     table.setContextMenu(contextMenu);
-    // }
-
-
-    // public void playSelectedTrack() {
-    //     if (tableView.getSelectionModel().getSelectedItem() != null) {
-    //         loadTrackFromTable(tableView.getSelectionModel().getSelectedItem());
-    //     }
-    // }
-    // public void deleteTrack(Track trackToDelete) {
-    //     trackList.deleteTrack(trackToDelete);
-    // }
 }
