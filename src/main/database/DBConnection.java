@@ -133,6 +133,22 @@ public class DBConnection implements AutoCloseable {
     }
 
 
+    public ArrayList<Integer> getTrackAlbumIDs(int albumID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT track_id FROM Track_Album WHERE album_id = ? ORDER BY index_in_album");
+        preparedStatement.setInt(1, albumID);
+        resultSet = preparedStatement.executeQuery();
+
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        while (resultSet.next()) {
+            ids.add(resultSet.getInt(1));
+        }
+
+        return ids;
+    }
+
+
+
     public ArrayList<Integer> getAlbumIDs() throws SQLException {
         resultSet = connection.createStatement().executeQuery("SELECT id FROM Album ORDER BY id");
         ArrayList<Integer> ids = new ArrayList<>();

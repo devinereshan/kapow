@@ -109,11 +109,10 @@ public class GUI extends Application {
         AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList());
         TabPane views = new TabPane();
         Tab trackViewTab = new Tab("Tracks");
-        Tab albumViewTab = new Tab("Albums");
+        Tab albumViewTab = albumView.getTab();
         Tab artistViewTab = new Tab("Artists");
 
         trackViewTab.setContent(trackView.getTableView());
-        albumViewTab.setContent(albumView.getTableView());
 
         views.getTabs().add(trackViewTab);
         views.getTabs().add(albumViewTab);
