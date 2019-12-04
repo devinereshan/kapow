@@ -37,10 +37,14 @@ public class GUI extends Application {
         table = trackView.getTableView();
         buildContextMenu(primaryStage);
 
+        ArtistView artistView = new ArtistView(mediaListHandler.getMainArtistList(), audioPlayerView);
         AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList(), audioPlayerView);
+        // TrackView trackView = new TrackView(mediaListHandler.getMainTrackList(), audioPlayerView);
         Tab trackViewTab = new Tab("Tracks");
+        // Tab trackViewTab = trackView.getTab();
         Tab albumViewTab = albumView.getTab();
-        Tab artistViewTab = new Tab("Artists");
+        // Tab artistViewTab = new Tab("Artists");
+        Tab artistViewTab = artistView.getTab();
 
         trackViewTab.setContent(trackView.getTableView());
 

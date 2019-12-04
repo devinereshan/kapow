@@ -27,7 +27,15 @@ public class AlbumList {
 
     // construct an albumList instance for a single artist
     public AlbumList(int artistID) {
+        try (DBConnection connection = new DBConnection()) {
+            albumIDs = connection.getAlbumIDs(artistID);
 
+            for (Integer albumID : albumIDs) {
+                albums.add(connection.getAlbum(albumID));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ObservableList<Album> getAlbums() {

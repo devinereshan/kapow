@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.library.Album;
+import main.library.Artist;
 import main.library.Track;
 
 public class DBConnection implements AutoCloseable {
@@ -150,7 +151,7 @@ public class DBConnection implements AutoCloseable {
 
 
     public ArrayList<Integer> getAlbumIDs() throws SQLException {
-        resultSet = connection.createStatement().executeQuery("SELECT id FROM Album ORDER BY id");
+        resultSet = connection.createStatement().executeQuery("SELECT id FROM Album ORDER BY name");
         ArrayList<Integer> ids = new ArrayList<>();
 
         while (resultSet.next()) {
@@ -159,6 +160,35 @@ public class DBConnection implements AutoCloseable {
 
         return ids;
     }
+
+    public ArrayList<Integer> getAlbumIDs(int artistID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Album.id FROM Album WHERE Album.id IN (SELECT album_id FROM Track_Album WHERE track_id IN (SELECT track_id FROM Track_Artist WHERE artist_id = ?))");
+        preparedStatement.setInt(1, artistID);
+        resultSet = preparedStatement.executeQuery();
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        while (resultSet.next()) {
+            ids.add(resultSet.getInt(1));
+        }
+
+        return ids;
+    }
+
+
+
+    public ArrayList<Integer> getArtistIDs() throws SQLException {
+        resultSet = connection.createStatement().executeQuery("SELECT id FROM Artist ORDER BY name");
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        while (resultSet.next()) {
+            ids.add(resultSet.getInt(1));
+        }
+
+        return ids;
+    }
+
+
+
 
     public Track getTrack(int id) throws SQLException {
         String filepath = getFilepath(id);
@@ -212,12 +242,33 @@ public class DBConnection implements AutoCloseable {
 
     }
 
-    private String getAlbumArtists(int album_id) throws SQLException {
+    public Artist getArtist(int id) throws SQLException {
+        String name;
+        String albums;
+        int numberOfAlbums;
+        String genres;
+
+        name = queryForString("name", "Artist", id);
+        albums = getArtistAlbums(id);
+        numberOfAlbums = getNumberOfAlbums(id);
+        genres = getArtistGenres(id);
+
+        return new Artist(id, name, albums, genres, numberOfAlbums);
+    }
+
+    private String getAlbumArtists(int albumID) throws SQLException {
         String query = "SELECT Artist.name from Artist WHERE Artist.id IN (SELECT artist_id from Track_Artist WHERE track_id IN (SELECT track_id from Track_Album WHERE album_id = ?))";
 
-
-        return getMultiValueString(query, album_id);
+        return getMultiValueString(query, albumID);
     }
+
+    private String getArtistAlbums(int artistID) throws SQLException {
+        String query = "SELECT Album.name from Album WHERE Album.id IN (SELECT album_id from Track_Album WHERE track_id IN (SELECT track_id from Track_Artist WHERE artist_id = ?))";
+
+        return getMultiValueString(query, artistID);
+    }
+
+
 
 
     private String getAlbumGenres(int album_id) throws SQLException {
@@ -227,6 +278,11 @@ public class DBConnection implements AutoCloseable {
     }
 
 
+    private String getArtistGenres(int artistID) throws SQLException {
+        String query = "SELECT Genre.name from Genre WHERE Genre.id IN (SELECT genre_id from Track_Genre WHERE track_id IN (SELECT track_id from Track_Artist WHERE artist_id = ?))";
+
+        return getMultiValueString(query, artistID);
+    }
 
 
     private int getNumberOfTracks(int id) throws SQLException {
@@ -238,6 +294,19 @@ public class DBConnection implements AutoCloseable {
 
         return resultSet.getInt(1);
     }
+
+
+    private int getNumberOfAlbums(int artistID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Count(*) FROM Album WHERE Album.id IN (SELECT DISTINCT album_id FROM Track_Album WHERE track_id IN (SELECT track_id FROM Track_Artist WHERE artist_id = ?))");
+
+        preparedStatement.setInt(1, artistID);
+        resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt(1);
+    }
+
+
 
     public ArrayList<Integer> getNewIDs(int previousID) throws SQLException {
         resultSet = connection.createStatement().executeQuery("SELECT id FROM TRACK WHERE id > " + previousID + " ORDER BY id");

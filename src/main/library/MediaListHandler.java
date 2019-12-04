@@ -7,11 +7,13 @@ import main.database.DBConnection;
 public class MediaListHandler {
     TrackList mainTrackList;
     AlbumList mainAlbumList;
+    ArtistList mainArtistList;
 
 
     public MediaListHandler() {
         mainTrackList = new TrackList();
         mainAlbumList = new AlbumList();
+        mainArtistList = new ArtistList();
     }
 
 
@@ -22,6 +24,10 @@ public class MediaListHandler {
 
     public TrackList getMainTrackList() {
         return mainTrackList;
+    }
+
+    public ArtistList getMainArtistList() {
+        return mainArtistList;
     }
 
 

@@ -17,8 +17,8 @@ public class AlbumView {
     private AlbumList albumList;
     private Tab albumViewTab = new Tab("Albums");
     private VBox albumViewContents;
-    private Button allAlbumsButton = new Button("All Albums");
-    private Label currentAlbumLabel = new Label("All Albums");
+    private Button allAlbumsButton = new Button("Albums");
+    private Label currentAlbumLabel = new Label("Albums");
     private TableView<Album> albumViewTable = new TableView<>();
     TableColumn<Album,String> nameCol = new TableColumn<>("Name");
     TableColumn<Album,String> artistsCol = new TableColumn<>("Artists");
@@ -27,11 +27,13 @@ public class AlbumView {
     private TrackView localTrackView;
     private TableView<Track> localTrackViewTable;
     private AudioPlayerView audioPlayerView;
+    // private TableView currentTable;
 
 
     public AlbumView(AlbumList albumList, AudioPlayerView audioPlayerView) {
         this.albumList = albumList;
         this.audioPlayerView = audioPlayerView;
+        // currentTable = albumViewTable;
         assignColumnValues();
         setupVisualComponents();
         makeInteractive();
@@ -47,6 +49,8 @@ public class AlbumView {
     }
 
     private void setupVisualComponents() {
+        System.out.println("Setting up albumview visual components: ");
+        System.out.println(albumViewTable == null);
         albumViewContents = new VBox(allAlbumsButton, currentAlbumLabel, albumViewTable);
         albumViewTab.setContent(albumViewContents);
         allAlbumsButton.setVisible(false);
@@ -79,7 +83,7 @@ public class AlbumView {
         if (albumViewContents.getChildren().contains(localTrackViewTable)) {
             albumViewContents.getChildren().set(2, albumViewTable);
             allAlbumsButton.setVisible(false);
-            currentAlbumLabel.setText("All Albums");
+            currentAlbumLabel.setText("Albums");
             localTrackViewTable = null;
             localTrackView = null;
         }
@@ -90,6 +94,7 @@ public class AlbumView {
         localTrackViewTable = localTrackView.getTableView();
         currentAlbumLabel.setText(album.getName() + " - " + album.getArtists());
         allAlbumsButton.setVisible(true);
+        System.out.println("Album view: " + albumViewContents.getChildren());
         albumViewContents.getChildren().set(2, localTrackViewTable);
 
     }

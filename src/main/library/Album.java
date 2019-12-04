@@ -13,15 +13,15 @@ public class Album {
 
 
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
-        System.out.println(id);
+        // System.out.println(id);
         this.id = id;
-        System.out.println(name);
+        // System.out.println(name);
         this.name = new SimpleStringProperty(name);
-        System.out.println(artists);
+        // System.out.println(artists);
         this.artists = new SimpleStringProperty(artists);
-        System.out.println(numberOfTracks);
+        // System.out.println(numberOfTracks);
         this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
-        System.out.println(genres);
+        // System.out.println(genres);
         this.genres = new SimpleStringProperty(genres);
         createInfoString();
     }
@@ -31,10 +31,10 @@ public class Album {
     }
 
     private void createInfoString() {
-        System.out.println("getName() " + getName());
-        System.out.println("getArtists() " + getArtists());
-        System.out.println("getNumberOfTracks() " + getNumberOfTracks());
-        System.out.println("getGenres() " + getGenres());
+        // System.out.println("getName() " + getName());
+        // System.out.println("getArtists() " + getArtists());
+        // System.out.println("getNumberOfTracks() " + getNumberOfTracks());
+        // System.out.println("getGenres() " + getGenres());
 
         String infoString = String.format("Name: %s, Artists: %s, Tracks: %d, Genres: %s", getName(), getArtists(), getNumberOfTracks(), getGenres());
         this.info = new SimpleStringProperty(infoString);
