@@ -22,6 +22,7 @@ public class GUI extends Application {
     private final ContextMenu contextMenu = new ContextMenu();
     MediaListHandler mediaListHandler = new MediaListHandler();
     AudioPlayerView audioPlayerView;
+    ViewHandler viewHandler;
 
 
     public static void main(String[] args) {
@@ -31,30 +32,31 @@ public class GUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        ViewHandler viewHandler = new ViewHandler();
         audioPlayerView = new AudioPlayerView();
 
-        trackView = new TrackView(mediaListHandler.getMainTrackList(), audioPlayerView);
-        table = trackView.getTableView();
+        TrackView mainTrackView = new TrackView(mediaListHandler.getMainTrackList(), audioPlayerView);
+        // table = trackView.getTableView();
         buildContextMenu(primaryStage);
 
-        ArtistView artistView = new ArtistView(mediaListHandler.getMainArtistList(), audioPlayerView);
-        AlbumView albumView = new AlbumView(mediaListHandler.getMainAlbumList(), audioPlayerView);
-        // TrackView trackView = new TrackView(mediaListHandler.getMainTrackList(), audioPlayerView);
-        Tab trackViewTab = new Tab("Tracks");
+        ArtistView mainArtistView = new ArtistView(mediaListHandler.getMainArtistList(), viewHandler);
+        AlbumView mainAlbumView = new AlbumView(mediaListHandler.getMainAlbumList(), viewHandler);
+
+        viewHandler.setMainViews(mainTrackView, mainAlbumView, mainArtistView, audioPlayerView);
+
+
         // Tab trackViewTab = trackView.getTab();
-        Tab albumViewTab = albumView.getTab();
-        // Tab artistViewTab = new Tab("Artists");
-        Tab artistViewTab = artistView.getTab();
+        // Tab albumViewTab = albumView.getTab();
+        // Tab artistViewTab = artistView.getTab();
 
-        trackViewTab.setContent(trackView.getTableView());
 
-        views.getTabs().add(trackViewTab);
-        views.getTabs().add(albumViewTab);
-        views.getTabs().add(artistViewTab);
+        views.getTabs().add(viewHandler.getMainTrackViewTab());
+        views.getTabs().add(viewHandler.getMainAlbumViewTab());
+        views.getTabs().add(viewHandler.getMainArtistViewTab());
 
-        trackViewTab.setClosable(false);
-        albumViewTab.setClosable(false);
-        artistViewTab.setClosable(false);
+        // trackViewTab.setClosable(false);
+        // albumViewTab.setClosable(false);
+        // artistViewTab.setClosable(false);
 
         BorderPane root = new BorderPane();
 

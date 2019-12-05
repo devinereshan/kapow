@@ -90,14 +90,13 @@ public class DBConnection implements AutoCloseable {
         preparedStatement.setInt(1, id);
         resultSet = preparedStatement.executeQuery();
 
-        resultSet.next();
-        String values = resultSet.getString(1);
+        String values = "";
 
         while (resultSet.next()) {
             values += ", " + resultSet.getString(1);
         }
 
-        return values;
+        return values.substring(2, values.length());
     }
 
 
@@ -146,6 +145,20 @@ public class DBConnection implements AutoCloseable {
         }
 
         return ids;
+    }
+
+
+    public String getAlbumName(int albumID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT name FROM Album WHERE id = ?");
+        preparedStatement.setInt(1, albumID);
+        resultSet = preparedStatement.executeQuery();
+
+        String name = "";
+        while (resultSet.next()) {
+            name = resultSet.getString(1);
+        }
+
+        return name;
     }
 
 

@@ -34,12 +34,18 @@ public class ArtistList {
     }
 
     public void update(int artistID) {
+        int indexOfArtist = -1;
         try (DBConnection connection = new DBConnection()) {
-            for (Artist artist : artists) {
-                if (artist.getId() == artistID) {
-                    artists.remove(artist);
-                    artists.add(connection.getArtist(artistID));
+            for (int i = 0; i < artists.size(); i++) {
+                if (artists.get(i).getId() == artistID) {
+                    indexOfArtist = i;
+                    break;
                 }
+            }
+
+            if (indexOfArtist != -1) {
+                artists.remove(artists.get(indexOfArtist));
+                artists.add(connection.getArtist(artistID));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -43,12 +43,19 @@ public class AlbumList {
     }
 
     public void update(int albumID) {
+        int indexOfAlbum = -1;
         try (DBConnection connection = new DBConnection()) {
-            for (Album album : albums) {
-                if (album.getId() == albumID) {
-                    albums.remove(album);
-                    albums.add(connection.getAlbum(albumID));
+            for (int i = 0; i < albums.size(); i++) {
+            // for (Album album : albums) {
+                if (albums.get(i).getId() == albumID) {
+                    indexOfAlbum = i;
+                    break;
                 }
+            }
+
+            if (indexOfAlbum != -1) {
+                albums.remove(albums.get(indexOfAlbum));
+                albums.add(connection.getAlbum(albumID));
             }
         } catch (SQLException e) {
             e.printStackTrace();

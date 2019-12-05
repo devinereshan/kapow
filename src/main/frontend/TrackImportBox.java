@@ -125,10 +125,11 @@ public class TrackImportBox {
         try (DBConnection connection = new DBConnection()) {
             connection.addTrackToDB(newTrack);
             newTrack.setID(connection.getID("Track", "filepath", filepath));
-            mediaListHandler.addTrackToLists(newTrack);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        mediaListHandler.addTrackToLists(newTrack);
 
         importBox.close();
     }

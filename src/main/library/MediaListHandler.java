@@ -32,12 +32,18 @@ public class MediaListHandler {
 
 
     public void addTrackToLists(Track track) {
+        int albumID = 0;
         try (DBConnection connection = new DBConnection()) {
-            int albumID = connection.getAlbumID(track.getAlbums(), track.getId());
-            mainTrackList.addTrack(track);
-            mainAlbumList.update(albumID);
+            albumID = connection.getAlbumID(track.getAlbums(), track.getId());
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        mainTrackList.addTrack(track);
+        if (albumID == 0) {
+            System.err.println("MediaListHandler: Unable to locate album ID in Database");
+        } else {
+            mainAlbumList.update(albumID);
         }
     }
 
