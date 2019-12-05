@@ -9,7 +9,6 @@ public class Album {
     private SimpleStringProperty artists;
     private SimpleIntegerProperty numberOfTracks;
     private SimpleStringProperty genres;
-    // private SimpleStringProperty info;
 
 
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
@@ -18,7 +17,6 @@ public class Album {
         this.artists = new SimpleStringProperty(artists);
         this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
         this.genres = new SimpleStringProperty(genres);
-        // createInfoString();
     }
 
     public int getId() {
