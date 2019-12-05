@@ -19,20 +19,6 @@ public class ViewHandler {
 
     private AudioPlayerView audioPlayerView;
 
-    // public ViewHandler(TrackView mainTrackView, AlbumView mainAlbumView, ArtistView mainArtistView, AudioPlayerView audioPlayerView) {
-    //     this.mainTrackView = mainTrackView;
-    //     this.mainAlbumView = mainAlbumView;
-    //     this.mainArtistView = mainArtistView;
-    //     this.audioPlayerView = audioPlayerView;
-
-    //     mainTrackViewTab = new Tab("Tracks");
-    //     mainTrackViewTab.setContent(mainTrackView.getContents());
-    //     mainAlbumViewTab = new Tab("Albums");
-    //     mainAlbumViewTab.setContent(mainAlbumView.getContents());
-    //     mainArtistViewTab = new Tab("Artists");
-    //     mainArtistViewTab.setContent(mainArtistView.getContents());
-    // }
-
     public ViewHandler() {
         mainTrackViewTab = new Tab("Tracks");
         mainAlbumViewTab = new Tab("Albums");
@@ -66,7 +52,7 @@ public class ViewHandler {
     }
 
     public void switchToNestedTrackView(Album album) {
-        nestedTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName());
+        nestedTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName(), audioPlayerView);
 
         if (nestedAlbumView == null) {
             mainAlbumViewTab.setContent(nestedTrackView.getContents());

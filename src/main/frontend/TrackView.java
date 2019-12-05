@@ -16,7 +16,6 @@ public class TrackView {
     private Tab trackViewTab = new Tab("Tracks");
     private TableView<Track> trackViewTable = new TableView<>();
     private VBox trackViewContents;
-    // private AlbumView parent;
     private Button returnToParent;
     private Label currentAlbumLabel;
 
@@ -45,33 +44,11 @@ public class TrackView {
         });
     }
 
-    // public TrackView(TrackList trackList, AudioPlayerView audioPlayerView, AlbumView parent, String parentName) {
-    //     this.trackList = trackList;
-    //     assignColumnValues();
-    //     this.parent = parent;
-
-    //     returnToParent = new Button("Back To Album");
-    //     currentAlbumLabel = new Label(parentName);
-    //     trackViewContents = new VBox(returnToParent, currentAlbumLabel, trackViewTable);
-    //     trackViewTab.setContent(trackViewContents);
-
-    //     returnToParent.setOnAction(e -> parent.restoreMainView());
-    //     trackViewTable.setRowFactory(tv -> {
-    //         TableRow<Track> trackRow = new TableRow<>();
-    //         trackRow.setOnMouseClicked(event -> {
-    //             if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-    //                 audioPlayerView.loadTrackFromTable(trackRow.getItem());
-    //             }
-    //         });
-    //         return trackRow;
-    //     });
-    // }
 
     // Constructor for nested TrackView
-    public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName) {
+    public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName, AudioPlayerView audioPlayerView) {
         this.trackList = trackList;
         assignColumnValues();
-        // this.parent = parent;
 
         returnToParent = new Button("Back To Album");
         currentAlbumLabel = new Label(parentName);
@@ -83,7 +60,7 @@ public class TrackView {
             TableRow<Track> trackRow = new TableRow<>();
             trackRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-                    // audioPlayerView.loadTrackFromTable(trackRow.getItem());
+                    audioPlayerView.loadTrackFromTable(trackRow.getItem());
                 }
             });
             return trackRow;

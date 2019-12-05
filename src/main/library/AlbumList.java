@@ -46,7 +46,6 @@ public class AlbumList {
         int indexOfAlbum = -1;
         try (DBConnection connection = new DBConnection()) {
             for (int i = 0; i < albums.size(); i++) {
-            // for (Album album : albums) {
                 if (albums.get(i).getId() == albumID) {
                     indexOfAlbum = i;
                     break;

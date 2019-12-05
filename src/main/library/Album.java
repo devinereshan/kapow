@@ -9,35 +9,20 @@ public class Album {
     private SimpleStringProperty artists;
     private SimpleIntegerProperty numberOfTracks;
     private SimpleStringProperty genres;
-    private SimpleStringProperty info;
+    // private SimpleStringProperty info;
 
 
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
-        // System.out.println(id);
         this.id = id;
-        // System.out.println(name);
         this.name = new SimpleStringProperty(name);
-        // System.out.println(artists);
         this.artists = new SimpleStringProperty(artists);
-        // System.out.println(numberOfTracks);
         this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
-        // System.out.println(genres);
         this.genres = new SimpleStringProperty(genres);
-        createInfoString();
+        // createInfoString();
     }
 
     public int getId() {
         return id;
-    }
-
-    private void createInfoString() {
-        // System.out.println("getName() " + getName());
-        // System.out.println("getArtists() " + getArtists());
-        // System.out.println("getNumberOfTracks() " + getNumberOfTracks());
-        // System.out.println("getGenres() " + getGenres());
-
-        String infoString = String.format("Name: %s, Artists: %s, Tracks: %d, Genres: %s", getName(), getArtists(), getNumberOfTracks(), getGenres());
-        this.info = new SimpleStringProperty(infoString);
     }
 
 
@@ -89,19 +74,5 @@ public class Album {
 
     public SimpleStringProperty genresProperty() {
         return genres;
-    }
-
-
-
-    public String getInfo() {
-        return info.get();
-    }
-
-    public void setInfo(String info) {
-        this.info.set(info);
-    }
-
-    public SimpleStringProperty infoProperty() {
-        return info;
     }
 }

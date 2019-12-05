@@ -145,7 +145,7 @@ public class TrackImportBox {
 
             if (existsInDB(audioFile.toString())) {
                 System.err.println("Track already exists");
-                // show details about the track so user can find it
+                // TODO show details about the track so user can find it
                 return;
             }
 
