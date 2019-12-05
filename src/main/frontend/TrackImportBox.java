@@ -3,6 +3,8 @@ package main.frontend;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
@@ -153,7 +155,33 @@ public class TrackImportBox {
 
             filepath = audioFile.toString();
             filepathLabel.setText(filepath);
+
+            autofillFields(audioFile);
         }
+    }
+
+    private void autofillFields(File audioFile) {
+        String name = audioFile.getName();
+        if (!(name.charAt(0) == '.')) {
+            name = name.split("\\.", 2)[0];
+        }
+
+        String trackIndex = "";
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(name);
+
+        while (m.find()) {
+            trackIndex = m.group().replaceFirst("^0+", "");
+            break;
+        }
+
+        name = name.replaceFirst("^\\d+", "").stripLeading();
+
+        trackField.setText(name);
+        albumField.setText(audioFile.getParentFile().getName());
+        artistField.setText(audioFile.getParentFile().getParentFile().getName());
+        trackNumberField.setText(trackIndex);
+
     }
 
     private File getAudioFile(Stage stage) {
