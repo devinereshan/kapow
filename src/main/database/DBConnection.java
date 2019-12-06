@@ -20,6 +20,7 @@ public class DBConnection implements AutoCloseable {
 
     public DBConnection () throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:sql/music.db");
+        connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
     }
 
 
@@ -122,7 +123,7 @@ public class DBConnection implements AutoCloseable {
 
 
     public ArrayList<Integer> getIDs() throws SQLException {
-        ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM Track ORDER BY id");
+        ResultSet rs = connection.createStatement().executeQuery("SELECT id FROM Track ORDER BY name");
         ArrayList<Integer> ids = new ArrayList<>();
 
         while (rs.next()) {
@@ -413,6 +414,17 @@ public class DBConnection implements AutoCloseable {
     }
 
 
+    public int getArtistID(String artistName, int trackID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Artist.id FROM Artist WHERE Artist.name = ? AND Artist.id IN (SELECT artist_id FROM Track_Artist WHERE track_id = ?)");
+        preparedStatement.setString(1, artistName);
+        preparedStatement.setInt(2, trackID);
+        resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        return resultSet.getInt(1);
+
+    }
+
     public void addTrackToDB(Track newTrack) throws SQLException {
     // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
 
@@ -484,7 +496,34 @@ public class DBConnection implements AutoCloseable {
     }
 
 
+    public void removeArtist(Artist artist) throws SQLException {
+        connection.setAutoCommit(false);
+        int artistID = artist.getId();
 
+        // TODO: If albums still exist, remove them first
+
+        deleteFromTable(artistID, "artist_id", "Track_Artist");
+        deleteFromTable(artistID, "id", "Artist");
+
+        connection.commit();
+
+        connection.setAutoCommit(true);
+    }
+
+
+    public void removeAlbum(Album album) throws SQLException {
+        connection.setAutoCommit(false);
+        int albumID = album.getId();
+
+        // TODO: If tracks still exist, remove them first
+
+        deleteFromTable(albumID, "album_id", "Track_Album");
+        deleteFromTable(albumID, "id", "Album");
+
+        connection.commit();
+
+        connection.setAutoCommit(true);
+    }
 
 
     public void removeTrackFromDB(int trackID) throws SQLException {
@@ -501,13 +540,44 @@ public class DBConnection implements AutoCloseable {
     }
 
 
-    private void deleteFromTable(int trackID, String idName, String tableName) throws SQLException {
+    private void deleteFromTable(int id, String idName, String tableName) throws SQLException {
         preparedStatement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE " + idName + " = ?");
-        preparedStatement.setInt(1, trackID);
+        preparedStatement.setInt(1, id);
 
         preparedStatement.executeUpdate();
     }
 
+
+    public boolean updateTrack(Track newTrack) throws SQLException {
+        int trackID = newTrack.getId();
+        Track oldTrack = getTrack(trackID);
+        connection.setAutoCommit(false);
+
+        String newName = newTrack.getName();
+        String newArtist = newTrack.getArtists();
+        String newAlbums = newTrack.getAlbums();
+        String newGenres = newTrack.getGenres();
+
+        if (!newName.equals(oldTrack.getName())) {
+            updateTrackName(newName, trackID);
+        }
+
+        if (!newArtist.equals(oldTrack.getArtists())) {
+            updateTrackArtist(oldTrack.getArtists(), newArtist, trackID);
+        }
+
+        if (!newAlbums.equals(oldTrack.getAlbums())) {
+            updateTrackAlbum(oldTrack.getAlbums(), newAlbums, trackID);
+        }
+
+        if (!newGenres.equals(oldTrack.getGenres())) {
+            updateTrackGenre(oldTrack.getGenres(), newGenres, trackID);
+        }
+
+        connection.commit();
+        connection.setAutoCommit(true);
+        return true;
+    }
 
     public void updateTrackName(String name, int trackID) throws SQLException {
         preparedStatement = connection.prepareStatement("UPDATE Track SET name = ? WHERE id = ?");
@@ -558,6 +628,11 @@ public class DBConnection implements AutoCloseable {
             if (statement != null) {
                 statement.close();
             }
+
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+
             if (resultSet != null) {
                 resultSet.close();
             }

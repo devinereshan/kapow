@@ -2,7 +2,7 @@ package main.player;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Slider;
+// import javafx.scene.control.Slider;
 
 public class ElapsedTimeListener {
     private int elapsedHours;
@@ -14,12 +14,13 @@ public class ElapsedTimeListener {
     private int previousElapsedTime = 0;
     private SimpleStringProperty totalTime = new SimpleStringProperty("--:--");
     private SimpleStringProperty elapsedTime = new SimpleStringProperty("--:--");
-    private Slider elapsedTimeSlider;
+    // private Slider elapsedTimeSlider;
 
-    public ElapsedTimeListener(Slider elapsedTimeSlider) {
-        this.elapsedTimeSlider = elapsedTimeSlider;
-    }
+    // public ElapsedTimeListener(Slider elapsedTimeSlider) {
+    //     this.elapsedTimeSlider = elapsedTimeSlider;
+    // }
 
+    public ElapsedTimeListener() {}
 
 
     // public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
@@ -55,9 +56,9 @@ public class ElapsedTimeListener {
     public void setNewTrackDimensions(double totalTimeInSeconds) {
         setTotalTime((int) totalTimeInSeconds);
         resetElapsedTime();
-        elapsedTimeSlider.setMin(0);
-        elapsedTimeSlider.setMax(totalTimeInSeconds);
-        elapsedTimeSlider.setValue(0);
+        // elapsedTimeSlider.setMin(0);
+        // elapsedTimeSlider.setMax(totalTimeInSeconds);
+        // elapsedTimeSlider.setValue(0);
     }
 
 

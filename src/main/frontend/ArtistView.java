@@ -42,12 +42,10 @@ public class ArtistView {
 
 
     public void makeInteractive() {
-        // allArtistsButton.setOnAction(e -> restoreMainView());
         artistViewTable.setRowFactory(tv -> {
             TableRow<Artist> artistRow = new TableRow<>();
             artistRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!artistRow.isEmpty())) {
-                    // switchToLocalAlbumView(artistRow.getItem());
                     viewHandler.switchToNestedAlbumView(artistRow.getItem());
                 }
             });

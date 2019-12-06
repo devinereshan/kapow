@@ -4,7 +4,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -23,7 +22,7 @@ public class AudioPlayerView {
     private final Button play = new Button("Play");
     private final Button pause = new Button("Pause");
 
-    Slider elapsedTimeBar = new Slider(0, 1, 0);
+    // Slider elapsedTimeBar = new Slider(0, 1, 0);
     private Label elapsedTime = new Label("--:--");
     private Label totalTime = new Label("--:--");
 
@@ -33,7 +32,8 @@ public class AudioPlayerView {
     VBox mainContainer;
 
     public AudioPlayerView() {
-        elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+        // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+        elapsedTimeListener = new ElapsedTimeListener();
         audioPlayer = new AudioPlayer(elapsedTimeListener);
         elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
         totalTime.textProperty().bind(elapsedTimeListener.totalTimeProperty());
@@ -45,7 +45,8 @@ public class AudioPlayerView {
         trackName = new HBox(20, currentTrackName);
         trackName.setAlignment(Pos.CENTER);
 
-        timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
+        // timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
+        timeBox = new HBox(elapsedTime, totalTime);
         timeBox.setAlignment(Pos.CENTER);
 
         buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight);

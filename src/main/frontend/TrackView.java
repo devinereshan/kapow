@@ -1,7 +1,9 @@
 package main.frontend;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -18,6 +20,8 @@ public class TrackView {
     private VBox trackViewContents;
     private Button returnToParent;
     private Label currentAlbumLabel;
+    private ContextMenu contextMenu;
+    private ViewHandler viewHandler;
 
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
@@ -26,28 +30,23 @@ public class TrackView {
     TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
 
 
-    public TrackView(TrackList trackList, AudioPlayerView audioPlayerView) {
+    public TrackView(TrackList trackList, ViewHandler viewHandler) {
         this.trackList = trackList;
+        this.viewHandler = viewHandler;
         assignColumnValues();
 
         trackViewContents = new VBox(trackViewTable);
         trackViewTab.setContent(trackViewContents);
 
-        trackViewTable.setRowFactory(tv -> {
-            TableRow<Track> trackRow = new TableRow<>();
-            trackRow.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-                    audioPlayerView.loadTrackFromTable(trackRow.getItem());
-                }
-            });
-            return trackRow;
-        });
+        setDoubleClick();
+        buildContextMenu();
     }
 
 
     // Constructor for nested TrackView
     public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName, AudioPlayerView audioPlayerView) {
         this.trackList = trackList;
+        this.viewHandler = viewHandler;
         assignColumnValues();
 
         returnToParent = new Button("Back To Album");
@@ -56,15 +55,49 @@ public class TrackView {
         trackViewTab.setContent(trackViewContents);
 
         returnToParent.setOnAction(e -> viewHandler.returnToParent(this));
+        setDoubleClick();
+        buildContextMenu();
+    }
+
+    private void setDoubleClick() {
         trackViewTable.setRowFactory(tv -> {
             TableRow<Track> trackRow = new TableRow<>();
             trackRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-                    audioPlayerView.loadTrackFromTable(trackRow.getItem());
+                    play(trackRow.getItem());
                 }
             });
             return trackRow;
         });
+    }
+
+    private void buildContextMenu() {
+        contextMenu = new ContextMenu();
+
+        MenuItem play = new MenuItem("play");
+        play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItem()));
+
+        MenuItem importTrack = new MenuItem("import track");
+        importTrack.setOnAction(e -> viewHandler.importTrack());
+
+        MenuItem editTrack = new MenuItem("edit track");
+        editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+
+        MenuItem delete = new MenuItem("delete");
+        delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+
+
+        contextMenu.getItems().add(play);
+        contextMenu.getItems().add(importTrack);
+        contextMenu.getItems().add(editTrack);
+        contextMenu.getItems().add(delete);
+        trackViewTable.setContextMenu(contextMenu);
+    }
+
+    private void play(Track track) {
+        if (track != null) {
+            viewHandler.play(track);
+        }
     }
 
 
@@ -89,9 +122,5 @@ public class TrackView {
 
     public TableView<Track> getTrackViewTable() {
         return trackViewTable;
-    }
-
-    public void deleteTrack(Track trackRow) {
-        trackList.deleteTrack(trackRow);
     }
 }

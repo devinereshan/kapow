@@ -54,7 +54,12 @@ public class AlbumList {
 
             if (indexOfAlbum != -1) {
                 albums.remove(albums.get(indexOfAlbum));
-                albums.add(connection.getAlbum(albumID));
+                Album album = connection.getAlbum(albumID);
+                if (album.getNumberOfTracks() > 0) {
+                    albums.add(indexOfAlbum, album);
+                } else {
+                    connection.removeAlbum(album);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -52,14 +52,7 @@ public class TrackList {
 
 
     public void deleteTrack(Track trackToDelete) {
-        try (DBConnection connection = new DBConnection()) {
-            int trackID = trackToDelete.getId();
-            connection.removeTrackFromDB(trackID);
-            trackIDs.remove(trackIDs.indexOf(trackID));
-            tracks.remove(trackToDelete);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        tracks.remove(trackToDelete);
     }
 
 

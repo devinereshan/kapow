@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.MediaListHandler;
 import main.library.Track;
 
 public class TrackEditBox {
@@ -37,11 +38,13 @@ public class TrackEditBox {
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
 
-    Track track;
+    private Track track;
+    private MediaListHandler mediaListHandler;
 
     private int row = 0;
 
-    public TrackEditBox(Track track) {
+    public TrackEditBox(Track track, MediaListHandler mediaListHandler) {
+        this.mediaListHandler = mediaListHandler;
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -96,33 +99,26 @@ public class TrackEditBox {
             return;
         }
 
+        boolean success = false;
+        //  TODO Track oldTrack = new Track();
         // TODO: this set of update transactions should be atomic
         try (DBConnection connection = new DBConnection()) {
 
-            int trackID = connection.getID("Track", "filepath", filepath);
-            if (trackName != trackField.getText()) {
-                connection.updateTrackName(trackField.getText(), trackID);
-                track.setName(trackField.getText());
-            }
-
-            if (artistName != artistField.getText()) {
-                connection.updateTrackArtist(artistName, artistField.getText(), trackID);
-                track.setArtists(artistField.getText());
-            }
-
-            if (albumName != albumField.getText()) {
-                connection.updateTrackAlbum(albumName, albumField.getText(), trackID);
-                track.setAlbums(albumField.getText());
-            }
-
-            if (genreName != genreField.getText()) {
-                connection.updateTrackGenre(genreName, genreField.getText(), trackID);
-                track.setGenres(genreField.getText());
-            }
+            track.setName(trackField.getText());
+            track.setArtists(artistField.getText());
+            track.setAlbums(albumField.getText());
+            track.setGenres(genreField.getText());
+            success = connection.updateTrack(track);
+            // success = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+
+        if (success) {
+            // TODO
+            // mediaListHandler.updateLists(track, oldTrack);
+        }
 
         editBox.close();
     }

@@ -1,6 +1,7 @@
 package main.library;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import main.database.DBConnection;
 
@@ -8,6 +9,10 @@ public class MediaListHandler {
     TrackList mainTrackList;
     AlbumList mainAlbumList;
     ArtistList mainArtistList;
+
+    ArrayList<TrackList> trackLists;
+    ArrayList<AlbumList> albumLists;
+    ArrayList<ArtistList> artistLists;
 
 
     public MediaListHandler() {
@@ -50,8 +55,11 @@ public class MediaListHandler {
 
     public void deleteTrack(Track track) {
         int albumID = 0;
+        int artistID = 0;
         try (DBConnection connection = new DBConnection()) {
             albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            artistID = connection.getArtistID(track.getArtists(), track.getId());
+            connection.removeTrackFromDB(track.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,9 +67,21 @@ public class MediaListHandler {
         mainTrackList.deleteTrack(track);
 
         if (albumID == 0) {
-            System.err.println("Unable to access database to update album view");
+            System.err.println("MediaListHandler: Unable to find album ID in database");
         } else {
             mainAlbumList.update(albumID);
         }
+
+        if (artistID == 0) {
+            System.err.println("MediaListHandler: Unable to find artist ID in database");
+        } else {
+            mainArtistList.update(artistID);
+        }
+
+    }
+
+
+    public void updateLists(Track newTrack, Track oldTrack) {
+        // if (new)
     }
 }
