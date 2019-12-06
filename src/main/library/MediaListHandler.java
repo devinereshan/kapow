@@ -50,7 +50,7 @@ public class MediaListHandler {
         mainTrackList.addTrack(track);
 
         if (album != null) {
-            mainAlbumList.add(album);
+            mainAlbumList.update(album);
         } else {
             System.err.println("MediaListHandler: Unable to locate album ID in Database");
         }
@@ -59,9 +59,11 @@ public class MediaListHandler {
 
     public void deleteTrack(Track track) {
         int albumID = 0;
+        Album album = null;
         int artistID = 0;
         try (DBConnection connection = new DBConnection()) {
             albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            album = connection.getAlbum(albumID);
             artistID = connection.getArtistID(track.getArtists(), track.getId());
             connection.removeTrackFromDB(track.getId(), artistID, albumID);
         } catch (SQLException e) {
@@ -70,10 +72,10 @@ public class MediaListHandler {
 
         mainTrackList.deleteTrack(track);
 
-        if (albumID == 0) {
-            System.err.println("MediaListHandler: Unable to find album ID in database");
+        if (album == null) {
+            System.err.println("MediaListHandler: Unable to find album in database");
         } else {
-            mainAlbumList.update(albumID);
+            mainAlbumList.update(album);
         }
 
         if (artistID == 0) {

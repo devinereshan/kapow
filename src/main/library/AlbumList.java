@@ -42,7 +42,8 @@ public class AlbumList {
         return albums;
     }
 
-    public void update(int albumID) {
+    public void update(Album album) {
+        int albumID = album.getId();
         int indexOfAlbum = -1;
         for (int i = 0; i < albums.size(); i++) {
             if (albums.get(i).getId() == albumID) {
@@ -52,15 +53,12 @@ public class AlbumList {
         }
 
         if (indexOfAlbum != -1) {
+            // found album in list. Update it.
             albums.remove(albums.get(indexOfAlbum));
-            try (DBConnection connection = new DBConnection()) {
-                Album album = connection.getAlbum(albumID);
-                if (album != null) {
-                    albums.add(indexOfAlbum, album);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            albums.add(indexOfAlbum, album);
+        } else {
+            // album not in list. Add it
+            add(album);
         }
     }
 
