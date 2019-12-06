@@ -19,6 +19,10 @@ public class MediaListHandler {
         mainTrackList = new TrackList();
         mainAlbumList = new AlbumList();
         mainArtistList = new ArtistList();
+
+        trackLists = new ArrayList<>();
+        albumLists = new ArrayList<>();
+        artistLists = new ArrayList<>();
     }
 
 
@@ -35,25 +39,51 @@ public class MediaListHandler {
         return mainArtistList;
     }
 
+    public void addTrackList(TrackList trackList) {
+        trackLists.add(trackList);
+    }
+
+    public void removeTrackList(TrackList trackList) {
+        trackLists.remove(trackList);
+    }
+
+    public void addAlbumList(AlbumList albumList) {
+        albumLists.add(albumList);
+    }
+
+    public void removeAlbumList(AlbumList albumList) {
+        albumLists.remove(albumList);
+    }
+
 
     public void addTrackToLists(Track track) {
         Album album = null;
         Artist artist = null;
-        // TODO: Artist artist = null;
+        int albumID = 0;
+        int artistID = 0;
         try (DBConnection connection = new DBConnection()) {
-            int albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            albumID = connection.getAlbumID(track.getAlbums(), track.getId());
             album = connection.getAlbum(albumID);
-            int artistID = connection.getArtistID(track.getArtists(), track.getId());
+            artistID = connection.getArtistID(track.getArtists(), track.getId());
             artist = connection.getArtist(artistID);
-            System.out.println("got album " + album.getName());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         mainTrackList.addTrack(track);
+        for (TrackList trackList : trackLists) {
+            if (trackList.getAlbumID() == albumID) {
+                trackList.addTrack(track);
+            }
+        }
 
         if (album != null) {
             mainAlbumList.update(album);
+            for (AlbumList albumList : albumLists) {
+                if (albumList.getArtistID() == artistID) {
+                    albumList.update(album);
+                }
+            }
         } else {
             System.err.println("MediaListHandler AddTrackToLists: Unable to locate album ID in Database");
         }
@@ -63,8 +93,6 @@ public class MediaListHandler {
         } else {
             System.err.println("MediaListHandler AddTrackToLists: Unable to locate artist in database");
         }
-
-        // TODO notify all nested views of change
     }
 
 
@@ -87,14 +115,30 @@ public class MediaListHandler {
         }
 
         mainTrackList.deleteTrack(track);
+        for (TrackList trackList : trackLists) {
+            if (trackList.getAlbumID() == albumID) {
+                trackList.deleteTrack(track);
+            }
+        }
+
 
         if (album == null) {
             System.err.println("MediaListHandler: Unable to find album in database");
         } else {
             if (album.getNumberOfTracks() == 0) {
                 mainAlbumList.delete(album);
+                for (AlbumList albumList : albumLists) {
+                    if (albumList.getArtistID() == artistID) {
+                        albumList.delete(album);
+                    }
+                }
             } else {
                 mainAlbumList.update(album);
+                for (AlbumList albumList : albumLists) {
+                    if (albumList.getArtistID() == artistID) {
+                        albumList.update(album);
+                    }
+                }
             }
         }
 
@@ -107,9 +151,6 @@ public class MediaListHandler {
                 mainArtistList.update(artist);
             }
         }
-
-        // TODO notify all nested views of change
-
     }
 
 

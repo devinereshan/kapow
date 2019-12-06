@@ -10,6 +10,7 @@ import main.database.DBConnection;
 public class TrackList {
     private ArrayList<Integer> trackIDs;
     public ObservableList<Track> tracks = FXCollections.observableArrayList();
+    int albumID;
 
     public TrackList () {
         try (DBConnection connection = new DBConnection()) {
@@ -28,6 +29,7 @@ public class TrackList {
         try (DBConnection connection = new DBConnection()) {
             if (parentName == "album") {
                 trackIDs = connection.getTrackAlbumIDs(parentID);
+                this.albumID = parentID;
             } else if (parentName == "artist") {
                 // TODO
                 // trackIDs = connection.getTrackArtistIDs(parentID);
@@ -58,5 +60,9 @@ public class TrackList {
 
     public ObservableList<Track> getTracks() {
         return tracks;
+    }
+
+    public int getAlbumID() {
+        return albumID;
     }
 }

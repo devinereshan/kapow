@@ -56,7 +56,9 @@ public class ViewHandler {
 
 
     public void switchToNestedAlbumView(Artist artist) {
-        nestedAlbumView = new AlbumView(new AlbumList(artist.getId()), this, artist.getName());
+        AlbumList nestedAlbumList = new AlbumList(artist.getId());
+        mediaListHandler.addAlbumList(nestedAlbumList);
+        nestedAlbumView = new AlbumView(nestedAlbumList, this, artist.getName());
         currentTab = views.getSelectionModel().getSelectedItem();
         if (currentTab.equals(mainArtistViewTab)) {
             mainArtistViewTab.setContent(nestedAlbumView.getContents());
@@ -64,23 +66,27 @@ public class ViewHandler {
     }
 
     public void returnToParent(AlbumView nestedAlbum) {
+        mediaListHandler.removeAlbumList(nestedAlbum.getList());
         mainArtistViewTab.setContent(mainArtistView.getContents());
         nestedAlbumView = null;
         nestedAlbum = null;
     }
 
     public void switchToNestedTrackView(Album album) {
+        TrackList nestedTrackList = new TrackList(album.getId(), "album");
+        mediaListHandler.addTrackList(nestedTrackList);
         currentTab = views.getSelectionModel().getSelectedItem();
         if (currentTab.equals(mainAlbumViewTab)) {
-            nestedAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName());
+            nestedAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
             mainAlbumViewTab.setContent(nestedAlbumTrackView.getContents());
         } else if (currentTab.equals(mainArtistViewTab)) {
-            nestedArtistAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName());
+            nestedArtistAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
             mainArtistViewTab.setContent(nestedArtistAlbumTrackView.getContents());
         }
     }
 
     public void returnToParent(TrackView nestedTracks) {
+        mediaListHandler.removeTrackList(nestedTracks.getList());
         currentTab = views.getSelectionModel().getSelectedItem();
 
         if (currentTab.equals(mainAlbumViewTab)) {

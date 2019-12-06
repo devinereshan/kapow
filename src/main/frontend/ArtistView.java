@@ -64,4 +64,8 @@ public class ArtistView {
     public VBox getContents() {
         return artistViewContents;
     }
+
+    public ArtistList getList() {
+        return artistList;
+    }
 }

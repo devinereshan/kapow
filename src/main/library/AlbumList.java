@@ -11,6 +11,7 @@ import main.library.Album;
 public class AlbumList {
     private ArrayList<Integer> albumIDs;
     private ObservableList<Album> albums = FXCollections.observableArrayList();
+    int artistID;
 
 
     public AlbumList() {
@@ -27,6 +28,7 @@ public class AlbumList {
 
     // construct an albumList instance for a single artist
     public AlbumList(int artistID) {
+        this.artistID = artistID;
         try (DBConnection connection = new DBConnection()) {
             albumIDs = connection.getAlbumIDs(artistID);
 
@@ -95,5 +97,9 @@ public class AlbumList {
         if (indexToRemove > -1) {
             albums.remove(indexToRemove);
         }
+    }
+
+    public int getArtistID() {
+        return artistID;
     }
 }

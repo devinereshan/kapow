@@ -123,4 +123,8 @@ public class TrackView {
     public TableView<Track> getTrackViewTable() {
         return trackViewTable;
     }
+
+    public TrackList getList() {
+        return trackList;
+    }
 }

@@ -112,4 +112,8 @@ public class AlbumView {
     public VBox getContents() {
         return (albumViewContents);
     }
+
+    public AlbumList getList() {
+        return albumList;
+    }
 }
