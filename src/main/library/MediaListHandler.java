@@ -37,19 +37,22 @@ public class MediaListHandler {
 
 
     public void addTrackToLists(Track track) {
-        int albumID = 0;
+        Album album = null;
+        // TODO: Artist artist = null;
         try (DBConnection connection = new DBConnection()) {
-            albumID = connection.getAlbumID(track.getAlbums(), track.getId());
-            System.out.println("got album ID: " + albumID);
+            int albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            album = connection.getAlbum(albumID);
+            System.out.println("got album " + album.getName());
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         mainTrackList.addTrack(track);
-        if (albumID == 0) {
-            System.err.println("MediaListHandler: Unable to locate album ID in Database");
+
+        if (album != null) {
+            mainAlbumList.add(album);
         } else {
-            mainAlbumList.update(albumID);
+            System.err.println("MediaListHandler: Unable to locate album ID in Database");
         }
     }
 

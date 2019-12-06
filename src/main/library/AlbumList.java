@@ -44,23 +44,41 @@ public class AlbumList {
 
     public void update(int albumID) {
         int indexOfAlbum = -1;
-        try (DBConnection connection = new DBConnection()) {
-            for (int i = 0; i < albums.size(); i++) {
-                if (albums.get(i).getId() == albumID) {
-                    indexOfAlbum = i;
-                    break;
-                }
+        for (int i = 0; i < albums.size(); i++) {
+            if (albums.get(i).getId() == albumID) {
+                indexOfAlbum = i;
+                break;
             }
+        }
 
-            if (indexOfAlbum != -1) {
-                albums.remove(albums.get(indexOfAlbum));
+        if (indexOfAlbum != -1) {
+            albums.remove(albums.get(indexOfAlbum));
+            try (DBConnection connection = new DBConnection()) {
                 Album album = connection.getAlbum(albumID);
                 if (album != null) {
                     albums.add(indexOfAlbum, album);
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+    }
+
+    public void add(Album album) {
+        // insert into list based on album ordering
+        int indexToInsert = -1;
+        for (int i = 0; i < albums.size(); i++) {
+            if (albums.get(i).getName().compareToIgnoreCase(album.getName()) > 0) {
+                // the album name at i is alphabetically greater than the album name to insert
+                indexToInsert = i;
+                break;
+            }
+        }
+
+        if (indexToInsert > -1) {
+            albums.add(indexToInsert, album);
+        } else {
+            albums.add(album);
         }
     }
 }
