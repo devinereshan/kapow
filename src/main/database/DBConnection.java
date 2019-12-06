@@ -97,7 +97,12 @@ public class DBConnection implements AutoCloseable {
             values += ", " + resultSet.getString(1);
         }
 
-        return values.substring(2, values.length());
+        if (values.length() > 2) {
+            return values.substring(2, values.length());
+        } else {
+            return values;
+        }
+
     }
 
 
@@ -520,14 +525,65 @@ public class DBConnection implements AutoCloseable {
         connection.setAutoCommit(true);
     }
 
+    private boolean albumIsEmpty(int albumID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Count(*) from Track_Album WHERE album_id = ?");
+        preparedStatement.setInt(1, albumID);
 
-    public void removeTrackFromDB(int trackID) throws SQLException {
+        resultSet = preparedStatement.executeQuery();
+        int trackCount = 0;
+        while (resultSet.next()) {
+            trackCount = resultSet.getInt(1);
+        }
+
+        if (trackCount > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    private boolean artistIsEmpty(int artistID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Count(*) from Track_Artist WHERE artist_id = ?");
+        preparedStatement.setInt(1, artistID);
+
+        resultSet = preparedStatement.executeQuery();
+        int trackCount = 0;
+        while (resultSet.next()) {
+            trackCount = resultSet.getInt(1);
+        }
+
+        if (trackCount > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    public void removeTrackFromDB(int trackID, int artistID, int albumID) throws SQLException {
         connection.setAutoCommit(false);
 
+        // int albumID = getAlbumID(albumName, trackID);
         deleteFromTable(trackID, "track_id", "Track_Genre");
         deleteFromTable(trackID, "track_id", "Track_Album");
         deleteFromTable(trackID, "track_id", "Track_Artist");
         deleteFromTable(trackID, "id", "Track");
+
+        // if this empties an album, remove that album
+        if (albumIsEmpty(albumID)) {
+            // removeAlbum(getAlbum(albumID));
+            deleteFromTable(albumID, "album_id", "Track_Album");
+            deleteFromTable(albumID, "id", "Album");
+        }
+
+        // if this empties an artist, remove that artist
+        if (artistIsEmpty(artistID)) {
+            // removeArtist(getArtist(artistID));
+            deleteFromTable(artistID, "artist_id", "Track_Artist");
+            deleteFromTable(artistID, "id", "Artist");
+
+        }
 
         connection.commit();
 

@@ -40,6 +40,7 @@ public class MediaListHandler {
         int albumID = 0;
         try (DBConnection connection = new DBConnection()) {
             albumID = connection.getAlbumID(track.getAlbums(), track.getId());
+            System.out.println("got album ID: " + albumID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,7 +60,7 @@ public class MediaListHandler {
         try (DBConnection connection = new DBConnection()) {
             albumID = connection.getAlbumID(track.getAlbums(), track.getId());
             artistID = connection.getArtistID(track.getArtists(), track.getId());
-            connection.removeTrackFromDB(track.getId());
+            connection.removeTrackFromDB(track.getId(), artistID, albumID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,6 +83,8 @@ public class MediaListHandler {
 
 
     public void updateLists(Track newTrack, Track oldTrack) {
+        //TODO
         // if (new)
+
     }
 }

@@ -45,7 +45,10 @@ public class ArtistList {
 
             if (indexOfArtist != -1) {
                 artists.remove(artists.get(indexOfArtist));
-                artists.add(indexOfArtist, connection.getArtist(artistID));
+                Artist artist = connection.getArtist(artistID);
+                if (artist != null) {
+                    artists.add(indexOfArtist, artist);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

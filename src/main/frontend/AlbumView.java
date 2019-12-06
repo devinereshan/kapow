@@ -1,7 +1,9 @@
 package main.frontend;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -23,6 +25,7 @@ public class AlbumView {
     TableColumn<Album,String> numberOfTracksCol = new TableColumn<>("Tracks");
     TableColumn<Album,String> genresCol = new TableColumn<>("Genres");
     private ViewHandler viewHandler;
+    private ContextMenu contextMenu;
 
 
     public AlbumView(AlbumList albumList, ViewHandler viewHandler) {
@@ -31,6 +34,8 @@ public class AlbumView {
         assignColumnValues();
         albumViewContents = new VBox(albumViewTable);
         albumViewTab.setContent(albumViewContents);
+        // buildContextMenu();
+
         makeInteractive();
     }
 
@@ -57,6 +62,30 @@ public class AlbumView {
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         albumViewTable.getColumns().setAll(nameCol, artistsCol, numberOfTracksCol, genresCol);
         albumViewTable.setItems(albumList.getAlbums());
+    }
+
+
+    private void buildContextMenu() {
+        contextMenu = new ContextMenu();
+
+        // MenuItem play = new MenuItem("play");
+        // play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItem()));
+
+        MenuItem importAlbum = new MenuItem("import album");
+        // importAlbum.setOnAction(e -> viewHandler.importAlbum());
+
+        // MenuItem editTrack = new MenuItem("edit track");
+        // editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+
+        // MenuItem delete = new MenuItem("delete");
+        // delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+
+
+        // contextMenu.getItems().add(play);
+        // contextMenu.getItems().add(importTrack);
+        // contextMenu.getItems().add(editTrack);
+        // contextMenu.getItems().add(delete);
+        albumViewTable.setContextMenu(contextMenu);
     }
 
 
