@@ -385,7 +385,7 @@ public class DBConnection implements AutoCloseable {
     }
 
     private void addTrackAlbumPair(int trackID, int albumID, int indexInAlbum) throws SQLException {
-        preparedStatement = connection.prepareStatement("INSERT INTO Track_Album VALUES (?, ?, ?)");
+        preparedStatement = connection.prepareStatement("INSERT INTO Track_Album (track_id, album_id, index_in_album) VALUES (?, ?, ?)");
         preparedStatement.setInt(1, trackID);
         preparedStatement.setInt(2, albumID);
         preparedStatement.setInt(3, indexInAlbum);
@@ -478,16 +478,11 @@ public class DBConnection implements AutoCloseable {
     System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
     addIDPair("Track_Artist", trackID, artistID);
 
-    System.out.format("Adding to track_album: %d %d\n", trackID, albumID);
-
+    System.out.format("Adding to track_album: %d %d index: %d\n", trackID, albumID, indexInAlbum);
     addTrackAlbumPair(trackID, albumID, indexInAlbum);
+
     System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
     addIDPair("Track_Genre", trackID, genreID);
-
-    connection.createStatement().executeQuery("Select * from Track_Artist");
-    connection.createStatement().executeQuery("Select * from Track_Album");
-    connection.createStatement().executeQuery("Select * from Track_Genre");
-
 
     // connection.rollback();
     connection.commit();
@@ -556,6 +551,7 @@ public class DBConnection implements AutoCloseable {
         String newName = newTrack.getName();
         String newArtist = newTrack.getArtists();
         String newAlbums = newTrack.getAlbums();
+        int newIndex = newTrack.getIndexInAlbum();
         String newGenres = newTrack.getGenres();
 
         if (!newName.equals(oldTrack.getName())) {
@@ -570,6 +566,10 @@ public class DBConnection implements AutoCloseable {
             updateTrackAlbum(oldTrack.getAlbums(), newAlbums, trackID);
         }
 
+        if (newIndex != oldTrack.getIndexInAlbum()) {
+            updateTrackAlbumIndex(newAlbums, trackID, newIndex);
+        }
+
         if (!newGenres.equals(oldTrack.getGenres())) {
             updateTrackGenre(oldTrack.getGenres(), newGenres, trackID);
         }
@@ -578,6 +578,17 @@ public class DBConnection implements AutoCloseable {
         connection.setAutoCommit(true);
         return true;
     }
+
+
+    private void updateTrackAlbumIndex(String albumName, int trackID, int index) throws SQLException {
+        int albumID = getAlbumID(albumName, trackID);
+        preparedStatement = connection.prepareStatement("UPDATE Track_Album SET index_in_album = ? WHERE track_id = ? and album_id = ?");
+        preparedStatement.setInt(1, index);
+        preparedStatement.setInt(2, trackID);
+        preparedStatement.setInt(3, albumID);
+        preparedStatement.executeUpdate();
+    }
+
 
     public void updateTrackName(String name, int trackID) throws SQLException {
         preparedStatement = connection.prepareStatement("UPDATE Track SET name = ? WHERE id = ?");

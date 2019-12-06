@@ -44,7 +44,7 @@ public class TrackView {
 
 
     // Constructor for nested TrackView
-    public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName, AudioPlayerView audioPlayerView) {
+    public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName) {
         this.trackList = trackList;
         this.viewHandler = viewHandler;
         assignColumnValues();

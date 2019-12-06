@@ -22,6 +22,7 @@ public class TrackEditBox {
     private String trackName;
     private String artistName;
     private String albumName;
+    private int trackNumber;
     private String genreName;
 
     private Label file = new Label("File:");
@@ -29,11 +30,13 @@ public class TrackEditBox {
     private Label artist = new Label("Artist Name:");
     private Label album = new Label("Album Name:");
     private Label trackLabel = new Label("Track Name:");
+    private Label trackNumberLabel = new Label("Track Number");
     private Label genre = new Label("Genre:");
 
     private TextField artistField = new TextField();
     private TextField albumField = new TextField();
     private TextField trackField = new TextField();
+    private TextField trackNumberField = new TextField();
     private TextField genreField = new TextField();
     private Button submit = new Button("Submit");
     private Button cancel = new Button("Cancel");
@@ -61,6 +64,8 @@ public class TrackEditBox {
         albumField.setText(albumName);
         trackName = track.getName();
         trackField.setText(trackName);
+        trackNumber = track.getIndexInAlbum();
+        trackNumberField.setText(String.valueOf(trackNumber));
         genreName = track.getGenres();
         genreField.setText(genreName);
 
@@ -72,6 +77,8 @@ public class TrackEditBox {
         root.add(artistField, 2, row++);
         root.add(album, 0, row);
         root.add(albumField, 2, row++);
+        root.add(trackNumberLabel, 0, row);
+        root.add(trackNumberField, 2, row++);
         root.add(genre, 0, row);
         root.add(genreField, 2, row++);
         root.add(submit, 0, row);
@@ -108,6 +115,7 @@ public class TrackEditBox {
             track.setArtists(artistField.getText());
             track.setAlbums(albumField.getText());
             track.setGenres(genreField.getText());
+            track.setPositionInAlbum(track.getIndexInAlbum());
             success = connection.updateTrack(track);
             // success = true;
         } catch (SQLException e) {

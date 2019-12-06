@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 public class Track {
     private int id;
     private int lengthInSeconds;
-    private int indexInAlbum = 0;
+    private int indexInAlbum;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
     private SimpleStringProperty duration;
@@ -23,6 +23,7 @@ public class Track {
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
         this.lengthInSeconds = lengthInSeconds;
+        this.indexInAlbum = 0;
     }
 
     public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
@@ -46,6 +47,7 @@ public class Track {
         this.artists = new SimpleStringProperty(artists);
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
+        this.indexInAlbum = indexInAlbum;
     }
 
 

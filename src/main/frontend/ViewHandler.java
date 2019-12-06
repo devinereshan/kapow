@@ -72,10 +72,10 @@ public class ViewHandler {
     public void switchToNestedTrackView(Album album) {
         currentTab = views.getSelectionModel().getSelectedItem();
         if (currentTab.equals(mainAlbumViewTab)) {
-            nestedAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName(), audioPlayerView);
+            nestedAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName());
             mainAlbumViewTab.setContent(nestedAlbumTrackView.getContents());
         } else if (currentTab.equals(mainArtistViewTab)) {
-            nestedArtistAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName(), audioPlayerView);
+            nestedArtistAlbumTrackView = new TrackView(new TrackList(album.getId(), "album"), this, album.getName());
             mainArtistViewTab.setContent(nestedArtistAlbumTrackView.getContents());
         }
     }

@@ -120,7 +120,6 @@ public class TrackImportBox {
         albumName = albumField.getText();
         genreName = genreField.getText();
         indexInAlbum = Integer.parseInt(trackNumberField.getText());
-        System.out.format("Filepath: %s\ntrack: %s\nartist: %s\nalbum: %s\ngenre: %s\n", filepath, trackName, artistName, albumName, genreName);
 
         Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds, indexInAlbum);
 
