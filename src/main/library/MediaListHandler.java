@@ -154,9 +154,48 @@ public class MediaListHandler {
     }
 
 
-    public void updateLists(Track newTrack, Track oldTrack) {
-        //TODO
-        // if (new)
+    public void updateLists(Track track, Album newAlbum, Album oldAlbum, Artist newArtist, Artist oldArtist) {
+        mainTrackList.updateTrack(track);
+        for (TrackList trackList : trackLists) {
+            trackList.updateTrack(track);
+        }
 
+        int oldAlbumID = oldAlbum.getId();
+        int oldArtistID = oldArtist.getId();
+        try (DBConnection connection = new DBConnection()) {
+            oldAlbum = connection.getAlbum(oldAlbumID);
+            oldArtist = connection.getArtist(oldArtistID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // if the album was changed, handle the old album
+        if (oldAlbumID != newAlbum.getId() && oldAlbum.getNumberOfTracks() == 0) {
+            mainAlbumList.delete(oldAlbum);
+            for (AlbumList albumList : albumLists) {
+                albumList.delete(oldAlbum);
+            }
+        } else if (oldAlbumID != newAlbum.getId()) {
+            mainAlbumList.update(oldAlbum);
+            for (AlbumList albumList : albumLists) {
+                albumList.update(oldAlbum);
+            }
+        }
+
+        // in any case, update or add the new album
+        mainAlbumList.update(newAlbum);
+        for (AlbumList albumList : albumLists) {
+            albumList.update(newAlbum);
+        }
+
+        // if the artist was changed, handle the old album
+        if (oldArtistID != newArtist.getId() && oldArtist.getNumberOfAlbums() == 0) {
+            mainArtistList.delete(oldArtist);
+        } else if (oldArtistID != newArtist.getId()) {
+            mainArtistList.update(oldArtist);
+        }
+
+        // in any case, update or add the new artist
+        mainArtistList.update(newArtist);
     }
 }

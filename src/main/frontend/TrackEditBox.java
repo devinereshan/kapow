@@ -11,6 +11,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.Album;
+import main.library.Artist;
 import main.library.MediaListHandler;
 import main.library.Track;
 
@@ -107,25 +109,31 @@ public class TrackEditBox {
         }
 
         boolean success = false;
-        //  TODO Track oldTrack = new Track();
-        // TODO: this set of update transactions should be atomic
+        Track oldTrack = new Track(track.getId(), track.getFilepath(), track.getName(), track.getDuration(), track.getArtists(), track.getAlbums(), track.getGenres(), track.getLengthInSeconds(), track.getIndexInAlbum());
+        Album oldAlbum = null;
+        Album updatedAlbum = null;
+        Artist oldArtist = null;
+        Artist updatedArtist = null;
         try (DBConnection connection = new DBConnection()) {
+
+            oldAlbum = connection.getAlbum(connection.getAlbumID(oldTrack.getAlbums(), oldTrack.getId()));
+            oldArtist = connection.getArtist(connection.getArtistID(oldTrack.getArtists(), oldTrack.getId()));
 
             track.setName(trackField.getText());
             track.setArtists(artistField.getText());
             track.setAlbums(albumField.getText());
             track.setGenres(genreField.getText());
-            track.setPositionInAlbum(track.getIndexInAlbum());
+            track.setIndexInAlbum(track.getIndexInAlbum());
             success = connection.updateTrack(track);
-            // success = true;
+
+            updatedAlbum = connection.getAlbum(connection.getAlbumID(track.getAlbums(), track.getId()));
+            updatedArtist = connection.getArtist(connection.getArtistID(track.getArtists(), track.getId()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
         if (success) {
-            // TODO
-            // mediaListHandler.updateLists(track, oldTrack);
+            mediaListHandler.updateLists(track, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
         }
 
         editBox.close();

@@ -23,6 +23,7 @@ public class TrackView {
     private ContextMenu contextMenu;
     private ViewHandler viewHandler;
 
+    TableColumn<Track,String> indexCol = new TableColumn<>("#");
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
     TableColumn<Track,String> artistsCol = new TableColumn<>("Artists");
@@ -47,7 +48,7 @@ public class TrackView {
     public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName) {
         this.trackList = trackList;
         this.viewHandler = viewHandler;
-        assignColumnValues();
+        assignAlbumColumnValues();
 
         returnToParent = new Button("Back To Album");
         currentAlbumLabel = new Label(parentName);
@@ -119,6 +120,19 @@ public class TrackView {
         trackViewTable.getColumns().setAll(nameCol, durationCol, artistsCol, albumsCol, genresCol);
         trackViewTable.setItems(trackList.getTracks());
     }
+
+
+    private void assignAlbumColumnValues() {
+        indexCol.setCellValueFactory(new PropertyValueFactory<>("indexInAlbum"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        artistsCol.setCellValueFactory(new PropertyValueFactory<>("artists"));
+        albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
+        genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
+        trackViewTable.getColumns().setAll(indexCol, nameCol, durationCol, artistsCol, albumsCol, genresCol);
+        trackViewTable.setItems(trackList.getTracks());
+    }
+
 
     public TableView<Track> getTrackViewTable() {
         return trackViewTable;

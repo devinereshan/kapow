@@ -57,6 +57,23 @@ public class TrackList {
         tracks.remove(trackToDelete);
     }
 
+    public void updateTrack(Track trackToUpdate) {
+        int trackID = trackToUpdate.getId();
+        int indexToUpdate = -1;
+
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).getId() == trackID) {
+                indexToUpdate = i;
+                break;
+            }
+        }
+
+        if (indexToUpdate != -1) {
+            tracks.remove(tracks.get(indexToUpdate));
+            tracks.add(indexToUpdate, trackToUpdate);
+        }
+    }
+
 
     public ObservableList<Track> getTracks() {
         return tracks;

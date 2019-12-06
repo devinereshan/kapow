@@ -1,30 +1,20 @@
 package main.library;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Track {
     private int id;
     private int lengthInSeconds;
-    private int indexInAlbum;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
     private SimpleStringProperty duration;
     private SimpleStringProperty artists;
     private SimpleStringProperty albums;
     private SimpleStringProperty genres;
+    private SimpleIntegerProperty indexInAlbum;
 
-    public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds) {
-        this.id = id;
-        this.filepath = new SimpleStringProperty(filepath);
-        this.name = new SimpleStringProperty(name);
-        this.duration = new SimpleStringProperty(duration);
-        this.artists = new SimpleStringProperty(artists);
-        this.albums = new SimpleStringProperty(albums);
-        this.genres = new SimpleStringProperty(genres);
-        this.lengthInSeconds = lengthInSeconds;
-        this.indexInAlbum = 0;
-    }
 
     public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
         this.id = id;
@@ -35,7 +25,7 @@ public class Track {
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
         this.lengthInSeconds = lengthInSeconds;
-        this.indexInAlbum = indexInAlbum;
+        this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
     }
 
 
@@ -47,7 +37,7 @@ public class Track {
         this.artists = new SimpleStringProperty(artists);
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
-        this.indexInAlbum = indexInAlbum;
+        this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
     }
 
 
@@ -88,7 +78,7 @@ public class Track {
 
 
     public int getIndexInAlbum() {
-        return indexInAlbum;
+        return indexInAlbum.get();
     }
 
 
@@ -113,14 +103,15 @@ public class Track {
         this.genres.set(genres);
     }
 
-    public void setPositionInAlbum(int position) {
-        this.indexInAlbum = position;
+    public void setIndexInAlbum(int index) {
+        this.indexInAlbum.set(index);
     }
 
     public StringProperty nameProperty() { return name; }
     public StringProperty albumsProperty() { return albums; }
     public StringProperty artistsProperty() { return artists; }
     public StringProperty genresProperty() { return genres; }
+    public SimpleIntegerProperty indexInAlbumProperty() { return indexInAlbum; }
 
 
     public int getLengthInSeconds() {
