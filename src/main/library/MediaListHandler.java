@@ -38,10 +38,13 @@ public class MediaListHandler {
 
     public void addTrackToLists(Track track) {
         Album album = null;
+        Artist artist = null;
         // TODO: Artist artist = null;
         try (DBConnection connection = new DBConnection()) {
             int albumID = connection.getAlbumID(track.getAlbums(), track.getId());
             album = connection.getAlbum(albumID);
+            int artistID = connection.getArtistID(track.getArtists(), track.getId());
+            artist = connection.getArtist(artistID);
             System.out.println("got album " + album.getName());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,22 +55,33 @@ public class MediaListHandler {
         if (album != null) {
             mainAlbumList.update(album);
         } else {
-            System.err.println("MediaListHandler: Unable to locate album ID in Database");
+            System.err.println("MediaListHandler AddTrackToLists: Unable to locate album ID in Database");
         }
+
+        if (artist != null) {
+            mainArtistList.update(artist);
+        } else {
+            System.err.println("MediaListHandler AddTrackToLists: Unable to locate artist in database");
+        }
+
+        // TODO notify all nested views of change
     }
 
 
     public void deleteTrack(Track track) {
         int albumID = 0;
         Album album = null;
-        Album updatedAlbum = null;
+        Artist artist = null;
         int artistID = 0;
+
         try (DBConnection connection = new DBConnection()) {
             albumID = connection.getAlbumID(track.getAlbums(), track.getId());
-            album = connection.getAlbum(albumID);
             artistID = connection.getArtistID(track.getArtists(), track.getId());
+
             connection.removeTrackFromDB(track.getId(), artistID, albumID);
-            updatedAlbum = connection.getAlbum(albumID);
+
+            album = connection.getAlbum(albumID);
+            artist = connection.getArtist(artistID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,19 +91,24 @@ public class MediaListHandler {
         if (album == null) {
             System.err.println("MediaListHandler: Unable to find album in database");
         } else {
-            if (updatedAlbum == null) {
+            if (album.getNumberOfTracks() == 0) {
                 mainAlbumList.delete(album);
             } else {
-                mainAlbumList.update(updatedAlbum);
+                mainAlbumList.update(album);
             }
         }
 
-        if (artistID == 0) {
-            System.err.println("MediaListHandler: Unable to find artist ID in database");
+        if (artist == null) {
+            System.err.println("MediaListHandler: Unable to find artist in database");
         } else {
-            // TODO
-            // mainArtistList.update(artistID);
+            if (artist.getNumberOfAlbums() == 0) {
+                mainArtistList.delete(artist);
+            } else {
+                mainArtistList.update(artist);
+            }
         }
+
+        // TODO notify all nested views of change
 
     }
 

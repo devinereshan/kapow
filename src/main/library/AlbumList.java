@@ -83,7 +83,9 @@ public class AlbumList {
     public void delete(Album album) {
         int albumID = album.getId();
         int indexToRemove = -1;
+        System.out.println("In AlbumList. album to remove id: " + album.getId());
         for (int i = 0; i < albums.size(); i++) {
+            System.out.println("Album at " + i + " id: " + albums.get(i).getId());
             if (albums.get(i).getId() == albumID) {
                 indexToRemove = i;
                 break;

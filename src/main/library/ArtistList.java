@@ -33,25 +33,54 @@ public class ArtistList {
         return artists;
     }
 
-    public void update(int artistID) {
+    public void update(Artist artist) {
+        int artistID = artist.getId();
         int indexOfArtist = -1;
-        try (DBConnection connection = new DBConnection()) {
-            for (int i = 0; i < artists.size(); i++) {
-                if (artists.get(i).getId() == artistID) {
-                    indexOfArtist = i;
-                    break;
-                }
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists.get(i).getId() == artistID) {
+                indexOfArtist = i;
+                break;
             }
+        }
 
-            if (indexOfArtist != -1) {
-                artists.remove(artists.get(indexOfArtist));
-                Artist artist = connection.getArtist(artistID);
-                if (artist != null) {
-                    artists.add(indexOfArtist, artist);
-                }
+        if (indexOfArtist != -1) {
+            artists.remove(artists.get(indexOfArtist));
+            artists.add(indexOfArtist, artist);
+        } else {
+            add(artist);
+        }
+    }
+
+    public void add(Artist artist) {
+        int indexToInsert = -1;
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists.get(i).getName().compareToIgnoreCase(artist.getName()) > 0) {
+                indexToInsert = i;
+                break;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+
+        if (indexToInsert > -1) {
+            artists.add(indexToInsert, artist);
+        } else {
+            artists.add(artist);
+        }
+
+    }
+
+
+    public void delete(Artist artist) {
+        int albumID = artist.getId();
+        int indexToRemove = -1;
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists.get(i).getId() == albumID) {
+                indexToRemove = i;
+                break;
+            }
+        }
+
+        if (indexToRemove > -1) {
+            artists.remove(indexToRemove);
         }
     }
 }
