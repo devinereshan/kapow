@@ -79,4 +79,19 @@ public class AlbumList {
             albums.add(album);
         }
     }
+
+    public void delete(Album album) {
+        int albumID = album.getId();
+        int indexToRemove = -1;
+        for (int i = 0; i < albums.size(); i++) {
+            if (albums.get(i).getId() == albumID) {
+                indexToRemove = i;
+                break;
+            }
+        }
+
+        if (indexToRemove > -1) {
+            albums.remove(indexToRemove);
+        }
+    }
 }

@@ -31,9 +31,11 @@ public class DBConnection implements AutoCloseable {
 
         preparedStatement.setInt(1, track_id);
         resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-
-        String value = resultSet.getString(1);
+        String value = "";
+        while (resultSet.next()) {
+            value = resultSet.getString(1);
+            break;
+        }
 
         return value;
     }
