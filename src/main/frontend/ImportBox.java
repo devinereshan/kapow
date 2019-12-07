@@ -3,7 +3,11 @@ package main.frontend;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,6 +35,7 @@ public class ImportBox {
     private List<File> files;
     private Label filepathLabel;
     private ArrayList<TrackInfo> trackInfos = new ArrayList<>();
+    private AlbumInfo albumInfo;
 
 
     private class TrackInfo {
@@ -53,7 +58,17 @@ public class ImportBox {
             bottom = new HBox(10, indexLabel, indexInAlbumField, nameLabel, nameField);
             parent = new VBox(5, top, bottom);
 
-            // TODO auto fill text fields
+            indexInAlbumField.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
+                    if (!newValue.matches("\\d*")) {
+                        indexInAlbumField.setText(newValue.replaceAll("[^\\d]", ""));
+                    }
+                }
+            });
+
+            autoFillFields();
         }
 
 
@@ -62,29 +77,70 @@ public class ImportBox {
         }
 
 
-        public TextField getIndexInAlbumField() {
-            return indexInAlbumField;
+        public int getIndexInAlbum() {
+            return Integer.parseInt(indexInAlbumField.getText());
         }
 
 
-        public TextField getNameField() {
-            return nameField;
+        public String getName() {
+            return nameField.getText();
         }
 
         public VBox getParent() {
             return parent;
+        }
+
+        private void autoFillFields() {
+            String name = file.getName();
+            if (!(name.charAt(0) == '.')) {
+                name = name.split("\\.", 2)[0];
+            }
+
+            String trackIndex = "";
+            Pattern p = Pattern.compile("\\d+");
+            Matcher m = p.matcher(name);
+
+            while (m.find()) {
+                trackIndex = m.group().replaceFirst("^0+", "").strip();
+                break;
+            }
+
+            name = name.replaceFirst("^\\d+", "").strip();
+
+            nameField.setText(name);
+            indexInAlbumField.setText(trackIndex);
+
         }
     }
 
 
     private class AlbumInfo {
         File file;
-        TextField nameField;
-        TextField artistField;
-        TextField genreField;
+        Label albumNameLabel = new Label("Album Name");
+        Label artistNameLabel = new Label("Artist Name");
+        Label genreLabel = new Label("Genre");
+        TextField albumField = new TextField();
+        TextField artistField = new TextField();
+        TextField genreField = new TextField();
+
+        VBox parent;
+
 
         public AlbumInfo (File file) {
             this.file = file;
+
+            parent = new VBox(10, artistNameLabel, artistField, albumNameLabel, albumField, genreLabel, genreField);
+
+            autoFillFields();
+        }
+
+        public VBox getParent() {
+            return parent;
+        }
+
+        private void autoFillFields() {
+            artistField.setText(file.getParentFile().getName());
+            albumField.setText(file.getName());
         }
     }
 
@@ -136,11 +192,9 @@ public class ImportBox {
             middleLeft.getChildren().add(temp.getParent());
         }
 
-        addAlbumDetailsFields(parentFile);
-    }
+        albumInfo = new AlbumInfo(parentFile);
+        middleRight.getChildren().add(albumInfo.getParent());
 
-
-    private void addAlbumDetailsFields(File parentFile) {
 
     }
 }
