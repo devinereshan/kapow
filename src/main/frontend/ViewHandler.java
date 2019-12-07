@@ -134,9 +134,9 @@ public class ViewHandler {
     //     audioPlayerView.queueNext(track);
     // }
 
-    // public void queueNext(ObservableList<Track> tracks) {
-    //     audioPlayerView.queueNext(tracks);
-    // }
+    public void queueNext(ObservableList<Track> tracks) {
+        audioPlayerView.queueNext(tracks);
+    }
 
     public void importAudio() {
         ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);

@@ -116,9 +116,9 @@ public class AudioPlayerView {
     //     audioPlayer.queueNext(track);
     // }
 
-    // public void queueNext(ObservableList<Track> tracks) {
-    //     audioPlayer.queueNext(tracks);
-    // }
+    public void queueNext(ObservableList<Track> tracks) {
+        audioPlayer.queueNext(tracks);
+    }
 
     private void updatecurrentTrackName(Track track) {
         if (track != null) {

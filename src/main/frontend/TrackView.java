@@ -84,6 +84,9 @@ public class TrackView {
         MenuItem queue = new MenuItem("Add to queue");
         queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
 
+        MenuItem queueNext = new MenuItem("Queue next");
+        queueNext.setOnAction(e -> queueNext(trackViewTable.getSelectionModel().getSelectedItems()));
+
         MenuItem importAudio = new MenuItem("Import");
         importAudio.setOnAction(e -> viewHandler.importAudio());
 
@@ -96,6 +99,7 @@ public class TrackView {
 
         contextMenu.getItems().add(play);
         contextMenu.getItems().add(queue);
+        contextMenu.getItems().add(queueNext);
         contextMenu.getItems().add(importAudio);
         contextMenu.getItems().add(editTrack);
         contextMenu.getItems().add(delete);
@@ -120,6 +124,11 @@ public class TrackView {
         }
     }
 
+    private void queueNext(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            viewHandler.queueNext(tracks);
+        }
+    }
 
     public VBox getContents() {
         return trackViewContents;
