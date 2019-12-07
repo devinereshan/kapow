@@ -34,7 +34,7 @@ public class AlbumView {
         assignColumnValues();
         albumViewContents = new VBox(albumViewTable);
         albumViewTab.setContent(albumViewContents);
-        // buildContextMenu();
+        buildContextMenu();
 
         makeInteractive();
     }
@@ -50,6 +50,7 @@ public class AlbumView {
         albumViewTab.setContent(albumViewContents);
 
         returnToParent.setOnAction(e -> viewHandler.returnToParent(this));
+        buildContextMenu();
 
         makeInteractive();
     }
@@ -71,8 +72,8 @@ public class AlbumView {
         // MenuItem play = new MenuItem("play");
         // play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItem()));
 
-        MenuItem importAlbum = new MenuItem("import album");
-        // importAlbum.setOnAction(e -> viewHandler.importAlbum());
+        MenuItem importAudio = new MenuItem("Import Audio");
+        importAudio.setOnAction(e -> viewHandler.importAudio());
 
         // MenuItem editTrack = new MenuItem("edit track");
         // editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
@@ -82,7 +83,7 @@ public class AlbumView {
 
 
         // contextMenu.getItems().add(play);
-        // contextMenu.getItems().add(importTrack);
+        contextMenu.getItems().add(importAudio);
         // contextMenu.getItems().add(editTrack);
         // contextMenu.getItems().add(delete);
         albumViewTable.setContextMenu(contextMenu);

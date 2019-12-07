@@ -124,6 +124,10 @@ public class ViewHandler {
         trackImportBox.open(primaryStage);
     }
 
+    public void importAudio() {
+        ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);
+    }
+
     public AudioPlayerView getAudioPlayerView() {
         return audioPlayerView;
     }
