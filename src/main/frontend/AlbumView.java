@@ -72,7 +72,7 @@ public class AlbumView {
         // MenuItem play = new MenuItem("play");
         // play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItem()));
 
-        MenuItem importAudio = new MenuItem("Import Audio");
+        MenuItem importAudio = new MenuItem("Import");
         importAudio.setOnAction(e -> viewHandler.importAudio());
 
         // MenuItem editTrack = new MenuItem("edit track");

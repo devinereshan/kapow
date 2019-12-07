@@ -119,11 +119,6 @@ public class ViewHandler {
         }
     }
 
-    public void importTrack() {
-        TrackImportBox trackImportBox = new TrackImportBox(mediaListHandler);
-        trackImportBox.open(primaryStage);
-    }
-
     public void importAudio() {
         ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);
     }

@@ -1,6 +1,8 @@
 package main.frontend;
 
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -20,6 +22,7 @@ public class ArtistView {
     TableColumn<Artist,String> numberOfAlbumsCol = new TableColumn<>("Albums");
     TableColumn<Artist,String> genresCol = new TableColumn<>("Genres");
     ViewHandler viewHandler;
+    ContextMenu contextMenu;
 
 
     public ArtistView(ArtistList artistList, ViewHandler viewHandler) {
@@ -28,6 +31,8 @@ public class ArtistView {
         assignColumnValues();
         artistViewContents = new VBox(currentArtistLabel, artistViewTable);
         artistViewTab.setContent(artistViewContents);
+
+        buildContextMenu();
 
         makeInteractive();
     }
@@ -68,4 +73,15 @@ public class ArtistView {
     public ArtistList getList() {
         return artistList;
     }
+
+    private void buildContextMenu() {
+        contextMenu = new ContextMenu();
+
+        MenuItem importAudio = new MenuItem("Import");
+        importAudio.setOnAction(e -> viewHandler.importAudio());
+
+        contextMenu.getItems().add(importAudio);
+        artistViewTable.setContextMenu(contextMenu);
+    }
+
 }

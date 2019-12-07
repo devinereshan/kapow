@@ -1,9 +1,11 @@
 package main.frontend;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -39,6 +41,7 @@ public class TrackView {
         trackViewContents = new VBox(trackViewTable);
         trackViewTab.setContent(trackViewContents);
 
+        trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setDoubleClick();
         buildContextMenu();
     }
@@ -76,10 +79,10 @@ public class TrackView {
         contextMenu = new ContextMenu();
 
         MenuItem play = new MenuItem("play");
-        play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItem()));
+        play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem importTrack = new MenuItem("import track");
-        importTrack.setOnAction(e -> viewHandler.importTrack());
+        MenuItem importTrack = new MenuItem("Import");
+        importTrack.setOnAction(e -> viewHandler.importAudio());
 
         MenuItem editTrack = new MenuItem("edit track");
         editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
@@ -95,9 +98,13 @@ public class TrackView {
         trackViewTable.setContextMenu(contextMenu);
     }
 
-    private void play(Track track) {
-        if (track != null) {
-            viewHandler.play(track);
+    private void play(ObservableList<Track> tracks) {
+        if (tracks.get(0) != null) {
+            viewHandler.play(tracks.get(0));
+        }
+
+        if (tracks.size() > 1) {
+            // viewHandler.queue(tracks.subList(1, tracks.size()));
         }
     }
 
