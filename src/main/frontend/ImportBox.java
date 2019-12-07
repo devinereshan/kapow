@@ -24,7 +24,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
-import main.library.Album;
 import main.library.MediaListHandler;
 import main.library.Track;
 import main.player.TrackLengthCalculator;
@@ -45,6 +44,7 @@ public class ImportBox {
 
     private List<File> files;
     private Label filepathLabel;
+    private Label importing = new Label();
     private ArrayList<TrackInfo> trackInfos = new ArrayList<>();
     private AlbumInfo albumInfo;
 
@@ -212,7 +212,7 @@ public class ImportBox {
         middleLeft = new VBox(10);
         middleRight = new VBox(10);
         middle = new HBox(10, middleLeft, middleRight);
-        bottom = new HBox(50, submit, cancel);
+        bottom = new HBox(50, submit, importing, cancel);
 
         root = new VBox();
         root.setPrefSize(600, 500);
@@ -272,24 +272,38 @@ public class ImportBox {
 
 
     private void submit() {
-        String albumName = albumInfo.getAlbumName();
-        String artistName = albumInfo.getArtistName();
-        String genre = albumInfo.getGenre();
+        String albumName = albumInfo.getAlbumName().trim();
+        String artistName = albumInfo.getArtistName().trim();
+        String genre = albumInfo.getGenre().trim();
 
-        Album album = new Album(albumName, artistName, trackInfos.size(), genre);
         ArrayList<Track> tracks = new ArrayList<>();
 
         for (TrackInfo t : trackInfos) {
-            Track temp = new Track(t.getFilepath(), t.getName(), t.getDuration(), artistName, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
-            // System.out.println(temp.toString());
+            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artistName, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
             tracks.add(temp);
         }
 
+        importing.setText("Importing...");
+
+        boolean success = false;
         try (DBConnection connection = new DBConnection()) {
-            // connection.importMultiTracks(tracks, album);
+            tracks = connection.importMultiTrack(tracks);
+            success = true;
         } catch (SQLException e) {
             System.err.println("ImportBox submit: failed to submit new information to database");
             e.printStackTrace();
         }
+
+
+        if (success) {
+            mediaListHandler.addMultiTrackToLists(tracks);
+            importing.setText("Success");
+            stage.close();
+        } else {
+            importing.setText("Failed");
+            submit.setDisable(true);
+        }
+
+
     }
 }

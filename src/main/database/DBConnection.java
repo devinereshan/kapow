@@ -450,69 +450,69 @@ public class DBConnection implements AutoCloseable {
 
     }
 
-    public void addTrackToDB(Track newTrack) throws SQLException {
-    // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
-
-    String filepath = newTrack.getFilepath();
-    String trackName = newTrack.getName();
-    String duration = newTrack.getDuration();
-    String artistName = newTrack.getArtists();
-    String albumName = newTrack.getAlbums();
-    String genreName = newTrack.getGenres();
-    int indexInAlbum = newTrack.getIndexInAlbum();
-    int lengthInSeconds = newTrack.getLengthInSeconds();
-
-    if (valueExists("Track", "filepath", filepath)) {
-        // track already exists. Notify user somehow, then return
-        System.out.println("Track already Exists");
-        return;
+    public void importTrack(Track track) throws SQLException {
+        connection.setAutoCommit(false);
+        addTrackToDB(track);
+        connection.commit();
+        connection.setAutoCommit(true);
     }
 
-    connection.setAutoCommit(false);
+    public ArrayList<Track> importMultiTrack(ArrayList<Track> tracks) throws SQLException {
+        connection.setAutoCommit(false);
+        for (Track track : tracks) {
+            addTrackToDB(track);
+            track.setID(getID("Track", "filepath", track.getFilepath()));
+            System.out.println(track.getId());
+        }
 
-    PreparedStatement insertTrack = connection.prepareStatement("INSERT INTO Track(filepath, name, duration, length_in_seconds) VALUES(?, ?, ?, ?)");
-    insertTrack.setString(1, filepath);
-    insertTrack.setString(2, trackName);
-    insertTrack.setString(3, duration);
-    insertTrack.setInt(4, lengthInSeconds);
+        connection.commit();
+        connection.setAutoCommit(true);
+        return tracks;
+    }
 
-    insertTrack.executeUpdate();
+    private void addTrackToDB(Track newTrack) throws SQLException {
+        // TODO: support multiple artists, albums, and genres in an add (possibly with String[] or by accepting a track object)
 
-    int trackID = getID("Track", "filepath", filepath);
-    System.out.println("trackID: " + trackID);
+        String filepath = newTrack.getFilepath();
+        String trackName = newTrack.getName();
+        String duration = newTrack.getDuration();
+        String artistName = newTrack.getArtists();
+        String albumName = newTrack.getAlbums();
+        String genreName = newTrack.getGenres();
+        int indexInAlbum = newTrack.getIndexInAlbum();
+        int lengthInSeconds = newTrack.getLengthInSeconds();
 
+        if (valueExists("Track", "filepath", filepath)) {
+            // track already exists. Notify user somehow, then return
+            System.out.println("Track already Exists");
+            return;
+        }
 
-    addUniqueValue("Artist", "name", artistName);
-    int artistID = getID("Artist", "name", artistName);
+        PreparedStatement insertTrack = connection.prepareStatement("INSERT INTO Track(filepath, name, duration, length_in_seconds) VALUES(?, ?, ?, ?)");
+        insertTrack.setString(1, filepath);
+        insertTrack.setString(2, trackName);
+        insertTrack.setString(3, duration);
+        insertTrack.setInt(4, lengthInSeconds);
 
-    System.out.println("artist ID: " + artistID);
+        insertTrack.executeUpdate();
 
+        int trackID = getID("Track", "filepath", filepath);
 
-    addUniqueValue("Album", "name", albumName);
-    int albumID = getID("Album", "name", albumName);
+        addUniqueValue("Artist", "name", artistName);
+        int artistID = getID("Artist", "name", artistName);
 
-    System.out.println("album ID: " + albumID);
+        addUniqueValue("Album", "name", albumName);
+        int albumID = getID("Album", "name", albumName);
 
+        addUniqueValue("Genre", "name", genreName);
+        int genreID = getID("Genre", "name", genreName);
 
-    addUniqueValue("Genre", "name", genreName);
-    int genreID = getID("Genre", "name", genreName);
+        // add ID pairs
+        addIDPair("Track_Artist", trackID, artistID);
 
-    System.out.println("genre ID: " + genreID);
+        addTrackAlbumPair(trackID, albumID, indexInAlbum);
 
-    // add ID pairs
-    System.out.format("Adding to track_artist: %d %d\n", trackID, artistID);
-    addIDPair("Track_Artist", trackID, artistID);
-
-    System.out.format("Adding to track_album: %d %d index: %d\n", trackID, albumID, indexInAlbum);
-    addTrackAlbumPair(trackID, albumID, indexInAlbum);
-
-    System.out.format("Adding to track_genre: %d %d\n", trackID, genreID);
-    addIDPair("Track_Genre", trackID, genreID);
-
-    // connection.rollback();
-    connection.commit();
-
-    connection.setAutoCommit(true);
+        addIDPair("Track_Genre", trackID, genreID);
     }
 
 

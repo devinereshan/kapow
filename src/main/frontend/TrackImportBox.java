@@ -124,7 +124,7 @@ public class TrackImportBox {
         Track newTrack = new Track(filepath, trackName, duration, artistName, albumName, genreName, lengthInSeconds, indexInAlbum);
 
         try (DBConnection connection = new DBConnection()) {
-            connection.addTrackToDB(newTrack);
+            connection.importTrack(newTrack);
             newTrack.setID(connection.getID("Track", "filepath", filepath));
         } catch (SQLException e) {
             e.printStackTrace();

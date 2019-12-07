@@ -56,6 +56,12 @@ public class MediaListHandler {
     }
 
 
+    public void addMultiTrackToLists(ArrayList<Track> tracks) {
+        for (Track track : tracks) {
+            addTrackToLists(track);
+        }
+    }
+
     public void addTrackToLists(Track track) {
         Album album = null;
         Artist artist = null;
