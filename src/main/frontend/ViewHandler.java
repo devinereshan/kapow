@@ -1,5 +1,6 @@
 package main.frontend;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
@@ -113,11 +114,29 @@ public class ViewHandler {
         return mainTrackViewTab;
     }
 
-    public void play(Track track) {
-        if (track != null) {
-            audioPlayerView.loadTrackFromTable(track);
-        }
+    public void queueAndPlay(Track track) {
+        audioPlayerView.queueAndPlay(track);
     }
+
+    public void queueAndPlay(ObservableList<Track> tracks) {
+        audioPlayerView.queueAndPlay(tracks);
+    }
+
+    public void queue(ObservableList<Track> tracks) {
+        audioPlayerView.queue(tracks);
+    }
+
+    public void queue(Track track) {
+        audioPlayerView.queue(track);
+    }
+
+    // public void queueNext(Track track) {
+    //     audioPlayerView.queueNext(track);
+    // }
+
+    // public void queueNext(ObservableList<Track> tracks) {
+    //     audioPlayerView.queueNext(tracks);
+    // }
 
     public void importAudio() {
         ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);

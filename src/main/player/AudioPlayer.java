@@ -9,6 +9,7 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 
 public class AudioPlayer {
 
@@ -77,8 +78,20 @@ public class AudioPlayer {
     }
 
 
-    public void setAndPlay(Track track) {
+    public void queueAndPlay(Track track) {
         loadTrack(queue.quickLoadTrack(track));
+        play();
+    }
+
+    public void queueAndPlay(ObservableList<Track> tracks) {
+        boolean wasEmpty = queue.size() == 0;
+        queueNext(tracks);
+        if (wasEmpty) {
+            loadTrack(queue.getCurrentTrack());
+        } else {
+            seekRight();
+        }
+
         play();
     }
 
@@ -149,6 +162,23 @@ public class AudioPlayer {
             System.err.println("Invalid clip found while closing application");
             e.printStackTrace();
         }
+    }
+
+
+    public void queue(Track track) {
+        queue.add(track);
+    }
+
+    public void queue(ObservableList<Track> tracks) {
+        queue.add(tracks);
+    }
+
+    public void queueNext(Track track) {
+        queue.addNext(track);
+    }
+
+    public void queueNext(ObservableList<Track> tracks) {
+        queue.addNext(tracks);
     }
 
 

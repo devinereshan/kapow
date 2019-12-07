@@ -1,5 +1,6 @@
 package main.frontend;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -70,11 +71,6 @@ public class AudioPlayerView {
         play.setOnAction(e -> play());
     }
 
-    public void loadTrackFromTable(Track track) {
-        audioPlayer.setAndPlay(track);
-        currentTrackName.setText(track.getName() + " - " + track.getArtists());
-    }
-
 
     private void stopTrack() {
         audioPlayer.stop();
@@ -98,6 +94,31 @@ public class AudioPlayerView {
         updatecurrentTrackName(audioPlayer.getCurrentTrack());
     }
 
+    public void queueAndPlay(Track track) {
+        audioPlayer.queueAndPlay(track);
+        currentTrackName.setText(track.getName() + " - " + track.getArtists());
+    }
+
+    public void queueAndPlay(ObservableList<Track> tracks) {
+        audioPlayer.queueAndPlay(tracks);
+        currentTrackName.setText(audioPlayer.getCurrentTrack().getName() + " - " + audioPlayer.getCurrentTrack().getArtists());
+    }
+
+    public void queue(Track track) {
+        audioPlayer.queue(track);
+    }
+
+    public void queue(ObservableList<Track> tracks) {
+        audioPlayer.queue(tracks);
+    }
+
+    // public void queueNext(Track track) {
+    //     audioPlayer.queueNext(track);
+    // }
+
+    // public void queueNext(ObservableList<Track> tracks) {
+    //     audioPlayer.queueNext(tracks);
+    // }
 
     private void updatecurrentTrackName(Track track) {
         if (track != null) {

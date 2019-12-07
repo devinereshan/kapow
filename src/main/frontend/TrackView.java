@@ -98,13 +98,15 @@ public class TrackView {
         trackViewTable.setContextMenu(contextMenu);
     }
 
-    private void play(ObservableList<Track> tracks) {
-        if (tracks.get(0) != null) {
-            viewHandler.play(tracks.get(0));
+    private void play(Track track) {
+        if (track != null) {
+            viewHandler.queueAndPlay(track);
         }
+    }
 
-        if (tracks.size() > 1) {
-            // viewHandler.queue(tracks.subList(1, tracks.size()));
+    private void play(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            viewHandler.queueAndPlay(tracks);
         }
     }
 

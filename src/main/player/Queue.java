@@ -1,6 +1,8 @@
 package main.player;
 
-import java.util.ArrayList;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import main.library.Track;
 
 
@@ -8,13 +10,13 @@ public class Queue {
     public final int SEEK_LEFT = -1;
     public final int SEEK_RIGHT = 1;
 
-    private ArrayList<Track> tracks;
+    private ObservableList<Track> tracks;
     private int currentIndex;
 
 
     public Queue() {
         currentIndex = 0;
-        tracks = new ArrayList<>();
+        tracks = FXCollections.observableArrayList();
     }
 
 
@@ -26,6 +28,27 @@ public class Queue {
         }
     }
 
+    public void addNext(ObservableList<Track> newTracks) {
+        if (tracks.size() == 0) {
+            tracks.addAll(newTracks);
+        } else {
+            for (int j = 0, i = currentIndex + 1; j < newTracks.size(); i++, j++) {
+                tracks.add(i, newTracks.get(j));
+            }
+        }
+    }
+
+    public void add(Track track) {
+        tracks.add(track);
+    }
+
+    public void add(ObservableList<Track> newTracks) {
+        tracks.addAll(tracks);
+    }
+
+    public Track getCurrentTrack() {
+        return tracks.get(currentIndex);
+    }
 
     public Track quickLoadTrack(Track track) {
         addNext(track);
@@ -68,5 +91,9 @@ public class Queue {
         }
 
         return false;
+    }
+
+    public int size() {
+        return tracks.size();
     }
 }
