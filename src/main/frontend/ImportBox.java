@@ -1,36 +1,47 @@
 package main.frontend;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import main.database.DBConnection;
+import main.library.Album;
 import main.library.MediaListHandler;
+import main.library.Track;
+import main.player.TrackLengthCalculator;
 
 public class ImportBox {
     private final Stage stage = new Stage();
     private final Button importFiles = new Button("Import Files");
     private final Button importDirectory = new Button("Import Directory");
+    private final Button submit = new Button("Submit");
+    private final Button cancel = new Button("Cancel");
     private MediaListHandler mediaListHandler;
     private VBox root;
     private HBox top;
     private HBox middle;
     private VBox middleLeft;
     private VBox middleRight;
+    private HBox bottom;
 
     private List<File> files;
     private Label filepathLabel;
@@ -47,6 +58,8 @@ public class ImportBox {
         VBox parent;
         HBox top;
         HBox bottom;
+        int lengthInSeconds;
+        String duration;
 
         public TrackInfo(File file) {
             this.file = file;
@@ -68,12 +81,13 @@ public class ImportBox {
                 }
             });
 
+            setLengthVariables();
             autoFillFields();
         }
 
 
-        public File getFile() {
-            return file;
+        public String getFilepath() {
+            return file.getAbsolutePath();
         }
 
 
@@ -88,6 +102,14 @@ public class ImportBox {
 
         public VBox getParent() {
             return parent;
+        }
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public int getLengthInSeconds() {
+            return lengthInSeconds;
         }
 
         private void autoFillFields() {
@@ -111,6 +133,26 @@ public class ImportBox {
             indexInAlbumField.setText(trackIndex);
 
         }
+
+
+        private void setLengthVariables() {
+            try (TrackLengthCalculator tempTrack = new TrackLengthCalculator(file)) {
+                lengthInSeconds = tempTrack.lengthInSeconds();
+                int hours = tempTrack.getHours();
+                if (hours > 0) {
+                    duration = String.format("%02d:%02d:%02d", hours, tempTrack.getMinutes(), tempTrack.getSeconds());
+                }
+                duration = String.format("%02d:%02d", tempTrack.getMinutes(), tempTrack.getSeconds());
+
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                System.err.println("Unable to determine track length");
+            }
+
+            if (duration == null) {
+                duration = "--:--:--";
+            }
+        }
+
     }
 
 
@@ -142,11 +184,26 @@ public class ImportBox {
             artistField.setText(file.getParentFile().getName());
             albumField.setText(file.getName());
         }
+
+        public String getAlbumName() {
+            return albumField.getText();
+        }
+
+        public String getArtistName() {
+            return artistField.getText();
+        }
+
+        public String getGenre() {
+            return genreField.getText();
+        }
     }
 
 
     public ImportBox (Stage primaryStage, MediaListHandler mediaListHandler) {
         this.mediaListHandler = mediaListHandler;
+        cancel.setOnAction(e -> stage.close());
+        submit.setDisable(true);
+        submit.setOnAction(e -> submit());
 
         filepathLabel = new Label("No Audio Files Selected");
         importFiles.setOnAction(e -> getFiles(stage));
@@ -155,10 +212,11 @@ public class ImportBox {
         middleLeft = new VBox(10);
         middleRight = new VBox(10);
         middle = new HBox(10, middleLeft, middleRight);
+        bottom = new HBox(50, submit, cancel);
 
         root = new VBox();
         root.setPrefSize(600, 500);
-        root.getChildren().addAll(top, middle);
+        root.getChildren().addAll(top, middle, bottom);
 
         Scene scene = new Scene(root);
         stage.setTitle("Import Audio Files");
@@ -187,14 +245,51 @@ public class ImportBox {
         filepathLabel.setText(parentFile.toString());
 
         for (File file : files) {
-            TrackInfo temp = new TrackInfo(file);
-            trackInfos.add(temp);
-            middleLeft.getChildren().add(temp.getParent());
+            if (isValidAudioFile(file)) {
+                TrackInfo temp = new TrackInfo(file);
+                // temp.setLengthVariables();
+                trackInfos.add(temp);
+                middleLeft.getChildren().add(temp.getParent());
+            }
         }
 
         albumInfo = new AlbumInfo(parentFile);
         middleRight.getChildren().add(albumInfo.getParent());
 
+        submit.setDisable(false);
+    }
 
+    private boolean isValidAudioFile(File file) {
+        try {
+            AudioSystem.getAudioInputStream(file);
+            return true;
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return false;
+        }
+    }
+
+
+
+
+    private void submit() {
+        String albumName = albumInfo.getAlbumName();
+        String artistName = albumInfo.getArtistName();
+        String genre = albumInfo.getGenre();
+
+        Album album = new Album(albumName, artistName, trackInfos.size(), genre);
+        ArrayList<Track> tracks = new ArrayList<>();
+
+        for (TrackInfo t : trackInfos) {
+            Track temp = new Track(t.getFilepath(), t.getName(), t.getDuration(), artistName, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
+            // System.out.println(temp.toString());
+            tracks.add(temp);
+        }
+
+        try (DBConnection connection = new DBConnection()) {
+            // connection.importMultiTracks(tracks, album);
+        } catch (SQLException e) {
+            System.err.println("ImportBox submit: failed to submit new information to database");
+            e.printStackTrace();
+        }
     }
 }

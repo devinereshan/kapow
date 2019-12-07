@@ -11,6 +11,14 @@ public class Album {
     private SimpleStringProperty genres;
 
 
+    // Constructor for albums that don't yet exist in database (no id)
+    public Album(String name, String artists, int numberOfTracks, String genres) {
+        this.name = new SimpleStringProperty(name);
+        this.artists = new SimpleStringProperty(artists);
+        this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
+        this.genres = new SimpleStringProperty(genres);
+    }
+
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
         this.id = id;
         this.name = new SimpleStringProperty(name);

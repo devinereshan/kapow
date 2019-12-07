@@ -44,7 +44,7 @@ public class Track {
     // toString for testing
     @Override
     public String toString() {
-        return String.format("%d %s %s %s %s %s %s", id, filepath, name, duration, artists, albums, genres);
+        return String.format("%s %s %s %s %s %s %d %d", filepath.get(), name.get(), duration.get(), artists.get(), albums.get(), genres.get(), lengthInSeconds, indexInAlbum.get());
     }
 
     public String getAlbums() {
