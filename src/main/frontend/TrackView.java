@@ -78,21 +78,25 @@ public class TrackView {
     private void buildContextMenu() {
         contextMenu = new ContextMenu();
 
-        MenuItem play = new MenuItem("play");
+        MenuItem play = new MenuItem("Play");
         play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem importTrack = new MenuItem("Import");
-        importTrack.setOnAction(e -> viewHandler.importAudio());
+        MenuItem queue = new MenuItem("Add to queue");
+        queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem editTrack = new MenuItem("edit track");
+        MenuItem importAudio = new MenuItem("Import");
+        importAudio.setOnAction(e -> viewHandler.importAudio());
+
+        MenuItem editTrack = new MenuItem("Edit track");
         editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
-        MenuItem delete = new MenuItem("delete");
+        MenuItem delete = new MenuItem("Delete");
         delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
 
         contextMenu.getItems().add(play);
-        contextMenu.getItems().add(importTrack);
+        contextMenu.getItems().add(queue);
+        contextMenu.getItems().add(importAudio);
         contextMenu.getItems().add(editTrack);
         contextMenu.getItems().add(delete);
         trackViewTable.setContextMenu(contextMenu);
@@ -107,6 +111,12 @@ public class TrackView {
     private void play(ObservableList<Track> tracks) {
         if (tracks != null) {
             viewHandler.queueAndPlay(tracks);
+        }
+    }
+
+    private void addToQueue(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            viewHandler.queue(tracks);
         }
     }
 

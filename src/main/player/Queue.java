@@ -43,7 +43,9 @@ public class Queue {
     }
 
     public void add(ObservableList<Track> newTracks) {
-        tracks.addAll(tracks);
+        for (Track track : newTracks) {
+            tracks.add(track);
+        }
     }
 
     public Track getCurrentTrack() {
