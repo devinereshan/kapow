@@ -1,13 +1,19 @@
 package main.frontend;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.Callback;
 import main.library.Track;
 import main.player.AudioPlayer;
 import main.player.ElapsedTimeListener;
@@ -30,12 +36,15 @@ public class AudioPlayerView {
     private HBox trackName;
     private HBox timeBox;
     private HBox buttonBar;
-    VBox mainContainer;
+    private VBox mainContainer;
+    // private ListView queue;
+    private ComboBox queue;
 
     public AudioPlayerView() {
         // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
         elapsedTimeListener = new ElapsedTimeListener();
         audioPlayer = new AudioPlayer(elapsedTimeListener);
+        buildListView();
         elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
         totalTime.textProperty().bind(elapsedTimeListener.totalTimeProperty());
 
@@ -43,7 +52,7 @@ public class AudioPlayerView {
         currentTrackName.setFont(new Font(16));
         mapButtons();
 
-        trackName = new HBox(20, currentTrackName);
+        trackName = new HBox(20, currentTrackName, queue);
         trackName.setAlignment(Pos.CENTER);
 
         // timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
@@ -58,7 +67,6 @@ public class AudioPlayerView {
 
     }
 
-
     public VBox getMainContainer() {
         return mainContainer;
     }
@@ -70,7 +78,6 @@ public class AudioPlayerView {
         pause.setOnAction(e -> pause());
         play.setOnAction(e -> play());
     }
-
 
     private void stopTrack() {
         audioPlayer.stop();
@@ -113,7 +120,7 @@ public class AudioPlayerView {
     }
 
     // public void queueNext(Track track) {
-    //     audioPlayer.queueNext(track);
+    // audioPlayer.queueNext(track);
     // }
 
     public void queueNext(ObservableList<Track> tracks) {
@@ -125,4 +132,44 @@ public class AudioPlayerView {
             currentTrackName.setText(track.getName() + " - " + track.getArtists());
         }
     }
+
+
+    // }
+    private void buildListView() {
+        // queue = new ListView<>(audioPlayer.getQueue());
+        queue = new ComboBox<Track>(audioPlayer.getQueue());
+        queue.setPrefWidth(100);
+    //     queue.setCellFactory(param -> new ListCell<Track>() {
+    //         @Override
+    //         protected void updateItem(Track track, boolean empty) {
+    //             super.updateItem(track, empty);
+
+    //             if (empty || track == null ) {
+    //                 setText(null);
+    //             } else {
+    //                 setText(track.getName());
+    //             }
+    //         }
+    //     });
+
+        Callback<ListView<Track>, ListCell<Track>> factory = lv -> new ListCell<Track>() {
+
+            @Override
+            protected void updateItem(Track item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : item.getName());
+            }
+        };
+
+        queue.setCellFactory(factory);
+        queue.setButtonCell(factory.call(null));
+
+        queue.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Item clicked");
+            }
+        });
+    }
+
 }

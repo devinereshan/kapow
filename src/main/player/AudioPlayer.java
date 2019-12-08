@@ -182,6 +182,10 @@ public class AudioPlayer {
     }
 
 
+    public ObservableList<Track> getQueue() {
+        return queue.getTracks();
+    }
+
       // testing
     public void printQueue() {
         System.out.println(queue.toString());

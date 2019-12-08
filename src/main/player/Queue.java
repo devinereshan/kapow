@@ -98,4 +98,8 @@ public class Queue {
     public int size() {
         return tracks.size();
     }
+
+    public ObservableList<Track> getTracks() {
+        return tracks;
+    }
 }
