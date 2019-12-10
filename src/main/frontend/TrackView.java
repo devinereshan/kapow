@@ -12,6 +12,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import main.library.Album;
 import main.library.Track;
 import main.library.TrackList;
 
@@ -21,7 +22,9 @@ public class TrackView {
     final TableView<Track> trackViewTable = new TableView<>();
     private VBox trackViewContents;
     // private Button returnToParent;
-    private Label currentAlbumLabel;
+    // private Label currentAlbumLabel = new Label("kapow!");
+    private String title;
+    private AlbumView parent;
     // private ContextMenu contextMenu;
     // private ViewHandler viewHandler;
 
@@ -58,7 +61,7 @@ public class TrackView {
         assignAlbumColumnValues();
 
         // returnToParent = new Button("Back To Album");
-        currentAlbumLabel = new Label(parentName);
+        // currentAlbumLabel = new Label(parentName);
         // trackViewContents = new VBox(returnToParent, currentAlbumLabel, trackViewTable);
         // trackViewTab.setContent(trackViewContents);
 
@@ -67,6 +70,19 @@ public class TrackView {
         // buildContextMenu();
     }
 
+    public TrackView(Album album) {
+        trackList = new TrackList(album.getId(), "album");
+
+        assignAlbumColumnValues();
+
+        // currentAlbumLabel.setText(album.getArtists() + " - " + album.getName());
+        title = String.format("%s - %s", album.getArtists(), album.getName());
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    
     // private void setDoubleClick() {
     //     trackViewTable.setRowFactory(tv -> {
     //         TableRow<Track> trackRow = new TableRow<>();
@@ -165,6 +181,10 @@ public class TrackView {
         trackViewTable.setItems(trackList.getTracks());
     }
 
+
+    public AlbumView getParent() {
+        return parent;
+    }
 
     public TableView<Track> getTrackViewTable() {
         return trackViewTable;
