@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.KeyEvent;
 // import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
 import main.library.Artist;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
@@ -18,7 +19,10 @@ import javafx.scene.control.TextField;
 public class FxmlController implements Initializable {
 
     @FXML
-    private TableView currentTableView = new TableView();
+    private BorderPane libraryPlayerPane;
+
+    // @FXML
+    // private TableView currentTableView;
 
     @FXML
     private Slider elapsedTimeBar;
@@ -30,7 +34,7 @@ public class FxmlController implements Initializable {
     private TextField serchBox;
 
     private final ArtistView artistView = new ArtistView();
-    private final TableView<Artist> artistTable = new TableView<>();
+    // private final TableView<Artist> artistTable = new TableView<>();
 
     @FXML
     void albumsClicked(ActionEvent event) {
@@ -39,7 +43,7 @@ public class FxmlController implements Initializable {
 
     @FXML
     void artistsClicked(ActionEvent event) {
-
+        libraryPlayerPane.setCenter(artistView.artistViewTable);
     }
 
     @FXML
@@ -96,9 +100,11 @@ public class FxmlController implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
         // TODO Auto-generated method stub
         System.out.println("Loading user data");
-        currentTableView.getColumns().setAll(artistView.nameCol, artistView.numberOfAlbumsCol, artistView.genresCol);
-        currentTableView.setItems(artistView.artistList.getArtists());
+        // libraryPlayerPan
+        // currentTableView.getColumns().setAll(artistView.nameCol, artistView.numberOfAlbumsCol, artistView.genresCol);
+        // currentTableView.setItems(artistView.artistList.getArtists());
 
+        libraryPlayerPane.setCenter(artistView.artistViewTable);
 
     }
 

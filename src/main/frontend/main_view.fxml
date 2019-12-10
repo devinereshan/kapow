@@ -18,9 +18,9 @@
    <children>
       <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <BorderPane prefHeight="328.0" prefWidth="471.0" BorderPane.alignment="CENTER">
+            <BorderPane fx:id="libraryPlayerPane" prefHeight="328.0" prefWidth="471.0" BorderPane.alignment="CENTER">
                <center>
-                  <TableView fx:id="currentTableView" prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
+                  <TableView prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
                     <columns>
                       <TableColumn prefWidth="75.0" text="C1" />
                       <TableColumn prefWidth="75.0" text="C2" />

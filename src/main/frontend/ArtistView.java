@@ -17,7 +17,7 @@ public class ArtistView {
     // private Tab artistViewTab = new Tab("Artists");
     private VBox artistViewContents;
     // private Label currentArtistLabel = new Label("Artists");
-    // private TableView<Artist> artistViewTable = new TableView<>();
+    final TableView<Artist> artistViewTable = new TableView<>();
     final TableColumn<Artist,String> nameCol = new TableColumn<>("Name");
     final TableColumn<Artist,String> numberOfAlbumsCol = new TableColumn<>("Albums");
     final TableColumn<Artist,String> genresCol = new TableColumn<>("Genres");
@@ -54,8 +54,8 @@ public class ArtistView {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         numberOfAlbumsCol.setCellValueFactory(new PropertyValueFactory<>("numberOfAlbums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
-        // artistViewTable.getColumns().setAll(nameCol, numberOfAlbumsCol, genresCol);
-        // artistViewTable.setItems(artistList.getArtists());
+        artistViewTable.getColumns().setAll(nameCol, numberOfAlbumsCol, genresCol);
+        artistViewTable.setItems(artistList.getArtists());
     }
 
 
