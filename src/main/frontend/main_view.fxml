@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.frontend.FxmlController">
+   <children>
+      <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <BorderPane prefHeight="328.0" prefWidth="471.0" BorderPane.alignment="CENTER">
+               <center>
+                  <TableView fx:id="currentTableView" prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+               </center>
+               <bottom>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #aaa;" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="39.0" prefWidth="500.0" text="Label" textAlignment="CENTER">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                 </VBox.margin>
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <Slider fx:id="elapsedTimeBar" onScroll="#elapsedTimeScrolled">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                 </VBox.margin>
+                              </Slider>
+                              <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R" prefHeight="40.0" prefWidth="200.0">
+                                <buttons>
+                                  <Button mnemonicParsing="false" onAction="#seekLeftClicked" prefHeight="40.0" prefWidth="40.0" text="&lt;&lt;" />
+                                    <Button mnemonicParsing="false" onAction="#stopClicked" prefHeight="40.0" prefWidth="40.0" text="Stop" />
+                                    <Button mnemonicParsing="false" onAction="#playClicked" prefHeight="40.0" prefWidth="40.0" text="Play" />
+                                    <Button mnemonicParsing="false" onAction="#pauseClicked" prefHeight="40.0" prefWidth="40.0" text="Pause" />
+                                    <Button mnemonicParsing="false" onAction="#seekRightClicked" prefHeight="40.0" prefWidth="40.0" text="&gt;&gt;" />
+                                </buttons>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
+                                 </VBox.margin>
+                              </ButtonBar>
+                           </children>
+                        </VBox>
+                     </center>
+                     <left>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Slider fx:id="volumeBar" onScroll="#volumeScrolled" orientation="VERTICAL" />
+                           </children>
+                        </VBox>
+                     </left>
+                     <right>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#importClicked" prefHeight="40.0" prefWidth="89.0" text="Import" />
+                           </children>
+                        </VBox>
+                     </right>
+                  </BorderPane>
+               </bottom>
+            </BorderPane>
+         </center>
+         <left>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #aaa;" BorderPane.alignment="CENTER">
+               <top>
+                  <VBox prefHeight="220.0" prefWidth="200.0" style="-fx-background-color: #777;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#artistsClicked" prefHeight="60.0" prefWidth="200.0" text="Artists" />
+                        <Button mnemonicParsing="false" onAction="#albumsClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
+                        <Button mnemonicParsing="false" onAction="#tracksClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
+                        <TextField fx:id="serchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" />
+                     </children>
+                  </VBox>
+               </top>
+               <center>
+                  <ListView prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ddd;" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+         </left>
+      </BorderPane>
+   </children>
+</AnchorPane>

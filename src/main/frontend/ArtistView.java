@@ -13,58 +13,71 @@ import main.library.Artist;
 import main.library.ArtistList;
 
 public class ArtistView {
-    private ArtistList artistList;
-    private Tab artistViewTab = new Tab("Artists");
+    final ArtistList artistList;
+    // private Tab artistViewTab = new Tab("Artists");
     private VBox artistViewContents;
-    private Label currentArtistLabel = new Label("Artists");
-    private TableView<Artist> artistViewTable = new TableView<>();
-    TableColumn<Artist,String> nameCol = new TableColumn<>("Name");
-    TableColumn<Artist,String> numberOfAlbumsCol = new TableColumn<>("Albums");
-    TableColumn<Artist,String> genresCol = new TableColumn<>("Genres");
-    ViewHandler viewHandler;
-    ContextMenu contextMenu;
+    // private Label currentArtistLabel = new Label("Artists");
+    // private TableView<Artist> artistViewTable = new TableView<>();
+    final TableColumn<Artist,String> nameCol = new TableColumn<>("Name");
+    final TableColumn<Artist,String> numberOfAlbumsCol = new TableColumn<>("Albums");
+    final TableColumn<Artist,String> genresCol = new TableColumn<>("Genres");
+    // ViewHandler viewHandler;
+    // ContextMenu contextMenu;
 
 
     public ArtistView(ArtistList artistList, ViewHandler viewHandler) {
         this.artistList = artistList;
-        this.viewHandler = viewHandler;
+        // this.viewHandler = viewHandler;
         assignColumnValues();
-        artistViewContents = new VBox(currentArtistLabel, artistViewTable);
-        artistViewTab.setContent(artistViewContents);
+        // artistViewContents = new VBox(currentArtistLabel, artistViewTable);
+        // artistViewTab.setContent(artistViewContents);
 
-        buildContextMenu();
+        // buildContextMenu();
 
-        makeInteractive();
+        // makeInteractive();
+    }
+
+
+    public ArtistView() {
+        artistList = new ArtistList();
+        // this.artistList = artistList;
+        assignColumnValues();
+        // artistViewContents = new VBox(currentArtistLabel, artistViewTable);
+        // artistViewTab.setContent(artistViewContents);
+
+        // buildContextMenu();
+
+        // makeInteractive();
     }
 
     private void assignColumnValues() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         numberOfAlbumsCol.setCellValueFactory(new PropertyValueFactory<>("numberOfAlbums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
-        artistViewTable.getColumns().setAll(nameCol, numberOfAlbumsCol, genresCol);
-        artistViewTable.setItems(artistList.getArtists());
+        // artistViewTable.getColumns().setAll(nameCol, numberOfAlbumsCol, genresCol);
+        // artistViewTable.setItems(artistList.getArtists());
     }
 
 
-    public void makeInteractive() {
-        artistViewTable.setRowFactory(tv -> {
-            TableRow<Artist> artistRow = new TableRow<>();
-            artistRow.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!artistRow.isEmpty())) {
-                    viewHandler.switchToNestedAlbumView(artistRow.getItem());
-                }
-            });
-            return artistRow;
-        });
-    }
+    // public void makeInteractive() {
+    //     artistViewTable.setRowFactory(tv -> {
+    //         TableRow<Artist> artistRow = new TableRow<>();
+    //         artistRow.setOnMouseClicked(event -> {
+    //             if (event.getClickCount() == 2 && (!artistRow.isEmpty())) {
+    //                 viewHandler.switchToNestedAlbumView(artistRow.getItem());
+    //             }
+    //         });
+    //         return artistRow;
+    //     });
+    // }
 
-    public TableView<Artist> getTableView() {
-        return artistViewTable;
-    }
+    // public TableView<Artist> getTableView() {
+    //     return artistViewTable;
+    // }
 
-    public Tab getTab() {
-        return artistViewTab;
-    }
+    // public Tab getTab() {
+    //     return artistViewTab;
+    // }
 
     public VBox getContents() {
         return artistViewContents;
@@ -74,14 +87,14 @@ public class ArtistView {
         return artistList;
     }
 
-    private void buildContextMenu() {
-        contextMenu = new ContextMenu();
+    // private void buildContextMenu() {
+    //     contextMenu = new ContextMenu();
 
-        MenuItem importAudio = new MenuItem("Import");
-        importAudio.setOnAction(e -> viewHandler.importAudio());
+    //     MenuItem importAudio = new MenuItem("Import");
+    //     importAudio.setOnAction(e -> viewHandler.importAudio());
 
-        contextMenu.getItems().add(importAudio);
-        artistViewTable.setContextMenu(contextMenu);
-    }
+    //     contextMenu.getItems().add(importAudio);
+    //     artistViewTable.setContextMenu(contextMenu);
+    // }
 
 }
