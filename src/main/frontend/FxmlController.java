@@ -59,7 +59,6 @@ public class FxmlController implements Initializable {
     private Label totalTimeLabel;
 
 
-
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
     private final TrackView trackView = new TrackView();
@@ -67,14 +66,11 @@ public class FxmlController implements Initializable {
     private TrackView nestedTrackView;
     private ElapsedTimeListener elapsedTimeListener;
     private AudioPlayer audioPlayer;
-    private AlbumView parentAlbumView;
-    private ArtistView parentArtistView;
+
 
     @FXML
     void albumsClicked(ActionEvent event) {
-        // set current table view to albums table view
         libraryPlayerPane.setCenter(albumView.albumViewTable);
-        // libraryPlayerPane.getCenter().
         clearNestedViews();
         disableBackButton();
         title.setText(albumView.getTitle());
@@ -86,11 +82,6 @@ public class FxmlController implements Initializable {
         clearNestedViews();
         disableBackButton();
         title.setText(albumView.getTitle());
-    }
-
-    @FXML
-    void elapsedTimeScrolled(ScrollEvent event) {
-        // audioPlayer.fineSeek(Duration.seconds(elapsedTimeBar.getValue() * elapsedTimeListener.getMaxElapsedTime() / 100));
     }
 
     @FXML
@@ -115,25 +106,6 @@ public class FxmlController implements Initializable {
             nestedAlbumView = null;
             disableBackButton();
         }
-
-
-        // if (parentAlbumView != null) {
-        //     libraryPlayerPane.setCenter(parentAlbumView.albumViewTable);
-        //     title.setText(parentAlbumView.getTitle());
-        //     clearNestedViews();
-        //     // nestedTrackView = null;
-        // } else if (parentArtistView != null) {
-        //     libraryPlayerPane.setCenter(parentArtistView.artistViewTable);
-        //     title.setText(parentArtistView.getTitle());
-        //     parentArtistView = null;
-        //     clearNestedViews();
-        // }
-
-        // if (nestedAlbumView == null) {
-        //     backButton.setText(null);
-        //     backButton.setDisable(true);
-        //     // title.setText("kapow!");
-        // }
     }
 
 
@@ -225,10 +197,8 @@ public class FxmlController implements Initializable {
             albumRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!albumRow.isEmpty())) {
                     if (nestedAlbumView == null) {
-                        parentAlbumView = albumView;
                         switchToNestedTrackView(albumRow.getItem());
                     } else {
-                        parentAlbumView = nestedAlbumView;
                         switchToNestedTrackView(albumRow.getItem());
                     }
                 }
@@ -242,8 +212,6 @@ public class FxmlController implements Initializable {
             TableRow<Artist> artistRow = new TableRow<>();
             artistRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!artistRow.isEmpty())) {
-                    // viewHandler.switchToNestedAlbumView(artistRow.getItem());
-                    parentArtistView = artistView;
                     switchToNestedAlbumView(artistRow.getItem());
                 }
             });

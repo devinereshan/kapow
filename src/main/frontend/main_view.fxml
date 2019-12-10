@@ -42,7 +42,7 @@
                               </Label>
                               <BorderPane prefHeight="68.0" prefWidth="750.0">
                                  <center>
-                                    <Slider fx:id="elapsedTimeBar" onScroll="#elapsedTimeScrolled" BorderPane.alignment="CENTER">
+                                    <Slider fx:id="elapsedTimeBar" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets left="20.0" right="20.0" />
                                        </BorderPane.margin>
