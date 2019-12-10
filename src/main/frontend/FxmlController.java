@@ -21,9 +21,6 @@ public class FxmlController implements Initializable {
     @FXML
     private BorderPane libraryPlayerPane;
 
-    // @FXML
-    // private TableView currentTableView;
-
     @FXML
     private Slider elapsedTimeBar;
 
@@ -34,11 +31,12 @@ public class FxmlController implements Initializable {
     private TextField serchBox;
 
     private final ArtistView artistView = new ArtistView();
-    // private final TableView<Artist> artistTable = new TableView<>();
+    private final AlbumView albumView = new AlbumView();
 
     @FXML
     void albumsClicked(ActionEvent event) {
         // set current table view to albums table view
+        libraryPlayerPane.setCenter(albumView.albumViewTable);
     }
 
     @FXML
@@ -100,9 +98,7 @@ public class FxmlController implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
         // TODO Auto-generated method stub
         System.out.println("Loading user data");
-        // libraryPlayerPan
-        // currentTableView.getColumns().setAll(artistView.nameCol, artistView.numberOfAlbumsCol, artistView.genresCol);
-        // currentTableView.setItems(artistView.artistList.getArtists());
+        
 
         libraryPlayerPane.setCenter(artistView.artistViewTable);
 

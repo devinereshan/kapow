@@ -44,7 +44,7 @@ public class ViewHandler {
 
         mainTrackViewTab.setContent(mainTrackView.getContents());
         mainAlbumViewTab.setContent(mainAlbumView.getContents());
-        mainArtistViewTab.setContent(mainArtistView.getContents());
+        // mainArtistViewTab.setContent(mainArtistView.getContents());
 
         mainTrackViewTab.setClosable(false);
         mainAlbumViewTab.setClosable(false);
@@ -68,7 +68,7 @@ public class ViewHandler {
 
     public void returnToParent(AlbumView nestedAlbum) {
         mediaListHandler.removeAlbumList(nestedAlbum.getList());
-        mainArtistViewTab.setContent(mainArtistView.getContents());
+        // mainArtistViewTab.setContent(mainArtistView.getContents());
         nestedAlbumView = null;
         nestedAlbum = null;
     }

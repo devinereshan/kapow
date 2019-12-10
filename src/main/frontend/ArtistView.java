@@ -15,7 +15,7 @@ import main.library.ArtistList;
 public class ArtistView {
     final ArtistList artistList;
     // private Tab artistViewTab = new Tab("Artists");
-    private VBox artistViewContents;
+    // private VBox artistViewContents;
     // private Label currentArtistLabel = new Label("Artists");
     final TableView<Artist> artistViewTable = new TableView<>();
     final TableColumn<Artist,String> nameCol = new TableColumn<>("Name");
@@ -79,9 +79,9 @@ public class ArtistView {
     //     return artistViewTab;
     // }
 
-    public VBox getContents() {
-        return artistViewContents;
-    }
+    // public VBox getContents() {
+    //     return artistViewContents;
+    // }
 
     public ArtistList getList() {
         return artistList;
