@@ -97,12 +97,12 @@ public class FxmlController implements Initializable {
 
     @FXML
     void pauseClicked(ActionEvent event) {
-
+        audioPlayer.pause();
     }
 
     @FXML
     void playClicked(ActionEvent event) {
-
+        audioPlayer.play();
     }
 
     @FXML
@@ -112,17 +112,17 @@ public class FxmlController implements Initializable {
 
     @FXML
     void seekLeftClicked(ActionEvent event) {
-
+        audioPlayer.seekLeft();
     }
 
     @FXML
     void seekRightClicked(ActionEvent event) {
-
+        audioPlayer.seekRight();
     }
 
     @FXML
     void stopClicked(ActionEvent event) {
-
+        audioPlayer.stop();
     }
 
     @FXML
@@ -147,6 +147,7 @@ public class FxmlController implements Initializable {
 
         elapsedTimeLabel.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
         totalTimeLabel.textProperty().bind(elapsedTimeListener.totalTimeProperty());
+        currentTrackLabel.textProperty().bind(audioPlayer.currentTrackNameProperty());
         
     }
     

@@ -9,6 +9,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 
 public class AudioPlayer {
@@ -17,6 +18,7 @@ public class AudioPlayer {
     private Media currentTrackMedia;
     private MediaPlayer currentTrackPlayer;
     private boolean autoPlay = false;
+    private SimpleStringProperty currentTrackName = new SimpleStringProperty("No Track Selected");
 
     private ElapsedTimeListener elapsedTimeListener;
 
@@ -51,6 +53,8 @@ public class AudioPlayer {
         currentTrackMedia = new Media(filepath.toUri().toString());
         currentTrackPlayer = new MediaPlayer(currentTrackMedia);
 
+        currentTrackName.set(currentTrack.getName());
+        
         if (elapsedTimeListener != null) {
             elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
             // elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
@@ -196,5 +200,17 @@ public class AudioPlayer {
         if (currentTrackPlayer != null) {
             currentTrackPlayer.seek(duration);
         }
+    }
+
+    public String getCurrentTrackName() {
+        return currentTrackName.get();
+    }
+
+    public void setCurrentTrackName(String name) {
+        currentTrackName.set(name);
+    }
+
+    public SimpleStringProperty currentTrackNameProperty() {
+        return currentTrackName;
     }
 }
