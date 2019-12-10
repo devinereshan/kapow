@@ -12,6 +12,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import main.library.Artist;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -28,7 +30,14 @@ public class FxmlController implements Initializable {
     private Slider volumeBar;
 
     @FXML
-    private TextField serchBox;
+    private TextField searchBox;
+
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private Label currentArtistAlbumLabel;
+
 
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
@@ -49,6 +58,12 @@ public class FxmlController implements Initializable {
     void elapsedTimeScrolled(ScrollEvent event) {
 
     }
+
+    @FXML
+    void backClicked(ActionEvent event) {
+
+    }
+
 
     @FXML
     void importClicked(ActionEvent event) {

@@ -76,6 +76,28 @@
                      </right>
                   </BorderPane>
                </bottom>
+               <top>
+                  <BorderPane prefHeight="40.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+                     <left>
+                        <VBox prefHeight="40.0" prefWidth="80.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button fx:id="backButton" mnemonicParsing="false" onAction="#backClicked" prefHeight="49.0" prefWidth="80.0" text="Back" />
+                           </children>
+                        </VBox>
+                     </left>
+                     <center>
+                        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label fx:id="currentArtistAlbumLabel" prefHeight="57.0" prefWidth="923.0" text="Current Album or Artist">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </top>
             </BorderPane>
          </center>
          <left>
@@ -86,7 +108,7 @@
                         <Button mnemonicParsing="false" onAction="#artistsClicked" prefHeight="60.0" prefWidth="200.0" text="Artists" />
                         <Button mnemonicParsing="false" onAction="#albumsClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
                         <Button mnemonicParsing="false" onAction="#tracksClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
-                        <TextField fx:id="serchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" />
+                        <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" />
                      </children>
                   </VBox>
                </top>
