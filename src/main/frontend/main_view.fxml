@@ -20,7 +20,7 @@
          <center>
             <BorderPane fx:id="libraryPlayerPane" prefHeight="328.0" prefWidth="471.0" BorderPane.alignment="CENTER">
                <center>
-                  <TableView onMouseClicked="#tableViewClicked" prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
+                  <TableView prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
                     <columns>
                       <TableColumn prefWidth="75.0" text="C1" />
                       <TableColumn prefWidth="75.0" text="C2" />

@@ -38,14 +38,11 @@ public class TrackView {
 
     public TrackView(TrackList trackList, ViewHandler viewHandler) {
         this.trackList = trackList;
-        // this.viewHandler = viewHandler;
         assignColumnValues();
 
         trackViewContents = new VBox(trackViewTable);
-        // trackViewTab.setContent(trackViewContents);
 
         trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        // setDoubleClick();
         // buildContextMenu();
     }
 

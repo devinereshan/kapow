@@ -5,11 +5,14 @@ import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
@@ -44,9 +47,6 @@ public class FxmlController implements Initializable {
     private Button backButton;
 
     @FXML
-    private Label currentArtistAlbumLabel;
-
-    @FXML
     private Label title;
 
     @FXML
@@ -58,21 +58,25 @@ public class FxmlController implements Initializable {
     @FXML
     private Label totalTimeLabel;
 
-
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
     private final TrackView trackView = new TrackView();
     private AlbumView nestedAlbumView;
     private TrackView nestedTrackView;
+    private TrackView currentTrackView;
+    private AlbumView currentAlbumView;
     private ElapsedTimeListener elapsedTimeListener;
     private AudioPlayer audioPlayer;
-
+    private final ContextMenu artistContextMenu = new ContextMenu();
+    private final ContextMenu albumContextMenu = new ContextMenu();
+    private final ContextMenu trackContextMenu = new ContextMenu();
 
     @FXML
     void albumsClicked(ActionEvent event) {
         libraryPlayerPane.setCenter(albumView.albumViewTable);
         clearNestedViews();
         disableBackButton();
+        currentAlbumView = albumView;
         title.setText(albumView.getTitle());
     }
 
@@ -85,9 +89,14 @@ public class FxmlController implements Initializable {
     }
 
     @FXML
-    void tableViewClicked(MouseEvent event) {
-        System.out.println("table view clicked");
+    void tracksClicked(ActionEvent event) {
+        libraryPlayerPane.setCenter(trackView.trackViewTable);
+        clearNestedViews();
+        disableBackButton();
+        currentTrackView = trackView;
+        title.setText(albumView.getTitle());
     }
+
 
     @FXML
     void backClicked(ActionEvent event) {
@@ -107,7 +116,6 @@ public class FxmlController implements Initializable {
             disableBackButton();
         }
     }
-
 
     @FXML
     void importClicked(ActionEvent event) {
@@ -145,14 +153,6 @@ public class FxmlController implements Initializable {
     }
 
     @FXML
-    void tracksClicked(ActionEvent event) {
-        libraryPlayerPane.setCenter(trackView.trackViewTable);
-        clearNestedViews();
-        disableBackButton();
-        title.setText(albumView.getTitle());
-    }
-
-    @FXML
     void volumeScrolled(ScrollEvent event) {
 
     }
@@ -170,9 +170,10 @@ public class FxmlController implements Initializable {
         elapsedTimeLabel.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
         totalTimeLabel.textProperty().bind(elapsedTimeListener.totalTimeProperty());
         currentTrackLabel.textProperty().bind(audioPlayer.currentTrackNameProperty());
-        
+
+        setContextMenus();
     }
-    
+
     private void setDoubleClicks() {
         setTrackViewDoubleClick(trackView);
         setAlbumViewDoubleClick(albumView);
@@ -223,7 +224,8 @@ public class FxmlController implements Initializable {
         elapsedTimeBar.valueProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable observable) {
                 if (elapsedTimeBar.isPressed()) {
-                    audioPlayer.fineSeek(Duration.seconds(elapsedTimeBar.getValue() * elapsedTimeListener.getMaxElapsedTime() / 100));
+                    audioPlayer.fineSeek(Duration
+                            .seconds(elapsedTimeBar.getValue() * elapsedTimeListener.getMaxElapsedTime() / 100));
                 }
             }
         });
@@ -240,6 +242,7 @@ public class FxmlController implements Initializable {
         nestedTrackView = new TrackView(album);
         libraryPlayerPane.setCenter(nestedTrackView.trackViewTable);
         setTrackViewDoubleClick(nestedTrackView);
+        currentTrackView = nestedTrackView;
         title.setText(nestedTrackView.getTitle());
         backButton.setText("Back");
         backButton.setDisable(false);
@@ -249,6 +252,7 @@ public class FxmlController implements Initializable {
         nestedAlbumView = new AlbumView(artist);
         libraryPlayerPane.setCenter(nestedAlbumView.albumViewTable);
         setAlbumViewDoubleClick(nestedAlbumView);
+        currentAlbumView = nestedAlbumView;
         title.setText(nestedAlbumView.getTitle());
         backButton.setText("Back");
         backButton.setDisable(false);
@@ -262,5 +266,30 @@ public class FxmlController implements Initializable {
     private void disableBackButton() {
         backButton.setText(null);
         backButton.setDisable(true);
+    }
+
+    private void setContextMenus() {
+        buildTrackViewMenu();
+        setTrackViewMenu(trackView);
+
+    }
+
+    private void buildTrackViewMenu() {
+        MenuItem play = new MenuItem("Play");
+        play.setOnAction(e -> queueAndPlay(currentTrackView.trackViewTable.getSelectionModel().getSelectedItems()));
+
+        trackContextMenu.getItems().add(play);
+    }
+
+    private void queueAndPlay(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            if (tracks.size() > 0) {
+                audioPlayer.queueAndPlay(tracks);
+            }
+        }
+    }
+
+    private void setTrackViewMenu(TrackView view) {
+        trackView.trackViewTable.setContextMenu(trackContextMenu);
     }
 }
