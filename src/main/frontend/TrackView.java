@@ -17,13 +17,13 @@ import main.library.TrackList;
 
 public class TrackView {
     private final TrackList trackList;
-    private Tab trackViewTab = new Tab("Tracks");
-    private TableView<Track> trackViewTable = new TableView<>();
+    // private Tab trackViewTab = new Tab("Tracks");
+    final TableView<Track> trackViewTable = new TableView<>();
     private VBox trackViewContents;
-    private Button returnToParent;
+    // private Button returnToParent;
     private Label currentAlbumLabel;
-    private ContextMenu contextMenu;
-    private ViewHandler viewHandler;
+    // private ContextMenu contextMenu;
+    // private ViewHandler viewHandler;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
@@ -35,109 +35,113 @@ public class TrackView {
 
     public TrackView(TrackList trackList, ViewHandler viewHandler) {
         this.trackList = trackList;
-        this.viewHandler = viewHandler;
+        // this.viewHandler = viewHandler;
         assignColumnValues();
 
         trackViewContents = new VBox(trackViewTable);
-        trackViewTab.setContent(trackViewContents);
+        // trackViewTab.setContent(trackViewContents);
 
         trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        setDoubleClick();
-        buildContextMenu();
+        // setDoubleClick();
+        // buildContextMenu();
     }
 
+    public TrackView() {
+        trackList = new TrackList();
+        assignColumnValues();
+    }
 
     // Constructor for nested TrackView
     public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName) {
         this.trackList = trackList;
-        this.viewHandler = viewHandler;
+        // this.viewHandler = viewHandler;
         assignAlbumColumnValues();
 
-        returnToParent = new Button("Back To Album");
+        // returnToParent = new Button("Back To Album");
         currentAlbumLabel = new Label(parentName);
-        trackViewContents = new VBox(returnToParent, currentAlbumLabel, trackViewTable);
-        trackViewTab.setContent(trackViewContents);
+        // trackViewContents = new VBox(returnToParent, currentAlbumLabel, trackViewTable);
+        // trackViewTab.setContent(trackViewContents);
 
-        returnToParent.setOnAction(e -> viewHandler.returnToParent(this));
-        setDoubleClick();
-        buildContextMenu();
+        // returnToParent.setOnAction(e -> viewHandler.returnToParent(this));
+        // setDoubleClick();
+        // buildContextMenu();
     }
 
-    private void setDoubleClick() {
-        trackViewTable.setRowFactory(tv -> {
-            TableRow<Track> trackRow = new TableRow<>();
-            trackRow.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-                    play(trackRow.getItem());
-                }
-            });
-            return trackRow;
-        });
-    }
+    // private void setDoubleClick() {
+    //     trackViewTable.setRowFactory(tv -> {
+    //         TableRow<Track> trackRow = new TableRow<>();
+    //         trackRow.setOnMouseClicked(event -> {
+    //             if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
+    //                 play(trackRow.getItem());
+    //             }
+    //         });
+    //         return trackRow;
+    //     });
+    // }
 
-    private void buildContextMenu() {
-        contextMenu = new ContextMenu();
+    // private void buildContextMenu() {
+    //     contextMenu = new ContextMenu();
 
-        MenuItem play = new MenuItem("Play");
-        play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
+    //     MenuItem play = new MenuItem("Play");
+    //     play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem queue = new MenuItem("Add to queue");
-        queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
+    //     MenuItem queue = new MenuItem("Add to queue");
+    //     queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem queueNext = new MenuItem("Queue next");
-        queueNext.setOnAction(e -> queueNext(trackViewTable.getSelectionModel().getSelectedItems()));
+    //     MenuItem queueNext = new MenuItem("Queue next");
+    //     queueNext.setOnAction(e -> queueNext(trackViewTable.getSelectionModel().getSelectedItems()));
 
-        MenuItem importAudio = new MenuItem("Import");
-        importAudio.setOnAction(e -> viewHandler.importAudio());
+    //     MenuItem importAudio = new MenuItem("Import");
+    //     importAudio.setOnAction(e -> viewHandler.importAudio());
 
-        MenuItem editTrack = new MenuItem("Edit track");
-        editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+    //     MenuItem editTrack = new MenuItem("Edit track");
+    //     editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
-        MenuItem delete = new MenuItem("Delete");
-        delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+    //     MenuItem delete = new MenuItem("Delete");
+    //     delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
 
-        contextMenu.getItems().add(play);
-        contextMenu.getItems().add(queue);
-        contextMenu.getItems().add(queueNext);
-        contextMenu.getItems().add(importAudio);
-        contextMenu.getItems().add(editTrack);
-        contextMenu.getItems().add(delete);
-        trackViewTable.setContextMenu(contextMenu);
-    }
+    //     contextMenu.getItems().add(play);
+    //     contextMenu.getItems().add(queue);
+    //     contextMenu.getItems().add(queueNext);
+    //     contextMenu.getItems().add(importAudio);
+    //     contextMenu.getItems().add(editTrack);
+    //     contextMenu.getItems().add(delete);
+    //     trackViewTable.setContextMenu(contextMenu);
+    // }
 
-    private void play(Track track) {
-        if (track != null) {
-            viewHandler.queueAndPlay(track);
-        }
-    }
+    // private void play(Track track) {
+    //     if (track != null) {
+    //         viewHandler.queueAndPlay(track);
+    //     }
+    // }
 
-    private void play(ObservableList<Track> tracks) {
-        if (tracks != null) {
-            viewHandler.queueAndPlay(tracks);
-        }
-    }
+    // private void play(ObservableList<Track> tracks) {
+    //     if (tracks != null) {
+    //         viewHandler.queueAndPlay(tracks);
+    //     }
+    // }
 
-    private void addToQueue(ObservableList<Track> tracks) {
-        if (tracks != null) {
-            viewHandler.queue(tracks);
-        }
-    }
+    // private void addToQueue(ObservableList<Track> tracks) {
+    //     if (tracks != null) {
+    //         viewHandler.queue(tracks);
+    //     }
+    // }
 
-    private void queueNext(ObservableList<Track> tracks) {
-        if (tracks != null) {
-            viewHandler.queueNext(tracks);
-        }
-    }
+    // private void queueNext(ObservableList<Track> tracks) {
+    //     if (tracks != null) {
+    //         viewHandler.queueNext(tracks);
+    //     }
+    // }
 
     public VBox getContents() {
         return trackViewContents;
     }
 
 
-    public Tab getTab() {
-        return trackViewTab;
-    }
+    // public Tab getTab() {
+    //     return trackViewTab;
+    // }
 
     private void assignColumnValues() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));

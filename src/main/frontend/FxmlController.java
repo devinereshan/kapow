@@ -32,6 +32,7 @@ public class FxmlController implements Initializable {
 
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
+    private final TrackView trackView = new TrackView();
 
     @FXML
     void albumsClicked(ActionEvent event) {
@@ -86,7 +87,7 @@ public class FxmlController implements Initializable {
 
     @FXML
     void tracksClicked(ActionEvent event) {
-
+        libraryPlayerPane.setCenter(trackView.trackViewTable);
     }
 
     @FXML
