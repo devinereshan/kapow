@@ -1,8 +1,12 @@
 package main.player;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-// import javafx.scene.control.Slider;
+import javafx.scene.control.Slider;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 public class ElapsedTimeListener {
     private int elapsedHours;
@@ -11,28 +15,29 @@ public class ElapsedTimeListener {
     private int totalHours;
     private int totalMinutes;
     private int totalSeconds;
+    private double maxElapsedTime;
     private int previousElapsedTime = 0;
     private SimpleStringProperty totalTime = new SimpleStringProperty("--:--");
     private SimpleStringProperty elapsedTime = new SimpleStringProperty("--:--");
-    // private Slider elapsedTimeSlider;
+    private Slider elapsedTimeSlider;
 
-    // public ElapsedTimeListener(Slider elapsedTimeSlider) {
-    //     this.elapsedTimeSlider = elapsedTimeSlider;
-    // }
+    public ElapsedTimeListener(Slider elapsedTimeSlider) {
+        this.elapsedTimeSlider = elapsedTimeSlider;
+    }
 
     public ElapsedTimeListener() {}
 
 
-    // public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
-    //     elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
-    //         public void invalidated(Observable observable) {
-    //             if (elapsedTimeSlider.isPressed()) {
-    //                 mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue()));
-    //             }
-    //         }
-    //     });
+    public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
+        elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
+            public void invalidated(Observable observable) {
+                if (elapsedTimeSlider.isPressed()) {
+                    mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime));
+                }
+            }
+        });
 
-    // }
+    }
 
     public void resetElapsedTime() {
         setElapsedTime(0);
@@ -40,10 +45,7 @@ public class ElapsedTimeListener {
     }
 
     public void updateElapsedTimeFields(double elapsedTime) {
-        // This is where the memory leak is. Updating the slider value.
-        // elapsedTimeSlider.setValue(elapsedTime);
-        // elapsedTimeSlider.adjustValue(elapsedTime);
-        // System.out.println(elapsedTimeSlider.isCache());
+        elapsedTimeSlider.setValue(elapsedTime / maxElapsedTime);
 
         if ((int) elapsedTime > previousElapsedTime) {
             setElapsedTime((int) elapsedTime);
@@ -54,11 +56,12 @@ public class ElapsedTimeListener {
 
 
     public void setNewTrackDimensions(double totalTimeInSeconds) {
+        maxElapsedTime = totalTimeInSeconds;
         setTotalTime((int) totalTimeInSeconds);
         resetElapsedTime();
         // elapsedTimeSlider.setMin(0);
         // elapsedTimeSlider.setMax(totalTimeInSeconds);
-        // elapsedTimeSlider.setValue(0);
+        elapsedTimeSlider.setValue(0);
     }
 
 

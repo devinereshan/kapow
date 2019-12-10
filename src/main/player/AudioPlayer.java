@@ -53,6 +53,7 @@ public class AudioPlayer {
 
         if (elapsedTimeListener != null) {
             elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
+            elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
         }
 
         currentTrackPlayer.setOnReady(new Runnable() {

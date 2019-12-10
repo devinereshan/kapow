@@ -23,7 +23,7 @@ public class GUI extends Application {
         root.setTop(viewHandler.getAudioPlayerView().getMainContainer());
         root.setCenter(viewHandler.views);
 
-        Scene scene = new Scene(root, 500, 200);
+        Scene scene = new Scene(root, 600, 700);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Kapow! - Kool Audio Player, or whatever...");

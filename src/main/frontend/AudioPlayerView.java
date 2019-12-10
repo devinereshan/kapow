@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -29,7 +30,7 @@ public class AudioPlayerView {
     private final Button play = new Button("Play");
     private final Button pause = new Button("Pause");
 
-    // Slider elapsedTimeBar = new Slider(0, 1, 0);
+    Slider elapsedTimeBar = new Slider(0, 1, 0);
     private Label elapsedTime = new Label("--:--");
     private Label totalTime = new Label("--:--");
 
@@ -41,8 +42,8 @@ public class AudioPlayerView {
     private ComboBox queue;
 
     public AudioPlayerView() {
-        // elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
-        elapsedTimeListener = new ElapsedTimeListener();
+        elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
+        // elapsedTimeListener = new ElapsedTimeListener();
         audioPlayer = new AudioPlayer(elapsedTimeListener);
         buildListView();
         elapsedTime.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
@@ -55,8 +56,8 @@ public class AudioPlayerView {
         trackName = new HBox(20, currentTrackName, queue);
         trackName.setAlignment(Pos.CENTER);
 
-        // timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
-        timeBox = new HBox(elapsedTime, totalTime);
+        timeBox = new HBox(elapsedTime, elapsedTimeBar, totalTime);
+        // timeBox = new HBox(elapsedTime, totalTime);
         timeBox.setAlignment(Pos.CENTER);
 
         buttonBar = new HBox(20, seekLeft, stopTrack, play, pause, seekRight);
