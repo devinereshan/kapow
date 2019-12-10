@@ -99,16 +99,18 @@ public class FxmlController implements Initializable {
     void backClicked(ActionEvent event) {
         if (parentAlbumView != null) {
             libraryPlayerPane.setCenter(parentAlbumView.albumViewTable);
+            title.setText(parentAlbumView.getTitle());
             nestedTrackView = null;
         } else if (parentArtistView != null) {
             libraryPlayerPane.setCenter(parentArtistView.artistViewTable);
+            title.setText(parentArtistView.getTitle());
             clearNestedViews();
         }
 
         if (nestedAlbumView == null) {
             backButton.setText(null);
             backButton.setDisable(true);
-            title.setText("kapow!");
+            // title.setText("kapow!");
         }
     }
 
@@ -176,22 +178,28 @@ public class FxmlController implements Initializable {
     }
     
     private void setDoubleClicks() {
-        // trackView.trackViewTable.setRowFactory(tv -> {
-        //     TableRow<Track> trackRow = new TableRow<>();
-        //     trackRow.setOnMouseClicked(event -> {
-        //         if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-        //             queueAndPlay(trackRow.getItem());
-        //         }
-        //     });
-        //     return trackRow;
-        // });
         setTrackViewDoubleClick(trackView);
+        setAlbumViewDoubleClick(albumView);
+        setArtistViewDoubleClick(artistView);
+    }
 
-        albumView.albumViewTable.setRowFactory(tv -> {
+    private void setTrackViewDoubleClick(TrackView view) {
+        view.trackViewTable.setRowFactory(tv -> {
+            TableRow<Track> trackRow = new TableRow<>();
+            trackRow.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
+                    queueAndPlay(trackRow.getItem());
+                }
+            });
+            return trackRow;
+        });
+    }
+
+    private void setAlbumViewDoubleClick(AlbumView view) {
+        view.albumViewTable.setRowFactory(tv -> {
             TableRow<Album> albumRow = new TableRow<>();
             albumRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!albumRow.isEmpty())) {
-                    // viewHandler.switchToNestedTrackView(albumRow.getItem());
                     if (nestedAlbumView == null) {
                         parentAlbumView = albumView;
                         switchToNestedTrackView(albumRow.getItem());
@@ -205,15 +213,16 @@ public class FxmlController implements Initializable {
         });
     }
 
-    private void setTrackViewDoubleClick(TrackView view) {
-        view.trackViewTable.setRowFactory(tv -> {
-            TableRow<Track> trackRow = new TableRow<>();
-            trackRow.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-                    queueAndPlay(trackRow.getItem());
+    private void setArtistViewDoubleClick(ArtistView view) {
+        view.artistViewTable.setRowFactory(tv -> {
+            TableRow<Artist> artistRow = new TableRow<>();
+            artistRow.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!artistRow.isEmpty())) {
+                    // viewHandler.switchToNestedAlbumView(artistRow.getItem());
+                    switchToNestedAlbumView(artistRow.getItem());
                 }
             });
-            return trackRow;
+            return artistRow;
         });
     }
 
@@ -239,6 +248,15 @@ public class FxmlController implements Initializable {
         libraryPlayerPane.setCenter(nestedTrackView.trackViewTable);
         setTrackViewDoubleClick(nestedTrackView);
         title.setText(nestedTrackView.getTitle());
+        backButton.setText("Back");
+        backButton.setDisable(false);
+    }
+
+    private void switchToNestedAlbumView(Artist artist) {
+        nestedAlbumView = new AlbumView(artist);
+        libraryPlayerPane.setCenter(nestedAlbumView.albumViewTable);
+        setAlbumViewDoubleClick(nestedAlbumView);
+        title.setText(nestedAlbumView.getTitle());
         backButton.setText("Back");
         backButton.setDisable(false);
     }

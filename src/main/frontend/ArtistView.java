@@ -23,6 +23,7 @@ public class ArtistView {
     final TableColumn<Artist,String> genresCol = new TableColumn<>("Genres");
     // ViewHandler viewHandler;
     // ContextMenu contextMenu;
+    String title = "kapow!";
 
 
     public ArtistView(ArtistList artistList, ViewHandler viewHandler) {
@@ -58,6 +59,10 @@ public class ArtistView {
         artistViewTable.setItems(artistList.getArtists());
     }
 
+
+    public String getTitle() {
+        return title;
+    }
 
     // public void makeInteractive() {
     //     artistViewTable.setRowFactory(tv -> {

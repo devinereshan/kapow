@@ -23,7 +23,7 @@ public class TrackView {
     private VBox trackViewContents;
     // private Button returnToParent;
     // private Label currentAlbumLabel = new Label("kapow!");
-    private String title;
+    private String title = "kapow!";
     private AlbumView parent;
     // private ContextMenu contextMenu;
     // private ViewHandler viewHandler;
@@ -82,7 +82,7 @@ public class TrackView {
     public String getTitle() {
         return title;
     }
-    
+
     // private void setDoubleClick() {
     //     trackViewTable.setRowFactory(tv -> {
     //         TableRow<Track> trackRow = new TableRow<>();

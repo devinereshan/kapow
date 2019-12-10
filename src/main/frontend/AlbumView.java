@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import main.library.Album;
 import main.library.AlbumList;
+import main.library.Artist;
 
 public class AlbumView {
     private AlbumList albumList;
@@ -19,7 +20,7 @@ public class AlbumView {
     private VBox albumViewContents;
     // private Button returnToParent;
     // private Label currentArtistLabel;
-    String currentArtist;
+    String title = "kapow!";
     final TableView<Album> albumViewTable = new TableView<>();
     TableColumn<Album,String> nameCol = new TableColumn<>("Name");
     TableColumn<Album,String> artistsCol = new TableColumn<>("Artists");
@@ -61,6 +62,12 @@ public class AlbumView {
         // makeInteractive();
     }
 
+    public AlbumView(Artist artist) {
+        albumList = new AlbumList(artist.getId());
+        assignColumnValues();
+        title = artist.getName();
+    }
+
 
     private void assignColumnValues() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -72,6 +79,9 @@ public class AlbumView {
     }
 
 
+    public String getTitle() {
+        return title;
+    }
     // private void buildContextMenu() {
     //     contextMenu = new ContextMenu();
 
