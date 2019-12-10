@@ -22,6 +22,9 @@ public class ElapsedTimeListener {
     private Slider elapsedTimeSlider;
 
     public ElapsedTimeListener(Slider elapsedTimeSlider) {
+        System.out.println("In elapsedTimeListener constructor");
+        System.out.println("line");
+        System.out.println("Slider is null: " + elapsedTimeSlider == null);
         this.elapsedTimeSlider = elapsedTimeSlider;
     }
 
@@ -32,7 +35,7 @@ public class ElapsedTimeListener {
         elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable observable) {
                 if (elapsedTimeSlider.isPressed()) {
-                    mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime));
+                    mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime / 100));
                 }
             }
         });
@@ -45,7 +48,7 @@ public class ElapsedTimeListener {
     }
 
     public void updateElapsedTimeFields(double elapsedTime) {
-        elapsedTimeSlider.setValue(elapsedTime / maxElapsedTime);
+        elapsedTimeSlider.setValue(elapsedTime / maxElapsedTime * 100);
 
         if ((int) elapsedTime > previousElapsedTime) {
             setElapsedTime((int) elapsedTime);
