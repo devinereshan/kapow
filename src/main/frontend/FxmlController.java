@@ -3,6 +3,8 @@ package main.frontend;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 // import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 import main.library.Artist;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,6 +49,13 @@ public class FxmlController implements Initializable {
     @FXML
     private Label currentTrackLabel;
 
+    @FXML
+    private Label elapsedTimeLabel;
+
+    @FXML
+    private Label totalTimeLabel;
+
+
 
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
@@ -66,7 +76,7 @@ public class FxmlController implements Initializable {
 
     @FXML
     void elapsedTimeScrolled(ScrollEvent event) {
-
+        // audioPlayer.fineSeek(Duration.seconds(elapsedTimeBar.getValue() * elapsedTimeListener.getMaxElapsedTime() / 100));
     }
 
     @FXML
@@ -127,13 +137,16 @@ public class FxmlController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        // TODO Auto-generated method stub
         System.out.println("Loading user data");
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
         audioPlayer = new AudioPlayer(elapsedTimeListener);
 
         libraryPlayerPane.setCenter(artistView.artistViewTable);
         setDoubleClick();
+        connectSliderToPlayer();
+
+        elapsedTimeLabel.textProperty().bind(elapsedTimeListener.elapsedTimeProperty());
+        totalTimeLabel.textProperty().bind(elapsedTimeListener.totalTimeProperty());
         
     }
     
@@ -147,6 +160,17 @@ public class FxmlController implements Initializable {
             });
             return trackRow;
         });
+    }
+
+    public void connectSliderToPlayer() {
+        elapsedTimeBar.valueProperty().addListener(new InvalidationListener() {
+            public void invalidated(Observable observable) {
+                if (elapsedTimeBar.isPressed()) {
+                    audioPlayer.fineSeek(Duration.seconds(elapsedTimeBar.getValue() * elapsedTimeListener.getMaxElapsedTime() / 100));
+                }
+            }
+        });
+
     }
 
     private void queueAndPlay(Track track) {

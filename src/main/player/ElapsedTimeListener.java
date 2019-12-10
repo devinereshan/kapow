@@ -17,8 +17,8 @@ public class ElapsedTimeListener {
     private int totalSeconds;
     private double maxElapsedTime;
     private int previousElapsedTime = 0;
-    private SimpleStringProperty totalTime = new SimpleStringProperty("--:--");
-    private SimpleStringProperty elapsedTime = new SimpleStringProperty("--:--");
+    private SimpleStringProperty totalTime = new SimpleStringProperty("00:00");
+    private SimpleStringProperty elapsedTime = new SimpleStringProperty("00:00");
     private Slider elapsedTimeSlider;
 
     public ElapsedTimeListener(Slider elapsedTimeSlider) {
@@ -31,16 +31,16 @@ public class ElapsedTimeListener {
     public ElapsedTimeListener() {}
 
 
-    public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
-        elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
-            public void invalidated(Observable observable) {
-                if (elapsedTimeSlider.isPressed()) {
-                    mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime / 100));
-                }
-            }
-        });
+    // public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
+    //     elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
+    //         public void invalidated(Observable observable) {
+    //             if (elapsedTimeSlider.isPressed()) {
+    //                 mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime / 100));
+    //             }
+    //         }
+    //     });
 
-    }
+    // }
 
     public void resetElapsedTime() {
         setElapsedTime(0);
@@ -77,6 +77,9 @@ public class ElapsedTimeListener {
         this.totalTime.set(time);
     }
 
+    public double getMaxElapsedTime() {
+        return maxElapsedTime;
+    }
 
     public String getElapsedTime() {
         return elapsedTime.get();

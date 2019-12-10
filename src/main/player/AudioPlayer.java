@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import main.library.Track;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
+import javafx.util.Duration;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
@@ -53,7 +53,7 @@ public class AudioPlayer {
 
         if (elapsedTimeListener != null) {
             elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
-            elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
+            // elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
         }
 
         currentTrackPlayer.setOnReady(new Runnable() {
@@ -190,5 +190,11 @@ public class AudioPlayer {
       // testing
     public void printQueue() {
         System.out.println(queue.toString());
+    }
+
+    public void fineSeek(Duration duration) {
+        if (currentTrackPlayer != null) {
+            currentTrackPlayer.seek(duration);
+        }
     }
 }
