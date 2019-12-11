@@ -35,6 +35,7 @@ public class TrackView {
     private ContextMenu contextMenu;
     private AudioPlayer audioPlayer;
     // private ViewHandler viewHandler;
+    private static Track trackToEdit;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
@@ -126,16 +127,23 @@ public class TrackView {
 
     private void editTrack(Track track) {
         try {
+            trackToEdit = track;
             Parent root = FXMLLoader.load(getClass().getResource("track_edit_box.fxml"));
             Stage popup = new Stage();
             popup.setTitle("Edit Track Information");
             popup.setScene(new Scene(root));
             popup.show();
+            // TrackEditController.setTrackToEdit(track);
+            // TrackEditController.generateFields();
         } catch (IOException e) {
             System.err.println("TrackView: Unable to open track edit box");
             e.printStackTrace();
         }
 
+    }
+
+    public static Track getTrackToEdit() {
+        return trackToEdit;
     }
 
     private void play(ObservableList<Track> tracks) {
