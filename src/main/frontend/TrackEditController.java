@@ -61,8 +61,11 @@ public class TrackEditController implements Initializable {
             trackToEdit.setIndexInAlbum(trackToEdit.getIndexInAlbum());
             success = connection.updateTrack(trackToEdit);
 
-            updatedAlbum = connection.getAlbum(connection.getAlbumID(trackToEdit.getAlbums(), trackToEdit.getId()));
-            updatedArtist = connection.getArtist(connection.getArtistID(trackToEdit.getArtists(), trackToEdit.getId()));
+            int updatedAlbumID = connection.getAlbumID(trackToEdit.getAlbums(), trackToEdit.getId());
+            updatedAlbum = connection.getAlbum(updatedAlbumID);
+
+            int updatedArtistID = connection.getArtistID(trackToEdit.getArtists(), trackToEdit.getId());
+            updatedArtist = connection.getArtist(updatedArtistID);
         } catch (SQLException e) {
             System.err.println("TrackEditController: Failed to update track in database");
             e.printStackTrace();

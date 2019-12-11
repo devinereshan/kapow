@@ -1,5 +1,7 @@
 package main.frontend;
 
+import java.sql.SQLException;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -10,6 +12,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import main.database.DBConnection;
 import main.library.Album;
 import main.library.AlbumList;
 import main.library.Artist;
@@ -28,6 +31,7 @@ public class AlbumView {
     TableColumn<Album,String> genresCol = new TableColumn<>("Genres");
     // private ViewHandler viewHandler;
     // private ContextMenu contextMenu;
+    private Artist artist;
 
 
     public AlbumView(AlbumList albumList, ViewHandler viewHandler) {
@@ -66,6 +70,7 @@ public class AlbumView {
     public AlbumView(Artist artist) {
         albumList = new AlbumList(artist.getId());
         assignColumnValues();
+        this.artist = artist;
         title = artist.getName();
         albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -84,6 +89,21 @@ public class AlbumView {
     public String getTitle() {
         return title;
     }
+
+
+    public void updateTitle() {
+        if (artist != null) {
+            try (DBConnection connection = new DBConnection()) {
+                artist = connection.getArtist(artist.getId());
+                title = artist.getName();
+            } catch (SQLException e) {
+                System.err.println("TrackView: Unable to update artist title");
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     // private void buildContextMenu() {
     //     contextMenu = new ContextMenu();
 

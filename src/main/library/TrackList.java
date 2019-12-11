@@ -10,7 +10,7 @@ import main.database.DBConnection;
 public class TrackList {
     private ArrayList<Integer> trackIDs;
     public ObservableList<Track> tracks = FXCollections.observableArrayList();
-    int albumID;
+    int albumID = 0;
 
     public TrackList () {
         try (DBConnection connection = new DBConnection()) {
@@ -87,7 +87,12 @@ public class TrackList {
         trackIDs.clear();
         tracks.clear();
         try (DBConnection connection = new DBConnection()) {
-            trackIDs = connection.getIDs();
+            if (albumID > 0) {
+                trackIDs = connection.getTrackAlbumIDs(albumID);
+            } else {
+                trackIDs = connection.getIDs();
+            }
+            
             for (Integer trackID : trackIDs) {
                 tracks.add(connection.getTrack(trackID));
             }

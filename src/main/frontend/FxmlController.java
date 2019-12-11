@@ -129,7 +129,7 @@ public class FxmlController implements Initializable {
 
     @FXML
     void importClicked(ActionEvent event) {
-
+        ImportBox importBox = new ImportBox(GUI.getpStage());
     }
 
     @FXML
@@ -313,12 +313,19 @@ public class FxmlController implements Initializable {
             e.printStackTrace();
         }
 
-        // if album or artist name change and nested views aare not null, update view title
-        // same for removal of old artist
+        if (nestedTrackView != null) {
+            nestedTrackView.updateTitle();
+        }
+
+        if (nestedAlbumView != null) {
+            nestedAlbumView.updateTitle();
+        }
 
         // then update lists
         MediaListHandler.hardRefresh();
     }
+
+
     // private void setContextMenus() {
     //     System.out.println("In set context Menu");
     //     buildTrackViewMenu();

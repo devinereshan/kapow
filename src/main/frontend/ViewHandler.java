@@ -139,7 +139,7 @@ public class ViewHandler {
     }
 
     public void importAudio() {
-        ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);
+        // ImportBox importBox = new ImportBox(primaryStage, mediaListHandler);
     }
 
     public AudioPlayerView getAudioPlayerView() {

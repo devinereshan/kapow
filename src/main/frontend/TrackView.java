@@ -1,6 +1,7 @@
 package main.frontend;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import main.database.DBConnection;
 import main.library.Album;
 import main.library.Track;
 import main.library.TrackList;
@@ -36,6 +38,7 @@ public class TrackView {
     private AudioPlayer audioPlayer;
     // private ViewHandler viewHandler;
     private static Track trackToEdit;
+    private Album album;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
@@ -72,6 +75,7 @@ public class TrackView {
 
         assignAlbumColumnValues();
 
+        this.album = album;
         title = String.format("%s - %s", album.getArtists(), album.getName());
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -140,6 +144,18 @@ public class TrackView {
 
     }
 
+    public void updateTitle() {
+        if (album != null) {
+            try (DBConnection connection = new DBConnection()) {
+                album = connection.getAlbum(album.getId());
+                title = String.format("%s - %s", album.getArtists(), album.getName());
+            } catch (SQLException e) {
+                System.err.println("TrackView: Unable to update album title");
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public static void cleanTrackToEdit() {
         trackToEdit = null;
     }

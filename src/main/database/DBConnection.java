@@ -433,9 +433,14 @@ public class DBConnection implements AutoCloseable {
         preparedStatement.setString(1, albumName);
         preparedStatement.setInt(2, trackID);
         resultSet = preparedStatement.executeQuery();
-        resultSet.next();
+        int albumID = 0;
 
-        return resultSet.getInt(1);
+        while (resultSet.next()) {
+            albumID = resultSet.getInt(1);
+            break;
+        }
+
+        return albumID;
     }
 
 
@@ -444,9 +449,14 @@ public class DBConnection implements AutoCloseable {
         preparedStatement.setString(1, artistName);
         preparedStatement.setInt(2, trackID);
         resultSet = preparedStatement.executeQuery();
-        resultSet.next();
+        int artistID = 0;
 
-        return resultSet.getInt(1);
+        while(resultSet.next()) {
+            artistID = resultSet.getInt(1);
+            break;
+        }
+
+        return artistID;
 
     }
 
@@ -606,7 +616,7 @@ public class DBConnection implements AutoCloseable {
             break;
         }
 
-        return count > 0;
+        return count <= 0;
     }
 
 
@@ -620,7 +630,7 @@ public class DBConnection implements AutoCloseable {
             trackCount = resultSet.getInt(1);
         }
 
-        return trackCount > 0;
+        return trackCount <= 0;
     }
 
 

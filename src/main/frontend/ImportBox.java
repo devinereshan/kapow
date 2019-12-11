@@ -34,7 +34,7 @@ public class ImportBox {
     private final Button importDirectory = new Button("Import Directory");
     private final Button submit = new Button("Submit");
     private final Button cancel = new Button("Cancel");
-    private MediaListHandler mediaListHandler;
+    // private MediaListHandler mediaListHandler;
     private VBox root;
     private HBox top;
     private HBox middle;
@@ -199,8 +199,8 @@ public class ImportBox {
     }
 
 
-    public ImportBox (Stage primaryStage, MediaListHandler mediaListHandler) {
-        this.mediaListHandler = mediaListHandler;
+    public ImportBox (Stage primaryStage) {
+        // this.mediaListHandler = mediaListHandler;
         cancel.setOnAction(e -> stage.close());
         submit.setDisable(true);
         submit.setOnAction(e -> submit());
@@ -296,7 +296,9 @@ public class ImportBox {
 
 
         if (success) {
-            mediaListHandler.addMultiTrackToLists(tracks);
+            // mediaListHandler.addMultiTrackToLists(tracks);
+            // FxmlController.updateLists();
+            MediaListHandler.hardRefresh();
             importing.setText("Success");
             stage.close();
         } else {

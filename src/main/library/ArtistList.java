@@ -24,10 +24,7 @@ public class ArtistList {
         }
     }
 
-    // construct an albumList instance for a single artist
-    public ArtistList(int artistID) {
-
-    }
+    
 
     public ObservableList<Artist> getArtists() {
         return artists;

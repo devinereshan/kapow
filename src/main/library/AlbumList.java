@@ -11,7 +11,7 @@ import main.library.Album;
 public class AlbumList {
     private ArrayList<Integer> albumIDs;
     private ObservableList<Album> albums = FXCollections.observableArrayList();
-    int artistID;
+    int artistID = 0;
 
 
     public AlbumList() {
@@ -107,7 +107,11 @@ public class AlbumList {
         albumIDs.clear();
         albums.clear();
         try (DBConnection connection = new DBConnection()) {
-            albumIDs = connection.getAlbumIDs();
+            if (artistID > 0) {
+                albumIDs = connection.getAlbumIDs(artistID);
+            } else {
+                albumIDs = connection.getAlbumIDs();
+            }
 
             for (Integer albumID : albumIDs) {
                 albums.add(connection.getAlbum(albumID));
