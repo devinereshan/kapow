@@ -67,8 +67,6 @@ public class ConfirmDeleteController {
     
     private void removeTracks() {
         int albumID = 0;
-        // Album album = null;
-        // Artist artist = null;
         int artistID = 0;
 
         boolean success = false;
@@ -81,9 +79,6 @@ public class ConfirmDeleteController {
             }
 
             success = true;
-
-            // album = connection.getAlbum(albumID);
-            // artist = connection.getArtist(artistID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
