@@ -90,37 +90,48 @@ public class FxmlController implements Initializable {
 
     @FXML
     void albumsToggleClicked(ActionEvent event) {
+        switchToMainAlbumsView();
+    }
+
+    private void switchToMainAlbumsView() {
         libraryPlayerPane.setCenter(albumView.albumViewTable);
         clearNestedViews();
         disableBackButton();
-        // currentAlbumView = albumView;
         title.setText(albumView.getTitle());
         artistsToggleButton.setSelected(false);
         tracksToggleButton.setSelected(false);
+        albumsToggleButton.setSelected(true);
     }
 
     @FXML
     void artistsToggleClicked(ActionEvent event) {
+        switchToMainArtistsView();
+    }
+
+    private void switchToMainArtistsView() {
         libraryPlayerPane.setCenter(artistView.artistViewTable);
         clearNestedViews();
         disableBackButton();
         title.setText(artistView.getTitle());
         albumsToggleButton.setSelected(false);
         tracksToggleButton.setSelected(false);
+        artistsToggleButton.setSelected(true);
     }
 
     @FXML
     void tracksToggleClicked(ActionEvent event) {
+        switchToMainTracksView();
+    }
+
+    private void switchToMainTracksView() {
         libraryPlayerPane.setCenter(trackView.trackViewTable);
         clearNestedViews();
         disableBackButton();
-        // currentTrackView = trackView;
         title.setText(trackView.getTitle());
-        // trackView.trackViewTable.setContextMenu(trackContextMenu);
         artistsToggleButton.setSelected(false);
         albumsToggleButton.setSelected(false);
+        tracksToggleButton.setSelected(true);
     }
-
 
     @FXML
     void backClicked(ActionEvent event) {
@@ -313,19 +324,21 @@ public class FxmlController implements Initializable {
                 boolean albumExists = connection.albumExists(nestedTrackView.getAlbum().getId());
                 if (!albumExists) {
                     System.out.println("FXML controller Album no longer exists");
-                    libraryPlayerPane.setCenter(artistView.artistViewTable);
-                    clearNestedViews();
-                    disableBackButton();
-                    title.setText(artistView.getTitle());
+                    // libraryPlayerPane.setCenter(artistView.artistViewTable);
+                    // clearNestedViews();
+                    // disableBackButton();
+                    // title.setText(artistView.getTitle());
+                    switchToMainArtistsView();
                 }
             }
 
             boolean artistExists = connection.artistExists(oldArtist.getId());
             if (!artistExists) {
-                libraryPlayerPane.setCenter(artistView.artistViewTable);
-                clearNestedViews();
-                disableBackButton();
-                title.setText(artistView.getTitle());
+                // libraryPlayerPane.setCenter(artistView.artistViewTable);
+                // clearNestedViews();
+                // disableBackButton();
+                // title.setText(artistView.getTitle());
+                switchToMainArtistsView();
             }
         } catch (SQLException e) {
             e.printStackTrace();
