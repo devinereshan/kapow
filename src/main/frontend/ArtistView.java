@@ -45,6 +45,7 @@ public class ArtistView {
         assignColumnValues();
         // artistViewContents = new VBox(currentArtistLabel, artistViewTable);
         // artistViewTab.setContent(artistViewContents);
+        artistViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // buildContextMenu();
 

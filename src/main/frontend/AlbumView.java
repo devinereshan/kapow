@@ -44,6 +44,7 @@ public class AlbumView {
     public AlbumView() {
         albumList = new AlbumList();
         assignColumnValues();
+        albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
 
@@ -66,6 +67,7 @@ public class AlbumView {
         albumList = new AlbumList(artist.getId());
         assignColumnValues();
         title = artist.getName();
+        albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
 

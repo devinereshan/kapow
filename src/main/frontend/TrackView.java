@@ -54,6 +54,8 @@ public class TrackView {
         
         assignColumnValues();
         buildContextMenu();
+        trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
 
 
@@ -65,6 +67,7 @@ public class TrackView {
 
         title = String.format("%s - %s", album.getArtists(), album.getName());
         buildContextMenu();
+        trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     public String getTitle() {
