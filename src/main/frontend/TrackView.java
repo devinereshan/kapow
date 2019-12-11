@@ -133,13 +133,15 @@ public class TrackView {
             popup.setTitle("Edit Track Information");
             popup.setScene(new Scene(root));
             popup.show();
-            // TrackEditController.setTrackToEdit(track);
-            // TrackEditController.generateFields();
         } catch (IOException e) {
             System.err.println("TrackView: Unable to open track edit box");
             e.printStackTrace();
         }
 
+    }
+
+    public static void cleanTrackToEdit() {
+        trackToEdit = null;
     }
 
     public static Track getTrackToEdit() {

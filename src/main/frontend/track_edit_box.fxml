@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="200.0" prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.frontend.TrackEditController">
    <top>
       <HBox minWidth="200.0" prefHeight="50.0" BorderPane.alignment="CENTER">
@@ -19,10 +18,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label minWidth="50.0" prefHeight="50.0" text="/Path/to/file">
-               <font>
-                  <Font size="16.0" />
-               </font>
+            <Label fx:id="trackFilepath" minWidth="50.0" prefHeight="50.0" text="/Path/to/file">
                <padding>
                   <Insets left="20.0" />
                </padding>
