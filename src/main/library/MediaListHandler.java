@@ -6,63 +6,107 @@ import java.util.ArrayList;
 import main.database.DBConnection;
 
 public class MediaListHandler {
-    TrackList mainTrackList;
-    AlbumList mainAlbumList;
-    ArtistList mainArtistList;
+    private static TrackList mainTrackList;
+    private static AlbumList mainAlbumList;
+    private static ArtistList mainArtistList;
+    private static TrackList nestedTrackList;
+    private static AlbumList nestedAlbumList;
 
-    ArrayList<TrackList> trackLists;
-    ArrayList<AlbumList> albumLists;
-    ArrayList<ArtistList> artistLists;
+    // private static ArrayList<TrackList> trackLists = new ArrayList<>();
+    // private static ArrayList<AlbumList> albumLists = new ArrayList<>();
+    // private static ArrayList<ArtistList> artistLists = new ArrayList<>();
+
+    // public MediaListHandler() {
+        // mainTrackList = new TrackList();
+        // mainAlbumList = new AlbumList();
+        // mainArtistList = new ArtistList();
+
+        // trackLists = new ArrayList<>();
+        // albumLists = new ArrayList<>();
+        // artistLists = new ArrayList<>();
+    // }
 
 
-    public MediaListHandler() {
-        mainTrackList = new TrackList();
-        mainAlbumList = new AlbumList();
-        mainArtistList = new ArtistList();
+    // public AlbumList getMainAlbumList() {
+    //     return mainAlbumList;
+    // }
 
-        trackLists = new ArrayList<>();
-        albumLists = new ArrayList<>();
-        artistLists = new ArrayList<>();
+
+    // public TrackList getMainTrackList() {
+    //     return mainTrackList;
+    // }
+
+    // public ArtistList getMainArtistList() {
+    //     return mainArtistList;
+    // }
+
+    public static void setMainAlbumList(AlbumList albumList) {
+        mainAlbumList = albumList;
     }
 
-
-    public AlbumList getMainAlbumList() {
-        return mainAlbumList;
+    public static void setMainTrackList(TrackList trackList) {
+        mainTrackList = trackList;
     }
 
-
-    public TrackList getMainTrackList() {
-        return mainTrackList;
+    public static void setNestedAlbumList(AlbumList albumList) {
+        MediaListHandler.nestedAlbumList = albumList;
     }
 
-    public ArtistList getMainArtistList() {
-        return mainArtistList;
+    public static void setNestedTrackList(TrackList trackList) {
+        nestedTrackList = trackList;
+    }
+    
+
+    // public static void addTrackList(TrackList trackList) {
+    //     trackLists.add(trackList);
+    // }
+
+    // public static void removeTrackList(TrackList trackList) {
+    //     trackLists.remove(trackList);
+    // }
+
+    // public static void addAlbumList(AlbumList albumList) {
+    //     albumLists.add(albumList);
+    // }
+
+    // public static void removeAlbumList(AlbumList albumList) {
+    //     albumLists.remove(albumList);
+    // }
+
+    // public void addArtistList()
+    public static void setMainArtistList(ArtistList artistList) {
+        mainArtistList = artistList;
     }
 
-    public void addTrackList(TrackList trackList) {
-        trackLists.add(trackList);
+    public static void nullifyNestedTrackList() {
+        nestedTrackList = null;
     }
 
-    public void removeTrackList(TrackList trackList) {
-        trackLists.remove(trackList);
+    public static void nullifyNestedAlbumList() {
+        nestedAlbumList = null;
     }
 
-    public void addAlbumList(AlbumList albumList) {
-        albumLists.add(albumList);
-    }
-
-    public void removeAlbumList(AlbumList albumList) {
-        albumLists.remove(albumList);
-    }
-
-
-    public void addMultiTrackToLists(ArrayList<Track> tracks) {
+    public static void addMultiTrackToLists(ArrayList<Track> tracks) {
         for (Track track : tracks) {
             addTrackToLists(track);
         }
     }
 
-    public void addTrackToLists(Track track) {
+    public static void hardRefresh() {
+        mainTrackList.hardRefresh();
+        mainAlbumList.hardRefresh();
+        mainArtistList.hardRefresh();
+
+        if (nestedAlbumList != null) {
+            nestedAlbumList.hardRefresh();
+        }
+        
+        if (nestedTrackList != null) {
+            nestedTrackList.hardRefresh();
+        }
+    }
+
+    public static void addTrackToLists(Track track) {
         Album album = null;
         Artist artist = null;
         int albumID = 0;
@@ -77,21 +121,28 @@ public class MediaListHandler {
         }
 
         mainTrackList.addTrack(track);
-        for (TrackList trackList : trackLists) {
-            if (trackList.getAlbumID() == albumID) {
-                trackList.addTrack(track);
+        if (nestedTrackList != null) {
+            if (nestedTrackList.getAlbumID() == albumID) {
+                nestedTrackList.addTrack(track);
             }
         }
 
         if (album != null) {
             mainAlbumList.update(album);
-            for (AlbumList albumList : albumLists) {
-                if (albumList.getArtistID() == artistID) {
-                    albumList.update(album);
+
+            if (nestedAlbumList != null) {
+                if (nestedAlbumList.getArtistID() == artistID) {
+                    nestedAlbumList.update(album);
                 }
-            }
+            }                    
         } else {
             System.err.println("MediaListHandler AddTrackToLists: Unable to locate album ID in Database");
+        }
+
+        if (nestedAlbumList != null) {
+            if (nestedAlbumList.getArtistID() == artistID) {
+                nestedAlbumList.update(album);
+            }
         }
 
         if (artist != null) {
@@ -102,7 +153,7 @@ public class MediaListHandler {
     }
 
 
-    public void deleteTrack(Track track) {
+    public static void deleteTrack(Track track) {
         int albumID = 0;
         Album album = null;
         Artist artist = null;
@@ -121,9 +172,9 @@ public class MediaListHandler {
         }
 
         mainTrackList.deleteTrack(track);
-        for (TrackList trackList : trackLists) {
-            if (trackList.getAlbumID() == albumID) {
-                trackList.deleteTrack(track);
+        if (nestedTrackList != null) {
+            if (nestedTrackList.getAlbumID() == albumID) {
+                nestedTrackList.deleteTrack(track);
             }
         }
 
@@ -133,16 +184,16 @@ public class MediaListHandler {
         } else {
             if (album.getNumberOfTracks() == 0) {
                 mainAlbumList.delete(album);
-                for (AlbumList albumList : albumLists) {
-                    if (albumList.getArtistID() == artistID) {
-                        albumList.delete(album);
+                if (nestedAlbumList != null) {
+                    if (nestedAlbumList.getArtistID() == artistID) {
+                        nestedAlbumList.delete(album);
                     }
                 }
             } else {
                 mainAlbumList.update(album);
-                for (AlbumList albumList : albumLists) {
-                    if (albumList.getArtistID() == artistID) {
-                        albumList.update(album);
+                if (nestedAlbumList != null) {
+                    if (nestedAlbumList.getArtistID() == artistID) {
+                        nestedAlbumList.update(album);
                     }
                 }
             }
@@ -160,10 +211,10 @@ public class MediaListHandler {
     }
 
 
-    public void updateLists(Track track, Album newAlbum, Album oldAlbum, Artist newArtist, Artist oldArtist) {
+    public static void updateLists(Track track, Album newAlbum, Album oldAlbum, Artist newArtist, Artist oldArtist) {
         mainTrackList.updateTrack(track);
-        for (TrackList trackList : trackLists) {
-            trackList.updateTrack(track);
+        if (nestedTrackList != null) {
+            nestedTrackList.updateTrack(track);
         }
 
         int oldAlbumID = oldAlbum.getId();
@@ -178,20 +229,20 @@ public class MediaListHandler {
         // if the album was changed, handle the old album
         if (oldAlbumID != newAlbum.getId() && oldAlbum.getNumberOfTracks() == 0) {
             mainAlbumList.delete(oldAlbum);
-            for (AlbumList albumList : albumLists) {
-                albumList.delete(oldAlbum);
+            if (nestedAlbumList != null) {
+                nestedAlbumList.delete(oldAlbum);
             }
         } else if (oldAlbumID != newAlbum.getId()) {
             mainAlbumList.update(oldAlbum);
-            for (AlbumList albumList : albumLists) {
-                albumList.update(oldAlbum);
+            if (nestedAlbumList != null) {
+                nestedAlbumList.update(oldAlbum);
             }
         }
 
         // in any case, update or add the new album
         mainAlbumList.update(newAlbum);
-        for (AlbumList albumList : albumLists) {
-            albumList.update(newAlbum);
+        if (nestedAlbumList != null) {
+            nestedAlbumList.update(newAlbum);
         }
 
         // if the artist was changed, handle the old album

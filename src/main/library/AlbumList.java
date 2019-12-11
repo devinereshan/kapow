@@ -102,4 +102,19 @@ public class AlbumList {
     public int getArtistID() {
         return artistID;
     }
+
+    public void hardRefresh() {
+        albumIDs.clear();
+        albums.clear();
+        try (DBConnection connection = new DBConnection()) {
+            albumIDs = connection.getAlbumIDs();
+
+            for (Integer albumID : albumIDs) {
+                albums.add(connection.getAlbum(albumID));
+            }
+        } catch (SQLException e) {
+            System.err.println("AlbumList: Hard refresh failed");
+            e.printStackTrace();
+        }
+    }
 }

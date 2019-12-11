@@ -23,8 +23,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Duration;
+import main.database.DBConnection;
 import main.library.Album;
 import main.library.Artist;
+import main.library.MediaListHandler;
 import main.library.Track;
 import main.player.AudioPlayer;
 import main.player.ElapsedTimeListener;
@@ -67,6 +69,7 @@ public class FxmlController implements Initializable {
     // private AlbumView currentAlbumView;
     private ElapsedTimeListener elapsedTimeListener;
     private AudioPlayer audioPlayer;
+    // private final MediaListHandler mediaListHandler = new MediaListHandler();
     // private ContextMenu artistContextMenu = new ContextMenu();
     // private ContextMenu albumContextMenu = new ContextMenu();
     // private ContextMenu trackContextMenu;
@@ -105,15 +108,18 @@ public class FxmlController implements Initializable {
             libraryPlayerPane.setCenter(nestedAlbumView.albumViewTable);
             title.setText(nestedAlbumView.getTitle());
             nestedTrackView = null;
+            MediaListHandler.nullifyNestedTrackList();
         } else if (nestedTrackView != null && nestedAlbumView == null) {
             libraryPlayerPane.setCenter(albumView.albumViewTable);
             title.setText(albumView.getTitle());
             nestedTrackView = null;
+            MediaListHandler.nullifyNestedTrackList();
             disableBackButton();
         } else if (nestedTrackView == null && nestedAlbumView != null) {
             libraryPlayerPane.setCenter(artistView.artistViewTable);
             title.setText(artistView.getTitle());
             nestedAlbumView = null;
+            MediaListHandler.nullifyNestedAlbumList();
             disableBackButton();
         }
     }
@@ -167,6 +173,9 @@ public class FxmlController implements Initializable {
 
         // currentTrackView = trackView;
         // currentAlbumView = albumView;
+        MediaListHandler.setMainTrackList(trackView.getList());
+        MediaListHandler.setMainAlbumList(albumView.getList());
+        MediaListHandler.setMainArtistList(artistView.getList());
 
         libraryPlayerPane.setCenter(artistView.artistViewTable);
         setDoubleClicks();
@@ -203,11 +212,7 @@ public class FxmlController implements Initializable {
             TableRow<Album> albumRow = new TableRow<>();
             albumRow.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!albumRow.isEmpty())) {
-                    if (nestedAlbumView == null) {
-                        switchToNestedTrackView(albumRow.getItem());
-                    } else {
-                        switchToNestedTrackView(albumRow.getItem());
-                    }
+                    switchToNestedTrackView(albumRow.getItem());
                 }
             });
             return albumRow;
@@ -249,6 +254,7 @@ public class FxmlController implements Initializable {
         libraryPlayerPane.setCenter(nestedTrackView.trackViewTable);
         setTrackViewDoubleClick(nestedTrackView);
         // currentTrackView = nestedTrackView;
+        MediaListHandler.setNestedTrackList(nestedTrackView.getList());
         title.setText(nestedTrackView.getTitle());
         backButton.setText("Back");
         backButton.setDisable(false);
@@ -259,6 +265,7 @@ public class FxmlController implements Initializable {
         libraryPlayerPane.setCenter(nestedAlbumView.albumViewTable);
         setAlbumViewDoubleClick(nestedAlbumView);
         // currentAlbumView = nestedAlbumView;
+        MediaListHandler.setNestedAlbumList(nestedAlbumView.getList());
         title.setText(nestedAlbumView.getTitle());
         backButton.setText("Back");
         backButton.setDisable(false);
@@ -274,8 +281,24 @@ public class FxmlController implements Initializable {
         backButton.setDisable(true);
     }
 
-    public static void updateViews() {
+    public static void updateViews(Track editedTrack, Album updatedAlbum, Album oldAlbum, Artist updatedArtist, Artist oldArtist) {
         // TODO
+        // mediaListHandler.updateLists();
+        // if old Album was removed from database, switch view to main Artist view
+        try (DBConnection connection = new DBConnection()) {
+            // boolean albumExists = connection.albumExists(oldAlbum.getId());
+            // if (!albumExists) {
+                // switch to main artist view and nullify views
+            // }
+
+            // boolean artistExists = connection
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // same for removal of old artist
+
+        // then update lists
+        MediaListHandler.hardRefresh();
     }
     // private void setContextMenus() {
     //     System.out.println("In set context Menu");

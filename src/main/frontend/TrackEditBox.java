@@ -143,7 +143,7 @@ public class TrackEditBox {
 
         if (success) {
             // mediaListHandler.updateLists(track, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
-            Platform.runLater(() -> FxmlController.updateViews());
+            // Platform.runLater(() -> FxmlController.updateViews());
         }
 
         editBox.close();

@@ -38,9 +38,9 @@ public class ViewHandler {
         mainAlbumViewTab = new Tab("Albums");
         mainArtistViewTab = new Tab("Artists");
 
-        mainArtistView = new ArtistView(mediaListHandler.getMainArtistList(), this);
-        mainAlbumView = new AlbumView(mediaListHandler.getMainAlbumList(), this);
-        mainTrackView = new TrackView(mediaListHandler.getMainTrackList(), this);
+        // mainArtistView = new ArtistView(mediaListHandler.getMainArtistList(), this);
+        // mainAlbumView = new AlbumView(mediaListHandler.getMainAlbumList(), this);
+        // mainTrackView = new TrackView(mediaListHandler.getMainTrackList(), this);
 
         mainTrackViewTab.setContent(mainTrackView.getContents());
         mainAlbumViewTab.setContent(mainAlbumView.getContents());
@@ -56,48 +56,48 @@ public class ViewHandler {
     }
 
 
-    public void switchToNestedAlbumView(Artist artist) {
-        AlbumList nestedAlbumList = new AlbumList(artist.getId());
-        mediaListHandler.addAlbumList(nestedAlbumList);
-        nestedAlbumView = new AlbumView(nestedAlbumList, this, artist.getName());
-        currentTab = views.getSelectionModel().getSelectedItem();
-        if (currentTab.equals(mainArtistViewTab)) {
-            mainArtistViewTab.setContent(nestedAlbumView.getContents());
-        }
-    }
+    // public void switchToNestedAlbumView(Artist artist) {
+    //     AlbumList nestedAlbumList = new AlbumList(artist.getId());
+    //     mediaListHandler.addAlbumList(nestedAlbumList);
+    //     nestedAlbumView = new AlbumView(nestedAlbumList, this, artist.getName());
+    //     currentTab = views.getSelectionModel().getSelectedItem();
+    //     if (currentTab.equals(mainArtistViewTab)) {
+    //         mainArtistViewTab.setContent(nestedAlbumView.getContents());
+    //     }
+    // }
 
-    public void returnToParent(AlbumView nestedAlbum) {
-        mediaListHandler.removeAlbumList(nestedAlbum.getList());
-        // mainArtistViewTab.setContent(mainArtistView.getContents());
-        nestedAlbumView = null;
-        nestedAlbum = null;
-    }
+    // public void returnToParent(AlbumView nestedAlbum) {
+    //     mediaListHandler.removeAlbumList(nestedAlbum.getList());
+    //     // mainArtistViewTab.setContent(mainArtistView.getContents());
+    //     nestedAlbumView = null;
+    //     nestedAlbum = null;
+    // }
 
-    public void switchToNestedTrackView(Album album) {
-        TrackList nestedTrackList = new TrackList(album.getId(), "album");
-        mediaListHandler.addTrackList(nestedTrackList);
-        currentTab = views.getSelectionModel().getSelectedItem();
-        if (currentTab.equals(mainAlbumViewTab)) {
-            // nestedAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
-            mainAlbumViewTab.setContent(nestedAlbumTrackView.getContents());
-        } else if (currentTab.equals(mainArtistViewTab)) {
-            // nestedArtistAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
-            mainArtistViewTab.setContent(nestedArtistAlbumTrackView.getContents());
-        }
-    }
+    // public void switchToNestedTrackView(Album album) {
+    //     TrackList nestedTrackList = new TrackList(album.getId(), "album");
+    //     mediaListHandler.addTrackList(nestedTrackList);
+    //     currentTab = views.getSelectionModel().getSelectedItem();
+    //     if (currentTab.equals(mainAlbumViewTab)) {
+    //         // nestedAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
+    //         mainAlbumViewTab.setContent(nestedAlbumTrackView.getContents());
+    //     } else if (currentTab.equals(mainArtistViewTab)) {
+    //         // nestedArtistAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
+    //         mainArtistViewTab.setContent(nestedArtistAlbumTrackView.getContents());
+    //     }
+    // }
 
-    public void returnToParent(TrackView nestedTracks) {
-        mediaListHandler.removeTrackList(nestedTracks.getList());
-        currentTab = views.getSelectionModel().getSelectedItem();
+    // public void returnToParent(TrackView nestedTracks) {
+    //     mediaListHandler.removeTrackList(nestedTracks.getList());
+    //     currentTab = views.getSelectionModel().getSelectedItem();
 
-        if (currentTab.equals(mainAlbumViewTab)) {
-            mainAlbumViewTab.setContent(mainAlbumView.getContents());
-        } else if (currentTab.equals(mainArtistViewTab)) {
-            mainArtistViewTab.setContent(nestedAlbumView.getContents());
-        }
-        nestedAlbumTrackView = null;
-        nestedTracks = null;
-    }
+    //     if (currentTab.equals(mainAlbumViewTab)) {
+    //         mainAlbumViewTab.setContent(mainAlbumView.getContents());
+    //     } else if (currentTab.equals(mainArtistViewTab)) {
+    //         mainArtistViewTab.setContent(nestedAlbumView.getContents());
+    //     }
+    //     nestedAlbumTrackView = null;
+    //     nestedTracks = null;
+    // }
 
 
     public Tab getMainAlbumViewTab() {

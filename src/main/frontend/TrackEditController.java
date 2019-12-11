@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.database.DBConnection;
+import main.library.Album;
+import main.library.Artist;
 import main.library.Track;
 
 public class TrackEditController implements Initializable {
@@ -44,20 +46,30 @@ public class TrackEditController implements Initializable {
     @FXML
     void submitClicked(ActionEvent event) {
         boolean success = false;
+        Album oldAlbum = null;
+        Album updatedAlbum = null;
+        Artist oldArtist = null;
+        Artist updatedArtist = null;
         try (DBConnection connection = new DBConnection()) {
+            oldAlbum = connection.getAlbum(connection.getAlbumID(trackToEdit.getAlbums(), trackToEdit.getId()));
+            oldArtist = connection.getArtist(connection.getArtistID(trackToEdit.getArtists(), trackToEdit.getId()));
+
             trackToEdit.setName(trackNameField.getText());
             trackToEdit.setArtists(artistNameField.getText());
             trackToEdit.setAlbums(albumNameField.getText());
             trackToEdit.setGenres(genreField.getText());
             trackToEdit.setIndexInAlbum(trackToEdit.getIndexInAlbum());
             success = connection.updateTrack(trackToEdit);
+
+            updatedAlbum = connection.getAlbum(connection.getAlbumID(trackToEdit.getAlbums(), trackToEdit.getId()));
+            updatedArtist = connection.getArtist(connection.getArtistID(trackToEdit.getArtists(), trackToEdit.getId()));
         } catch (SQLException e) {
             System.err.println("TrackEditController: Failed to update track in database");
             e.printStackTrace();
         }
 
         if (success) {
-            FxmlController.updateViews();
+            FxmlController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
         }
 
         TrackView.cleanTrackToEdit();

@@ -82,4 +82,18 @@ public class TrackList {
     public int getAlbumID() {
         return albumID;
     }
+
+    public void hardRefresh() {
+        trackIDs.clear();
+        tracks.clear();
+        try (DBConnection connection = new DBConnection()) {
+            trackIDs = connection.getIDs();
+            for (Integer trackID : trackIDs) {
+                tracks.add(connection.getTrack(trackID));
+            }
+        } catch (SQLException e) {
+            System.err.println("TrackList: Hard refresh failed");
+            e.printStackTrace();
+        }
+    }
 }

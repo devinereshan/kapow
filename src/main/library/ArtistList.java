@@ -83,4 +83,19 @@ public class ArtistList {
             artists.remove(indexToRemove);
         }
     }
+
+    public void hardRefresh() {
+        artistIDs.clear();
+        artists.clear();
+        try (DBConnection connection = new DBConnection()) {
+            artistIDs = connection.getArtistIDs();
+
+            for (Integer artistID : artistIDs) {
+                artists.add(connection.getArtist(artistID));
+            }
+        } catch (SQLException e) {
+            System.err.println("ArtistList: Hard refresh failed");
+            e.printStackTrace();
+        }
+    }
 }
