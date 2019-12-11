@@ -278,6 +278,8 @@ public class FxmlController implements Initializable {
     private void clearNestedViews() {
         nestedAlbumView = null;
         nestedTrackView = null;
+        MediaListHandler.nullifyNestedAlbumList();
+        MediaListHandler.nullifyNestedTrackList();
     }
 
     private void disableBackButton() {
@@ -289,21 +291,20 @@ public class FxmlController implements Initializable {
         return self;
     }
     public void updateViews(Track editedTrack, Album updatedAlbum, Album oldAlbum, Artist updatedArtist, Artist oldArtist) {
-        // TODO
-        // if old Album was removed from database, switch view to main Artist view
         try (DBConnection connection = new DBConnection()) {
-            boolean albumExists = connection.albumExists(oldAlbum.getId());
-            if (!albumExists) {
-                // switch to main artist view and nullify nested views
-                libraryPlayerPane.setCenter(artistView.artistViewTable);
-                clearNestedViews();
-                disableBackButton();
-                title.setText(artistView.getTitle());
+            if (nestedTrackView != null) {
+                boolean albumExists = connection.albumExists(nestedTrackView.getAlbum().getId());
+                if (!albumExists) {
+                    System.out.println("FXML controller Album no longer exists");
+                    libraryPlayerPane.setCenter(artistView.artistViewTable);
+                    clearNestedViews();
+                    disableBackButton();
+                    title.setText(artistView.getTitle());
+                }
             }
 
             boolean artistExists = connection.artistExists(oldArtist.getId());
             if (!artistExists) {
-                // switch to main artist view and nullify nested views
                 libraryPlayerPane.setCenter(artistView.artistViewTable);
                 clearNestedViews();
                 disableBackButton();

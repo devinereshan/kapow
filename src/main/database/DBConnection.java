@@ -616,7 +616,7 @@ public class DBConnection implements AutoCloseable {
             break;
         }
 
-        return count <= 0;
+        return count > 0;
     }
 
 

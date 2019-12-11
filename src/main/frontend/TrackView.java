@@ -155,7 +155,11 @@ public class TrackView {
             }
         }
     }
-    
+
+    public Album getAlbum() {
+        return album;
+    }
+
     public static void cleanTrackToEdit() {
         trackToEdit = null;
     }
