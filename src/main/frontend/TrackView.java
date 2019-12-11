@@ -101,8 +101,8 @@ public class TrackView {
         // MenuItem importAudio = new MenuItem("Import");
         // importAudio.setOnAction(e -> viewHandler.importAudio());
 
-        // MenuItem editTrack = new MenuItem("Edit Selection");
-        // editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+        MenuItem editTrack = new MenuItem("Edit Selection");
+        editTrack.setOnAction(e -> GUI.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
         // MenuItem delete = new MenuItem("Delete");
         // delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
@@ -112,7 +112,7 @@ public class TrackView {
         contextMenu.getItems().add(queue);
         contextMenu.getItems().add(queueNext);
         // contextMenu.getItems().add(importAudio);
-        // contextMenu.getItems().add(editTrack);
+        contextMenu.getItems().add(editTrack);
         // contextMenu.getItems().add(delete);
         trackViewTable.setContextMenu(contextMenu);
     }

@@ -2,6 +2,7 @@ package main.frontend;
 
 import java.sql.SQLException;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,12 +45,12 @@ public class TrackEditBox {
     private Button cancel = new Button("Cancel");
 
     private Track track;
-    private MediaListHandler mediaListHandler;
+    // private MediaListHandler mediaListHandler;
 
     private int row = 0;
 
-    public TrackEditBox(Track track, MediaListHandler mediaListHandler) {
-        this.mediaListHandler = mediaListHandler;
+    public TrackEditBox(Track track) {
+        // this.mediaListHandler = mediaListHandler;
         root.setVgap(10);
         root.setHgap(5);
         root.setPadding(new Insets(10));
@@ -133,7 +134,8 @@ public class TrackEditBox {
         }
 
         if (success) {
-            mediaListHandler.updateLists(track, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
+            // mediaListHandler.updateLists(track, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
+            Platform.runLater(() -> FxmlController.updateViews());
         }
 
         editBox.close();

@@ -274,6 +274,9 @@ public class FxmlController implements Initializable {
         backButton.setDisable(true);
     }
 
+    public static void updateViews() {
+        // TODO
+    }
     // private void setContextMenus() {
     //     System.out.println("In set context Menu");
     //     buildTrackViewMenu();

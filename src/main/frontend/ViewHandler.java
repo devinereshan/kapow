@@ -146,10 +146,10 @@ public class ViewHandler {
         return audioPlayerView;
     }
 
-	public void editTrack(Track track) {
-        TrackEditBox trackEditBox = new TrackEditBox(track, mediaListHandler);
-        trackEditBox.open(primaryStage);
-    }
+	// public void editTrack(Track track) {
+    //     TrackEditBox trackEditBox = new TrackEditBox(track, mediaListHandler);
+    //     trackEditBox.open(primaryStage);
+    // }
 
     public void deleteTrack(Track track) {
         mediaListHandler.deleteTrack(track);
