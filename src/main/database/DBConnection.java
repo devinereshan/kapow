@@ -479,7 +479,6 @@ public class DBConnection implements AutoCloseable {
 
         connection.commit();
         connection.setAutoCommit(true);
-        // return tracks;
     }
 
     private void addTrackToDB(Track newTrack) throws SQLException {
