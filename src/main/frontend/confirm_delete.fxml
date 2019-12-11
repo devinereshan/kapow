@@ -35,7 +35,7 @@
                <content>
                   <BorderPane minWidth="50.0">
                      <center>
-                        <VBox minWidth="50.0" BorderPane.alignment="CENTER">
+                        <VBox fx:id="trackListBox" minWidth="50.0" BorderPane.alignment="CENTER">
                            <children>
                               <HBox minWidth="50.0">
                                  <children>

@@ -115,8 +115,8 @@ public class TrackView {
         MenuItem editTrack = new MenuItem("Edit Selection");
         editTrack.setOnAction(e -> editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
-        // MenuItem delete = new MenuItem("Delete");
-        // delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+        MenuItem delete = new MenuItem("Remove");
+        delete.setOnAction(e -> deleteTrack(trackViewTable.getSelectionModel().getSelectedItems()));
 
 
         contextMenu.getItems().add(play);
@@ -124,7 +124,7 @@ public class TrackView {
         contextMenu.getItems().add(queueNext);
         // contextMenu.getItems().add(importAudio);
         contextMenu.getItems().add(editTrack);
-        // contextMenu.getItems().add(delete);
+        contextMenu.getItems().add(delete);
         trackViewTable.setContextMenu(contextMenu);
     }
 
@@ -142,6 +142,27 @@ public class TrackView {
             e.printStackTrace();
         }
 
+    }
+
+    private void deleteTrack(ObservableList<Track> tracksToDelete) {
+        if (tracksToDelete != null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("confirm_delete.fxml"));     
+
+                Parent root = (Parent)fxmlLoader.load();          
+                ConfirmDeleteController controller = fxmlLoader.<ConfirmDeleteController>getController();
+                controller.setTracksToDelete(tracksToDelete);
+                controller.setFields();
+
+                Stage popup = new Stage();
+                popup.setTitle("Remove Track Confirmation");
+                popup.setScene(new Scene(root));
+                popup.show();
+            } catch (IOException e) {
+                System.err.println("TrackView: Unable to open track confirm delete box");
+                e.printStackTrace();
+            }
+        }
     }
 
     public void updateTitle() {
