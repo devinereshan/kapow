@@ -31,23 +31,11 @@
             </HBox>
          </bottom>
          <center>
-            <ScrollPane minWidth="50.0" BorderPane.alignment="CENTER">
+            <ScrollPane maxHeight="300.0" minWidth="50.0" prefHeight="300.0" BorderPane.alignment="CENTER">
                <content>
                   <BorderPane minWidth="50.0">
                      <center>
-                        <VBox fx:id="trackListBox" minWidth="50.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <HBox minWidth="50.0">
-                                 <children>
-                                    <Label fx:id="trackLabel" minWidth="20.0" text="Track Name - Album Name - Artist Name">
-                                       <padding>
-                                          <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                                       </padding>
-                                    </Label>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
+                        <VBox fx:id="trackListBox" minWidth="50.0" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
                </content>

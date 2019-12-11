@@ -65,7 +65,7 @@ public class TrackView {
         assignColumnValues();
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
+        trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
 
@@ -79,6 +79,7 @@ public class TrackView {
         title = String.format("%s - %s", album.getArtists(), album.getName());
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     public String getTitle() {
