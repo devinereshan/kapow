@@ -1,6 +1,11 @@
 package main.frontend;
 
+import java.io.IOException;
+
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -12,6 +17,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import main.library.Album;
 import main.library.Track;
 import main.library.TrackList;
@@ -102,7 +108,7 @@ public class TrackView {
         // importAudio.setOnAction(e -> viewHandler.importAudio());
 
         MenuItem editTrack = new MenuItem("Edit Selection");
-        editTrack.setOnAction(e -> GUI.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+        editTrack.setOnAction(e -> editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
         // MenuItem delete = new MenuItem("Delete");
         // delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
@@ -117,11 +123,20 @@ public class TrackView {
         trackViewTable.setContextMenu(contextMenu);
     }
 
-    // private void play(Track track) {
-    //     if (track != null) {
-    //         audioPlayer.queueAndPlay(track);
-    //     }
-    // }
+
+    private void editTrack(Track track) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("track_edit_box.fxml"));
+            Stage popup = new Stage();
+            popup.setTitle("Edit Track Information");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            System.err.println("TrackView: Unable to open track edit box");
+            e.printStackTrace();
+        }
+
+    }
 
     private void play(ObservableList<Track> tracks) {
         if (tracks != null) {

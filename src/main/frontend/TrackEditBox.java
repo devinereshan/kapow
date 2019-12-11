@@ -4,11 +4,13 @@ import java.sql.SQLException;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.database.DBConnection;
@@ -19,7 +21,8 @@ import main.library.Track;
 
 public class TrackEditBox {
     private final Stage editBox = new Stage();
-    private GridPane root = new GridPane();
+    private VBox root = new VBox();
+    private GridPane gridPane = new GridPane();
 
     private String filepath;
     private String trackName;
@@ -51,9 +54,13 @@ public class TrackEditBox {
 
     public TrackEditBox(Track track) {
         // this.mediaListHandler = mediaListHandler;
-        root.setVgap(10);
-        root.setHgap(5);
-        root.setPadding(new Insets(10));
+        gridPane.setVgap(10);
+        gridPane.setHgap(5);
+        gridPane.setPadding(new Insets(10));
+        root.setPrefSize(500, 500);
+        root.setAlignment(Pos.CENTER);
+        gridPane.setPrefSize(400, 400);
+        
 
         cancel.setOnAction(e -> editBox.close());
         submit.setOnAction(e -> submitInfo());
@@ -72,21 +79,22 @@ public class TrackEditBox {
         genreName = track.getGenres();
         genreField.setText(genreName);
 
-        root.add(file, 0, row);
-        root.add(filepathLabel, 2, row++);
-        root.add(trackLabel, 0, row);
-        root.add(trackField, 2, row++);
-        root.add(artist, 0, row);
-        root.add(artistField, 2, row++);
-        root.add(album, 0, row);
-        root.add(albumField, 2, row++);
-        root.add(trackNumberLabel, 0, row);
-        root.add(trackNumberField, 2, row++);
-        root.add(genre, 0, row);
-        root.add(genreField, 2, row++);
-        root.add(submit, 0, row);
-        root.add(cancel, 2, row++);
+        gridPane.add(file, 0, row);
+        gridPane.add(filepathLabel, 2, row++);
+        gridPane.add(trackLabel, 0, row);
+        gridPane.add(trackField, 2, row++);
+        gridPane.add(artist, 0, row);
+        gridPane.add(artistField, 2, row++);
+        gridPane.add(album, 0, row);
+        gridPane.add(albumField, 2, row++);
+        gridPane.add(trackNumberLabel, 0, row);
+        gridPane.add(trackNumberField, 2, row++);
+        gridPane.add(genre, 0, row);
+        gridPane.add(genreField, 2, row++);
+        gridPane.add(submit, 0, row);
+        gridPane.add(cancel, 2, row++);
 
+        root.getChildren().add(gridPane);
         Scene scene = new Scene(root);
 
         editBox.setTitle("Edit Track");
