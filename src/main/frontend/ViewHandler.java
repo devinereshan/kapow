@@ -78,10 +78,10 @@ public class ViewHandler {
         mediaListHandler.addTrackList(nestedTrackList);
         currentTab = views.getSelectionModel().getSelectedItem();
         if (currentTab.equals(mainAlbumViewTab)) {
-            nestedAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
+            // nestedAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
             mainAlbumViewTab.setContent(nestedAlbumTrackView.getContents());
         } else if (currentTab.equals(mainArtistViewTab)) {
-            nestedArtistAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
+            // nestedArtistAlbumTrackView = new TrackView(nestedTrackList, this, album.getName());
             mainArtistViewTab.setContent(nestedArtistAlbumTrackView.getContents());
         }
     }

@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import main.library.Album;
 import main.library.Track;
 import main.library.TrackList;
+import main.player.AudioPlayer;
 
 public class TrackView {
     private final TrackList trackList;
@@ -25,7 +26,8 @@ public class TrackView {
     // private Label currentAlbumLabel = new Label("kapow!");
     private String title = "kapow!";
     private AlbumView parent;
-    // private ContextMenu contextMenu;
+    private ContextMenu contextMenu;
+    private AudioPlayer audioPlayer;
     // private ViewHandler viewHandler;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
@@ -46,34 +48,23 @@ public class TrackView {
         // buildContextMenu();
     }
 
-    public TrackView() {
+    public TrackView(AudioPlayer audioPlayer) {
+        this.audioPlayer = audioPlayer;
         trackList = new TrackList();
+        
         assignColumnValues();
+        buildContextMenu();
     }
 
-    // Constructor for nested TrackView
-    public TrackView(TrackList trackList, ViewHandler viewHandler, String parentName) {
-        this.trackList = trackList;
-        // this.viewHandler = viewHandler;
-        assignAlbumColumnValues();
 
-        // returnToParent = new Button("Back To Album");
-        // currentAlbumLabel = new Label(parentName);
-        // trackViewContents = new VBox(returnToParent, currentAlbumLabel, trackViewTable);
-        // trackViewTab.setContent(trackViewContents);
-
-        // returnToParent.setOnAction(e -> viewHandler.returnToParent(this));
-        // setDoubleClick();
-        // buildContextMenu();
-    }
-
-    public TrackView(Album album) {
+    public TrackView(Album album, AudioPlayer audioPlayer) {
         trackList = new TrackList(album.getId(), "album");
+        this.audioPlayer = audioPlayer;
 
         assignAlbumColumnValues();
 
-        // currentAlbumLabel.setText(album.getArtists() + " - " + album.getName());
         title = String.format("%s - %s", album.getArtists(), album.getName());
+        buildContextMenu();
     }
 
     public String getTitle() {
@@ -92,60 +83,60 @@ public class TrackView {
     //     });
     // }
 
-    // private void buildContextMenu() {
-    //     contextMenu = new ContextMenu();
+    private void buildContextMenu() {
+        contextMenu = new ContextMenu();
 
-    //     MenuItem play = new MenuItem("Play");
-    //     play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
+        MenuItem play = new MenuItem("Play");
+        play.setOnAction(e -> play(trackViewTable.getSelectionModel().getSelectedItems()));
 
-    //     MenuItem queue = new MenuItem("Add to queue");
-    //     queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
+        MenuItem queue = new MenuItem("Queue");
+        queue.setOnAction(e -> addToQueue(trackViewTable.getSelectionModel().getSelectedItems()));
 
-    //     MenuItem queueNext = new MenuItem("Queue next");
-    //     queueNext.setOnAction(e -> queueNext(trackViewTable.getSelectionModel().getSelectedItems()));
+        MenuItem queueNext = new MenuItem("Queue Next");
+        queueNext.setOnAction(e -> queueNext(trackViewTable.getSelectionModel().getSelectedItems()));
 
-    //     MenuItem importAudio = new MenuItem("Import");
-    //     importAudio.setOnAction(e -> viewHandler.importAudio());
+        // MenuItem importAudio = new MenuItem("Import");
+        // importAudio.setOnAction(e -> viewHandler.importAudio());
 
-    //     MenuItem editTrack = new MenuItem("Edit track");
-    //     editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+        // MenuItem editTrack = new MenuItem("Edit Selection");
+        // editTrack.setOnAction(e -> viewHandler.editTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
-    //     MenuItem delete = new MenuItem("Delete");
-    //     delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
+        // MenuItem delete = new MenuItem("Delete");
+        // delete.setOnAction(e -> viewHandler.deleteTrack(trackViewTable.getSelectionModel().getSelectedItem()));
 
 
-    //     contextMenu.getItems().add(play);
-    //     contextMenu.getItems().add(queue);
-    //     contextMenu.getItems().add(queueNext);
-    //     contextMenu.getItems().add(importAudio);
-    //     contextMenu.getItems().add(editTrack);
-    //     contextMenu.getItems().add(delete);
-    //     trackViewTable.setContextMenu(contextMenu);
-    // }
+        contextMenu.getItems().add(play);
+        contextMenu.getItems().add(queue);
+        contextMenu.getItems().add(queueNext);
+        // contextMenu.getItems().add(importAudio);
+        // contextMenu.getItems().add(editTrack);
+        // contextMenu.getItems().add(delete);
+        trackViewTable.setContextMenu(contextMenu);
+    }
 
     // private void play(Track track) {
     //     if (track != null) {
-    //         viewHandler.queueAndPlay(track);
+    //         audioPlayer.queueAndPlay(track);
     //     }
     // }
 
-    // private void play(ObservableList<Track> tracks) {
-    //     if (tracks != null) {
-    //         viewHandler.queueAndPlay(tracks);
-    //     }
-    // }
+    private void play(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            audioPlayer.queueAndPlay(tracks);
+        }
+    }
 
-    // private void addToQueue(ObservableList<Track> tracks) {
-    //     if (tracks != null) {
-    //         viewHandler.queue(tracks);
-    //     }
-    // }
+    private void addToQueue(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            audioPlayer.queue(tracks);
+        }
+    }
 
-    // private void queueNext(ObservableList<Track> tracks) {
-    //     if (tracks != null) {
-    //         viewHandler.queueNext(tracks);
-    //     }
-    // }
+    private void queueNext(ObservableList<Track> tracks) {
+        if (tracks != null) {
+            audioPlayer.queueNext(tracks);
+        }
+    }
 
     public VBox getContents() {
         return trackViewContents;
