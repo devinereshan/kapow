@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -129,9 +130,9 @@
                <top>
                   <VBox prefHeight="220.0" prefWidth="200.0" style="-fx-background-color: #777;" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#artistsClicked" prefHeight="60.0" prefWidth="200.0" text="Artists" />
-                        <Button mnemonicParsing="false" onAction="#albumsClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
-                        <Button mnemonicParsing="false" onAction="#tracksClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
+                        <ToggleButton fx:id="artistsToggleButton" mnemonicParsing="false" onAction="#artistsToggleClicked" prefHeight="60.0" prefWidth="200.0" selected="true" text="Artists" />
+                        <ToggleButton fx:id="albumsToggleButton" mnemonicParsing="false" onAction="#albumsToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
+                        <ToggleButton fx:id="tracksToggleButton" mnemonicParsing="false" onAction="#tracksToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
                         <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" />
                      </children>
                   </VBox>

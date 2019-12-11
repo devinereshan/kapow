@@ -17,6 +17,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+// import javafx.scene.control.ToggleButton;
 // import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -63,6 +65,15 @@ public class FxmlController implements Initializable {
     @FXML
     private Label totalTimeLabel;
 
+    @FXML
+    private ToggleButton artistsToggleButton;
+
+    @FXML
+    private ToggleButton albumsToggleButton;
+
+    @FXML
+    private ToggleButton tracksToggleButton;
+
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
     private TrackView trackView;
@@ -78,30 +89,36 @@ public class FxmlController implements Initializable {
     // private ContextMenu trackContextMenu;
 
     @FXML
-    void albumsClicked(ActionEvent event) {
+    void albumsToggleClicked(ActionEvent event) {
         libraryPlayerPane.setCenter(albumView.albumViewTable);
         clearNestedViews();
         disableBackButton();
         // currentAlbumView = albumView;
         title.setText(albumView.getTitle());
+        artistsToggleButton.setSelected(false);
+        tracksToggleButton.setSelected(false);
     }
 
     @FXML
-    void artistsClicked(ActionEvent event) {
+    void artistsToggleClicked(ActionEvent event) {
         libraryPlayerPane.setCenter(artistView.artistViewTable);
         clearNestedViews();
         disableBackButton();
         title.setText(artistView.getTitle());
+        albumsToggleButton.setSelected(false);
+        tracksToggleButton.setSelected(false);
     }
 
     @FXML
-    void tracksClicked(ActionEvent event) {
+    void tracksToggleClicked(ActionEvent event) {
         libraryPlayerPane.setCenter(trackView.trackViewTable);
         clearNestedViews();
         disableBackButton();
         // currentTrackView = trackView;
         title.setText(trackView.getTitle());
         // trackView.trackViewTable.setContextMenu(trackContextMenu);
+        artistsToggleButton.setSelected(false);
+        albumsToggleButton.setSelected(false);
     }
 
 
