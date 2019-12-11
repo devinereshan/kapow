@@ -467,17 +467,19 @@ public class DBConnection implements AutoCloseable {
         connection.setAutoCommit(true);
     }
 
-    public ArrayList<Track> importMultiTrack(ArrayList<Track> tracks) throws SQLException {
+    public void importMultiTrack(ArrayList<Track> tracks) throws SQLException {
         connection.setAutoCommit(false);
         for (Track track : tracks) {
-            addTrackToDB(track);
-            track.setID(getID("Track", "filepath", track.getFilepath()));
-            System.out.println(track.getId());
+            if (!valueExists("Track", "filepath", track.getFilepath())) {
+                addTrackToDB(track);
+                track.setID(getID("Track", "filepath", track.getFilepath()));
+                System.out.println(track.getId());
+            }
         }
 
         connection.commit();
         connection.setAutoCommit(true);
-        return tracks;
+        // return tracks;
     }
 
     private void addTrackToDB(Track newTrack) throws SQLException {

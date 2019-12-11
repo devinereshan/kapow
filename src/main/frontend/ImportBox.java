@@ -287,7 +287,8 @@ public class ImportBox {
 
         boolean success = false;
         try (DBConnection connection = new DBConnection()) {
-            tracks = connection.importMultiTrack(tracks);
+            // tracks = connection.importMultiTrack(tracks);
+            connection.importMultiTrack(tracks);
             success = true;
         } catch (SQLException e) {
             System.err.println("ImportBox submit: failed to submit new information to database");
