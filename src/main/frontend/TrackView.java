@@ -131,18 +131,19 @@ public class TrackView {
 
 
     private void editTrack(Track track) {
-        try {
-            trackToEdit = track;
-            Parent root = FXMLLoader.load(getClass().getResource("track_edit_box.fxml"));
-            Stage popup = new Stage();
-            popup.setTitle("Edit Track Information");
-            popup.setScene(new Scene(root));
-            popup.show();
-        } catch (IOException e) {
-            System.err.println("TrackView: Unable to open track edit box");
-            e.printStackTrace();
+        if (track != null) {
+            try {
+                trackToEdit = track;
+                Parent root = FXMLLoader.load(getClass().getResource("track_edit_box.fxml"));
+                Stage popup = new Stage();
+                popup.setTitle("Edit Track Information");
+                popup.setScene(new Scene(root));
+                popup.show();
+            } catch (IOException e) {
+                System.err.println("TrackView: Unable to open track edit box");
+                e.printStackTrace();
+            }
         }
-
     }
 
     private void deleteTrack(ObservableList<Track> tracksToDelete) {

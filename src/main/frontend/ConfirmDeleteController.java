@@ -45,9 +45,6 @@ public class ConfirmDeleteController {
             topLabel.setText("Remove Tracks?");
         }
 
-        // Track firstTrack = tracksToDelete.get(0);
-        // trackLabel.setText(String.format("%s - %s - %s", firstTrack.getName(), firstTrack.getAlbums(), firstTrack.getArtists()));
-
         for (Track track : tracksToDelete) {
             Label l = new Label(String.format("%s - %s - %s", track.getName(), track.getAlbums(), track.getArtists()));
             l.setPadding(new Insets(10, 20, 10, 20));
