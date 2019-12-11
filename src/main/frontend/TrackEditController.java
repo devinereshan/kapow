@@ -74,11 +74,7 @@ public class TrackEditController implements Initializable {
         if (success) {
             FxmlController mainController = FxmlController.getSelf();
             mainController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
-            
-            // FxmlController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
         }
-
-        TrackView.cleanTrackToEdit();
 
         Stage stage = (Stage) trackFilepath.getScene().getWindow();
         stage.close();
@@ -86,14 +82,20 @@ public class TrackEditController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        trackToEdit = TrackView.getTrackToEdit();
+
+    }
+
+    public void setTrackToEdit(Track track) {
+        trackToEdit = track;
+    }
+
+    public void setFields() {
         trackFilepath.setText(trackToEdit.getFilepath());
         trackNameField.setText(trackToEdit.getName());
         albumNameField.setText(trackToEdit.getAlbums());
         artistNameField.setText(trackToEdit.getArtists());
         trackNumberField.setText(String.valueOf(trackToEdit.getIndexInAlbum()));
         genreField.setText(trackToEdit.getGenres());
-
     }
 
 }

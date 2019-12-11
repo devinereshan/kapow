@@ -37,7 +37,6 @@ public class TrackView {
     private ContextMenu contextMenu;
     private AudioPlayer audioPlayer;
     // private ViewHandler viewHandler;
-    private static Track trackToEdit;
     private Album album;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
@@ -133,8 +132,12 @@ public class TrackView {
     private void editTrack(Track track) {
         if (track != null) {
             try {
-                trackToEdit = track;
-                Parent root = FXMLLoader.load(getClass().getResource("track_edit_box.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("track_edit_box.fxml"));
+                Parent root = (Parent)fxmlLoader.load();
+                TrackEditController controller = fxmlLoader.<TrackEditController>getController();
+                controller.setTrackToEdit(track);
+                controller.setFields();
+
                 Stage popup = new Stage();
                 popup.setTitle("Edit Track Information");
                 popup.setScene(new Scene(root));
@@ -181,14 +184,6 @@ public class TrackView {
 
     public Album getAlbum() {
         return album;
-    }
-
-    public static void cleanTrackToEdit() {
-        trackToEdit = null;
-    }
-
-    public static Track getTrackToEdit() {
-        return trackToEdit;
     }
 
     private void play(ObservableList<Track> tracks) {
