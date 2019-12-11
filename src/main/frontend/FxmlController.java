@@ -1,6 +1,7 @@
 package main.frontend;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
@@ -32,6 +33,8 @@ import main.player.AudioPlayer;
 import main.player.ElapsedTimeListener;
 
 public class FxmlController implements Initializable {
+
+    private static FxmlController self;
 
     @FXML
     private BorderPane libraryPlayerPane;
@@ -88,7 +91,7 @@ public class FxmlController implements Initializable {
         libraryPlayerPane.setCenter(artistView.artistViewTable);
         clearNestedViews();
         disableBackButton();
-        title.setText(albumView.getTitle());
+        title.setText(artistView.getTitle());
     }
 
     @FXML
@@ -97,7 +100,7 @@ public class FxmlController implements Initializable {
         clearNestedViews();
         disableBackButton();
         // currentTrackView = trackView;
-        title.setText(albumView.getTitle());
+        title.setText(trackView.getTitle());
         // trackView.trackViewTable.setContextMenu(trackContextMenu);
     }
 
@@ -187,6 +190,7 @@ public class FxmlController implements Initializable {
 
         System.out.println("Made is here");
         // setContextMenus();
+        self = this;
     }
 
     private void setDoubleClicks() {
@@ -281,20 +285,35 @@ public class FxmlController implements Initializable {
         backButton.setDisable(true);
     }
 
-    public static void updateViews(Track editedTrack, Album updatedAlbum, Album oldAlbum, Artist updatedArtist, Artist oldArtist) {
+    public static FxmlController getSelf() {
+        return self;
+    }
+    public void updateViews(Track editedTrack, Album updatedAlbum, Album oldAlbum, Artist updatedArtist, Artist oldArtist) {
         // TODO
-        // mediaListHandler.updateLists();
         // if old Album was removed from database, switch view to main Artist view
         try (DBConnection connection = new DBConnection()) {
-            // boolean albumExists = connection.albumExists(oldAlbum.getId());
-            // if (!albumExists) {
-                // switch to main artist view and nullify views
-            // }
+            boolean albumExists = connection.albumExists(oldAlbum.getId());
+            if (!albumExists) {
+                // switch to main artist view and nullify nested views
+                libraryPlayerPane.setCenter(artistView.artistViewTable);
+                clearNestedViews();
+                disableBackButton();
+                title.setText(artistView.getTitle());
+            }
 
-            // boolean artistExists = connection
+            boolean artistExists = connection.artistExists(oldArtist.getId());
+            if (!artistExists) {
+                // switch to main artist view and nullify nested views
+                libraryPlayerPane.setCenter(artistView.artistViewTable);
+                clearNestedViews();
+                disableBackButton();
+                title.setText(artistView.getTitle());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // if album or artist name change and nested views aare not null, update view title
         // same for removal of old artist
 
         // then update lists

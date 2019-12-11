@@ -69,7 +69,10 @@ public class TrackEditController implements Initializable {
         }
 
         if (success) {
-            FxmlController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
+            FxmlController mainController = FxmlController.getSelf();
+            mainController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
+            
+            // FxmlController.updateViews(trackToEdit, updatedAlbum, oldAlbum, updatedArtist, oldArtist);
         }
 
         TrackView.cleanTrackToEdit();

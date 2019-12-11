@@ -530,6 +530,14 @@ public class DBConnection implements AutoCloseable {
         connection.setAutoCommit(true);
     }
 
+    public void removeArtistNoCommit(Artist artist) throws SQLException {
+        int artistID = artist.getId();
+
+        // TODO: If albums still exist, remove them first
+
+        deleteFromTable(artistID, "artist_id", "Track_Artist");
+        deleteFromTable(artistID, "id", "Artist");
+    }
 
     public void removeAlbum(Album album) throws SQLException {
         connection.setAutoCommit(false);
@@ -543,6 +551,15 @@ public class DBConnection implements AutoCloseable {
         connection.commit();
 
         connection.setAutoCommit(true);
+    }
+
+    public void removeAlbumNoCommit(Album album) throws SQLException {
+        int albumID = album.getId();
+
+        // TODO: If tracks still exist, remove them first
+
+        deleteFromTable(albumID, "album_id", "Track_Album");
+        deleteFromTable(albumID, "id", "Album");
     }
 
     private boolean albumIsEmpty(int albumID) throws SQLException {
@@ -562,6 +579,36 @@ public class DBConnection implements AutoCloseable {
         }
     }
 
+    public boolean albumExists(int albumID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Count(*) from Album WHERE id = ?");
+        preparedStatement.setInt(1, albumID);
+
+        resultSet = preparedStatement.executeQuery();
+
+        int count = 0;
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+            break;
+        }
+
+        return count > 0;
+    }
+
+    public boolean artistExists(int artistID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT Count(*) from Artist WHERE id = ?");
+        preparedStatement.setInt(1, artistID);
+
+        resultSet = preparedStatement.executeQuery();
+
+        int count = 0;
+        while (resultSet.next()) {
+            count = resultSet.getInt(1);
+            break;
+        }
+
+        return count > 0;
+    }
+
 
     private boolean artistIsEmpty(int artistID) throws SQLException {
         preparedStatement = connection.prepareStatement("SELECT Count(*) from Track_Artist WHERE artist_id = ?");
@@ -573,11 +620,7 @@ public class DBConnection implements AutoCloseable {
             trackCount = resultSet.getInt(1);
         }
 
-        if (trackCount > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return trackCount > 0;
     }
 
 
@@ -592,7 +635,7 @@ public class DBConnection implements AutoCloseable {
 
         // if this empties an album, remove that album
         if (albumIsEmpty(albumID)) {
-            // removeAlbum(getAlbum(albumID));
+            removeAlbumNoCommit(getAlbum(albumID));
             deleteFromTable(albumID, "album_id", "Track_Album");
             deleteFromTable(albumID, "id", "Album");
         }
@@ -623,6 +666,9 @@ public class DBConnection implements AutoCloseable {
         try {
             int trackID = newTrack.getId();
             Track oldTrack = getTrack(trackID);
+            Album oldAlbum = getAlbum(getAlbumID(oldTrack.getAlbums(), trackID));
+            Artist oldArtist = getArtist(getArtistID(oldTrack.getArtists(), trackID));
+
             connection.setAutoCommit(false);
 
             String newName = newTrack.getName();
@@ -649,6 +695,16 @@ public class DBConnection implements AutoCloseable {
 
             if (!newGenres.equals(oldTrack.getGenres())) {
                 updateTrackGenre(oldTrack.getGenres(), newGenres, trackID);
+            }
+
+            if (albumIsEmpty(oldAlbum.getId())) {
+                System.out.println(oldAlbum.getName() + " No longer has any tracks. Removing from database");
+                removeAlbumNoCommit(oldAlbum);
+            }
+
+            if (artistIsEmpty(oldArtist.getId())) {
+                System.out.println(oldArtist.getName() + " No longer has any tracks. Removing from database");
+                removeArtistNoCommit(oldArtist);
             }
 
             connection.commit();
