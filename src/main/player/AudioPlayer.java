@@ -24,6 +24,8 @@ public class AudioPlayer {
 
     private Queue queue;
 
+    private double volume = 0.8;
+
     private final int SEEK_LEFT = -1;
     private final int SEEK_RIGHT = 1;
 
@@ -52,6 +54,8 @@ public class AudioPlayer {
 
         currentTrackMedia = new Media(filepath.toUri().toString());
         currentTrackPlayer = new MediaPlayer(currentTrackMedia);
+
+        setVolume(volume);
 
         currentTrackName.set(currentTrack.getName());
         
@@ -82,6 +86,12 @@ public class AudioPlayer {
 
     }
 
+    public void setVolume(double volume) {
+        if (currentTrackPlayer != null) {
+            this.volume = volume;
+            currentTrackPlayer.setVolume(volume);
+        }
+    }
 
     public void queueAndPlay(Track track) {
         loadTrack(queue.quickLoadTrack(track));

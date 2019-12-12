@@ -239,6 +239,13 @@ public class FxmlController implements Initializable {
                 queueListView.getSelectionModel().select(0);
             }
         });
+
+        volumeBar.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                audioPlayer.setVolume(volumeBar.getValue() / 100);
+            }
+        });
         // currentTrackView = trackView;
         // currentAlbumView = albumView;
         MediaListHandler.setMainTrackList(trackView.getList());

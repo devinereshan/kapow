@@ -88,7 +88,7 @@
                      <left>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Slider fx:id="volumeBar" onScroll="#volumeScrolled" orientation="VERTICAL" />
+                              <Slider fx:id="volumeBar" onScroll="#volumeScrolled" orientation="VERTICAL" value="80.0" />
                            </children>
                         </VBox>
                      </left>
