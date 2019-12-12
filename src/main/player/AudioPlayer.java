@@ -111,8 +111,10 @@ public class AudioPlayer {
     }
 
 
-    public void seekToIndex(int index) {
-        System.out.println(index);
+    public void seekToQueueIndex(int index) {
+        if (queue.hasIndex(index)) {
+            loadTrack(queue.seekStep(index));
+        }
     }
 
     private void previousTrack() {

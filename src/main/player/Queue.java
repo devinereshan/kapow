@@ -96,6 +96,18 @@ public class Queue {
         return tracks.get(currentIndex);
     }
 
+    public Track seekStep(int step) {
+        currentIndex += step;
+        for (int i = 0; i < step; i++) {
+            trackNames.remove(0);
+        }
+
+        return tracks.get(currentIndex);
+    }
+
+    public boolean hasIndex(int step) {
+        return currentIndex + step < tracks.size();
+    }
 
     public boolean hasTrack(int direction) {
         int index = currentIndex + direction;
