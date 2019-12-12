@@ -81,7 +81,7 @@ public class FxmlController implements Initializable {
     private ToggleButton tracksToggleButton;
 
     @FXML
-    private ListView<?> queueListView;
+    private ListView<String> queueListView;
 
     @FXML
     private BorderPane listViewBorderPane;
@@ -89,6 +89,9 @@ public class FxmlController implements Initializable {
     @FXML
     void queueListViewClicked(MouseEvent event) {
         int index = queueListView.getSelectionModel().getSelectedIndex();
+        if (event.getClickCount() == 2 && (queueListView.getSelectionModel().getSelectedItem() != null)) {
+            audioPlayer.seekToIndex(index);            
+        }
         // boolean suucess = audioPlayer.seekToIndex(index);
         // if (success) {
         //     queueListView.
@@ -223,7 +226,8 @@ public class FxmlController implements Initializable {
         audioPlayer = new AudioPlayer(elapsedTimeListener);
         trackView = new TrackView(audioPlayer);
 
-        queueListView = new ListView<String>(audioPlayer.getTrackNameList());
+        // queueListView = new ListView<String>(audioPlayer.getTrackNameList());
+        queueListView.setItems(audioPlayer.getTrackNameList());
         listViewBorderPane.setCenter(queueListView);
         // currentTrackView = trackView;
         // currentAlbumView = albumView;

@@ -111,6 +111,9 @@ public class AudioPlayer {
     }
 
 
+    public void seekToIndex(int index) {
+        System.out.println(index);
+    }
 
     private void previousTrack() {
         if (queue.hasTrack(SEEK_LEFT)) {

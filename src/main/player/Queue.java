@@ -41,7 +41,7 @@ public class Queue {
         } else {
             for (int j = 0, i = currentIndex + 1; j < newTracks.size(); i++, j++) {
                 tracks.add(i, newTracks.get(j));
-                trackNames.add(newTracks.get(j).getName());
+                trackNames.add(j + 1, newTracks.get(j).getName());
             }
         }
     }
