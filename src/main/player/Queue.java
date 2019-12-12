@@ -11,40 +11,50 @@ public class Queue {
     public final int SEEK_RIGHT = 1;
 
     private ObservableList<Track> tracks;
+    private ObservableList<String> trackNames;
     private int currentIndex;
 
 
     public Queue() {
         currentIndex = 0;
         tracks = FXCollections.observableArrayList();
+        trackNames = FXCollections.observableArrayList();
     }
 
 
     public void addNext(Track track) {
         if (tracks.size() == 0) {
             tracks.add(track);
+            trackNames.add(track.getName());
         } else {
             tracks.add(currentIndex + 1, track);
+            trackNames.add(currentIndex + 1, track.getName());
         }
     }
 
     public void addNext(ObservableList<Track> newTracks) {
         if (tracks.size() == 0) {
             tracks.addAll(newTracks);
+            for (int i = 0; i < newTracks.size(); i++) {
+                trackNames.add(newTracks.get(i).getName());
+            }
         } else {
             for (int j = 0, i = currentIndex + 1; j < newTracks.size(); i++, j++) {
                 tracks.add(i, newTracks.get(j));
+                trackNames.add(newTracks.get(j).getName());
             }
         }
     }
 
     public void add(Track track) {
         tracks.add(track);
+        trackNames.add(track.getName());
     }
 
     public void add(ObservableList<Track> newTracks) {
         for (Track track : newTracks) {
             tracks.add(track);
+            trackNames.add(track.getName());
         }
     }
 
@@ -66,6 +76,7 @@ public class Queue {
     public Track next() {
         if (tracks.size() > 1) {
             currentIndex += 1;
+            trackNames.remove(0);
         }
 
         return tracks.get(currentIndex);
@@ -75,6 +86,7 @@ public class Queue {
     public Track previous() {
         if (currentIndex > 0) {
             currentIndex -= 1;
+            trackNames.add(0, tracks.get(currentIndex).getName());
         }
 
         return tracks.get(currentIndex);
@@ -101,5 +113,9 @@ public class Queue {
 
     public ObservableList<Track> getTracks() {
         return tracks;
+    }
+
+    public ObservableList<String> getTrackNames() {
+        return trackNames;
     }
 }

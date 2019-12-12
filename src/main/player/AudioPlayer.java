@@ -100,12 +100,16 @@ public class AudioPlayer {
         play();
     }
 
+    public ObservableList<String> getTrackNameList() {
+        return queue.getTrackNames();
+    }
 
     private void nextTrack() {
         if (queue.hasTrack(SEEK_RIGHT)) {
             loadTrack(queue.next());
         }
     }
+
 
 
     private void previousTrack() {
