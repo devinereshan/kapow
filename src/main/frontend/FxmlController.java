@@ -1,5 +1,6 @@
 package main.frontend;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -9,7 +10,10 @@ import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -25,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 // import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.database.DBConnection;
 import main.library.Album;
@@ -157,7 +162,8 @@ public class FxmlController implements Initializable {
 
     @FXML
     void importClicked(ActionEvent event) {
-        ImportBox importBox = new ImportBox(GUI.getpStage());
+        // ImportBox importBox = new ImportBox(GUI.getpStage());
+        launchImportBox();
     }
 
     @FXML
@@ -357,6 +363,23 @@ public class FxmlController implements Initializable {
     }
 
 
+    private void launchImportBox() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("import_box.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            ImportController controller = fxmlLoader.<ImportController>getController();
+            // controller.setTrackToEdit(track);
+            // controller.setFields();
+
+            Stage popup = new Stage();
+            popup.setTitle("Edit Track Information");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            System.err.println("TrackView: Unable to open track edit box");
+            e.printStackTrace();
+        }
+    }
     // private void setContextMenus() {
     //     System.out.println("In set context Menu");
     //     buildTrackViewMenu();
