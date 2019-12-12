@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -232,6 +233,12 @@ public class FxmlController implements Initializable {
         // queueListView = new ListView<String>(audioPlayer.getTrackNameList());
         queueListView.setItems(audioPlayer.getTrackNameList());
         listViewBorderPane.setCenter(queueListView);
+        queueListView.getItems().addListener(new ListChangeListener() {
+            @Override
+            public void onChanged(ListChangeListener.Change change) {
+                queueListView.getSelectionModel().select(0);
+            }
+        });
         // currentTrackView = trackView;
         // currentAlbumView = albumView;
         MediaListHandler.setMainTrackList(trackView.getList());
