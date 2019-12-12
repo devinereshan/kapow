@@ -206,6 +206,14 @@ public class FxmlController implements Initializable {
             } else {
                 albumView.filter(searchBox);
             }
+        } else if (artistsToggleButton.isSelected()) {
+            if (nestedTrackView != null) {
+                nestedTrackView.filter(searchBox);
+            } else if (nestedAlbumView != null) {
+                nestedAlbumView.filter(searchBox);
+            } else {
+                artistView.filter(searchBox);
+            }
         }
     }
 

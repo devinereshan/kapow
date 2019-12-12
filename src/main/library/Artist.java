@@ -9,6 +9,7 @@ public class Artist {
     private SimpleStringProperty albums;
     private SimpleStringProperty genres;
     private SimpleIntegerProperty numberOfAlbums;
+    private String searchString;
 
     public Artist(int id, String name, String albums, String genres, int numberOfAlbums) {
         this.id = id;
@@ -16,6 +17,15 @@ public class Artist {
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
         this.numberOfAlbums = new SimpleIntegerProperty(numberOfAlbums);
+        buildSearchString();
+    }
+
+    private void buildSearchString() {
+        searchString = name.get() + genres.get();
+    }
+
+    public String getSearchString() {
+        return searchString;
     }
 
     public int getId() {

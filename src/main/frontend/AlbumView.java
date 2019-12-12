@@ -28,7 +28,7 @@ public class AlbumView {
 
     public AlbumView() {
         albumList = new AlbumList();
-        filteredAlbums = new FilteredList(albumList.getAlbums(), p -> true);
+        filteredAlbums = new FilteredList<>(albumList.getAlbums(), p -> true);
         assignColumnValues();
         albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -36,7 +36,7 @@ public class AlbumView {
 
     public AlbumView(Artist artist) {
         albumList = new AlbumList(artist.getId());
-        filteredAlbums = new FilteredList(albumList.getAlbums(), p -> true);
+        filteredAlbums = new FilteredList<>(albumList.getAlbums(), p -> true);
         assignColumnValues();
         this.artist = artist;
         title = artist.getName();
