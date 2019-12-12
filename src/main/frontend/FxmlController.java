@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableRow;
@@ -78,6 +79,14 @@ public class FxmlController implements Initializable {
 
     @FXML
     private ToggleButton tracksToggleButton;
+
+    @FXML
+    private ListView<?> queueListView;
+
+    @FXML
+    void queueListViewClicked(MouseEvent event) {
+
+    }
 
     private final ArtistView artistView = new ArtistView();
     private final AlbumView albumView = new AlbumView();
@@ -162,7 +171,6 @@ public class FxmlController implements Initializable {
 
     @FXML
     void importClicked(ActionEvent event) {
-        // ImportBox importBox = new ImportBox(GUI.getpStage());
         launchImportBox();
     }
 

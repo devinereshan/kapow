@@ -138,7 +138,7 @@
                   </VBox>
                </top>
                <center>
-                  <ListView prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ddd;" BorderPane.alignment="CENTER" />
+                  <ListView fx:id="queueListView" onMouseClicked="#queueListViewClicked" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ddd;" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </left>
