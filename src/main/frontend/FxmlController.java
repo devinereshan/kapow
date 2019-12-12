@@ -200,6 +200,12 @@ public class FxmlController implements Initializable {
     void searchTermEntered(KeyEvent event) {
         if (tracksToggleButton.isSelected()) {
             trackView.filter(searchBox);
+        } else if (albumsToggleButton.isSelected()) {
+            if (nestedTrackView != null) {
+                nestedTrackView.filter(searchBox);
+            } else {
+                albumView.filter(searchBox);
+            }
         }
     }
 

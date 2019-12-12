@@ -9,6 +9,7 @@ public class Album {
     private SimpleStringProperty artists;
     private SimpleIntegerProperty numberOfTracks;
     private SimpleStringProperty genres;
+    private String searchString;
 
 
     // Constructor for albums that don't yet exist in database (no id)
@@ -17,6 +18,7 @@ public class Album {
         this.artists = new SimpleStringProperty(artists);
         this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
         this.genres = new SimpleStringProperty(genres);
+        buildSearchString();
     }
 
     public Album(int id, String name, String artists, int numberOfTracks, String genres) {
@@ -25,6 +27,15 @@ public class Album {
         this.artists = new SimpleStringProperty(artists);
         this.numberOfTracks = new SimpleIntegerProperty(numberOfTracks);
         this.genres = new SimpleStringProperty(genres);
+        buildSearchString();
+    }
+
+    private void buildSearchString() {
+        searchString = name.get() + artists.get() + genres.get();
+    }
+
+    public String getSearchString() {
+        return searchString;
     }
 
     public int getId() {

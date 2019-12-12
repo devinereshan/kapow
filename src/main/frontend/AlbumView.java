@@ -2,8 +2,10 @@ package main.frontend;
 
 import java.sql.SQLException;
 
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import main.database.DBConnection;
@@ -21,10 +23,12 @@ public class AlbumView {
     TableColumn<Album,String> numberOfTracksCol = new TableColumn<>("Tracks");
     TableColumn<Album,String> genresCol = new TableColumn<>("Genres");
     private Artist artist;
+    private FilteredList<Album> filteredAlbums;
 
 
     public AlbumView() {
         albumList = new AlbumList();
+        filteredAlbums = new FilteredList(albumList.getAlbums(), p -> true);
         assignColumnValues();
         albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
@@ -32,6 +36,7 @@ public class AlbumView {
 
     public AlbumView(Artist artist) {
         albumList = new AlbumList(artist.getId());
+        filteredAlbums = new FilteredList(albumList.getAlbums(), p -> true);
         assignColumnValues();
         this.artist = artist;
         title = artist.getName();
@@ -45,9 +50,12 @@ public class AlbumView {
         numberOfTracksCol.setCellValueFactory(new PropertyValueFactory<>("numberOfTracks"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         albumViewTable.getColumns().setAll(nameCol, artistsCol, numberOfTracksCol, genresCol);
-        albumViewTable.setItems(albumList.getAlbums());
+        albumViewTable.setItems(filteredAlbums);
     }
 
+    public void filter(TextField searchBox) {
+        filteredAlbums.setPredicate(p -> p.getSearchString().toLowerCase().contains(searchBox.getText().toLowerCase().trim()));
+    }
 
     public String getTitle() {
         return title;
