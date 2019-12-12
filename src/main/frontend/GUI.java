@@ -5,13 +5,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.database.DBBuilder;
 
 
 public class GUI extends Application {
     private static Stage pStage;
+    public static final String databaseDir = ".database";
+    public static final String databasePath = databaseDir + "/music.db";
 
     public static void main(String[] args) {
-        launch(args);
+        boolean success = false;
+        
+        if (!DBBuilder.dbExists()) {
+            success = DBBuilder.buildDatabase();
+        }
+
+        if (success) {
+            launch(args);
+        } else {
+            System.err.println("Something went wrong while launching kapow. Unable to access database");
+        }
     }
 
     public void start(Stage primaryStage) throws Exception{

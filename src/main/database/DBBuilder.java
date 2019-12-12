@@ -5,25 +5,31 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import main.frontend.GUI;
+
 public class DBBuilder {
 
+    public static boolean dbExists() {
+        return new File(GUI.databasePath).exists();
+    }
 
-    public void buildDatabase() {
-        // kapow should exist in its own directory (eg ~/.config/kapow/)
-        // build database directory (~/.config/kapow/.db)
-        File dbDirectory = new File(".db");
+    public static boolean buildDatabase() {
+        boolean success = false;
+        File dbDirectory = new File(GUI.databaseDir);
 
         if(!dbDirectory.exists()) {
             dbDirectory.mkdir();
         }
-        // connect to database
-        String url = "jdbc:sqlite:.db/music.db";
+
+        String url = "jdbc:sqlite:" + GUI.databasePath;
  
+
         try (Connection connection = DriverManager.getConnection(url)) {
             if (connection != null) {
                 System.out.println("Connection success");
                 connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
                 buildTables(connection);
+                success = true;
             } else {
                 System.err.println("DBBuilder: Failed to build tables. Connection is null");
             }
@@ -33,9 +39,10 @@ public class DBBuilder {
             System.out.println(e.getStackTrace());
         }
 
+        return success;
     }
 
-    private void buildTables(Connection connection) throws SQLException{
+    private static void buildTables(Connection connection) throws SQLException{
         connection.createStatement().executeUpdate(String.format(
             "CREATE TABLE IF NOT EXISTS Track (\n" +
             "\tid          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import main.frontend.GUI;
 import main.library.Album;
 import main.library.Artist;
 import main.library.Track;
@@ -19,7 +20,7 @@ public class DBConnection implements AutoCloseable {
     private ResultSet resultSet;
 
     public DBConnection () throws SQLException {
-        connection = DriverManager.getConnection("jdbc:sqlite:sql/music.db");
+        connection = DriverManager.getConnection("jdbc:sqlite:" + GUI.databasePath);
         connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
     }
 
