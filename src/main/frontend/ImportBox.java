@@ -14,9 +14,11 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -52,7 +54,7 @@ public class ImportBox {
     private class TrackInfo {
         File file;
         TextField nameField;
-        Label nameLabel = new Label("Name:");
+        Label nameLabel = new Label("Name");
         TextField indexInAlbumField;
         Label indexLabel = new Label("Track #");
         VBox parent;
@@ -67,9 +69,15 @@ public class ImportBox {
             indexInAlbumField = new TextField();
             indexInAlbumField.setPrefWidth(40);
 
-            top = new HBox(new Label(file.getName().toString()));
-            bottom = new HBox(10, indexLabel, indexInAlbumField, nameLabel, nameField);
-            parent = new VBox(5, top, bottom);
+            Label filePathLabel = new Label(file.getName().toString());
+            filePathLabel.setPadding(new Insets(10, 10, 5, 0));
+            // top = new HBox(filePathLabel);
+            indexLabel.setPadding(new Insets(5, 5, 5, 10));
+            nameLabel.setPadding(new Insets(5, 5, 5, 20));
+            bottom = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
+            bottom.setPadding(new Insets(0, 0, 5, 0));
+            Separator separator = new Separator();
+            parent = new VBox(top, bottom, separator);
 
             indexInAlbumField.textProperty().addListener(new ChangeListener<String>() {
                 @Override
