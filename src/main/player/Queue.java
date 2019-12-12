@@ -28,7 +28,7 @@ public class Queue {
             trackNames.add(track.getName());
         } else {
             tracks.add(currentIndex + 1, track);
-            trackNames.add(currentIndex + 1, track.getName());
+            trackNames.add(1, track.getName());
         }
     }
 
@@ -67,6 +67,10 @@ public class Queue {
 
         if (tracks.size() > 1) {
             currentIndex += 1;
+        }
+
+        if (trackNames.size() > 1) {
+            trackNames.remove(0);
         }
 
         return tracks.get(currentIndex);

@@ -192,6 +192,7 @@ public class FxmlController implements Initializable {
     @FXML
     void playClicked(ActionEvent event) {
         audioPlayer.play();
+        queueListView.getSelectionModel().select(0);
     }
 
     @FXML
@@ -202,11 +203,13 @@ public class FxmlController implements Initializable {
     @FXML
     void seekLeftClicked(ActionEvent event) {
         audioPlayer.seekLeft();
+        queueListView.getSelectionModel().select(0);
     }
 
     @FXML
     void seekRightClicked(ActionEvent event) {
         audioPlayer.seekRight();
+        queueListView.getSelectionModel().select(0);
     }
 
     @FXML
