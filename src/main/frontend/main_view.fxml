@@ -133,7 +133,7 @@
                         <ToggleButton fx:id="artistsToggleButton" mnemonicParsing="false" onAction="#artistsToggleClicked" prefHeight="60.0" prefWidth="200.0" selected="true" text="Artists" />
                         <ToggleButton fx:id="albumsToggleButton" mnemonicParsing="false" onAction="#albumsToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
                         <ToggleButton fx:id="tracksToggleButton" mnemonicParsing="false" onAction="#tracksToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
-                        <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" />
+                        <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" promptText="Search" />
                      </children>
                   </VBox>
                </top>

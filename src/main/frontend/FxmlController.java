@@ -198,7 +198,9 @@ public class FxmlController implements Initializable {
 
     @FXML
     void searchTermEntered(KeyEvent event) {
-
+        if (tracksToggleButton.isSelected()) {
+            trackView.filter(searchBox);
+        }
     }
 
     @FXML

@@ -14,6 +14,7 @@ public class Track {
     private SimpleStringProperty albums;
     private SimpleStringProperty genres;
     private SimpleIntegerProperty indexInAlbum;
+    private String searchString;
 
 
     public Track(int id, String filepath, String name, String duration, String artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
@@ -26,6 +27,7 @@ public class Track {
         this.genres = new SimpleStringProperty(genres);
         this.lengthInSeconds = lengthInSeconds;
         this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
+        buildSearchString();
     }
 
 
@@ -38,8 +40,18 @@ public class Track {
         this.albums = new SimpleStringProperty(albums);
         this.genres = new SimpleStringProperty(genres);
         this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
+        buildSearchString();
     }
 
+
+    private void buildSearchString() {
+        searchString = name.get() + albums.get() + artists.get() + genres.get();
+    }
+
+
+    public String getSearchString() {
+        return searchString;
+    }
 
     // toString for testing
     @Override

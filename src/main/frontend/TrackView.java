@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,6 +33,8 @@ public class TrackView {
     private AudioPlayer audioPlayer;
     private Album album;
 
+    private FilteredList<Track> filteredTracks;
+
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
     TableColumn<Track,String> nameCol = new TableColumn<>("Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
@@ -42,7 +46,8 @@ public class TrackView {
     public TrackView(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
         trackList = new TrackList();
-        
+        filteredTracks = new FilteredList(trackList.getTracks(), p -> true);
+
         assignColumnValues();
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -54,6 +59,7 @@ public class TrackView {
         trackList = new TrackList(album.getId(), "album");
         this.audioPlayer = audioPlayer;
 
+        filteredTracks = new FilteredList(trackList.getTracks(), p -> true);
         assignAlbumColumnValues();
 
         this.album = album;
@@ -186,7 +192,7 @@ public class TrackView {
         albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         trackViewTable.getColumns().setAll(nameCol, durationCol, artistsCol, albumsCol, genresCol);
-        trackViewTable.setItems(trackList.getTracks());
+        trackViewTable.setItems(filteredTracks);
     }
 
 
@@ -198,9 +204,13 @@ public class TrackView {
         albumsCol.setCellValueFactory(new PropertyValueFactory<>("albums"));
         genresCol.setCellValueFactory(new PropertyValueFactory<>("genres"));
         trackViewTable.getColumns().setAll(indexCol, nameCol, durationCol, artistsCol, albumsCol, genresCol);
-        trackViewTable.setItems(trackList.getTracks());
+        trackViewTable.setItems(filteredTracks);
     }
 
+
+    public void filter(TextField searchBox) {
+        filteredTracks.setPredicate(p -> p.getSearchString().toLowerCase().contains(searchBox.getText().toLowerCase().trim()));
+    }
 
     public AlbumView getParent() {
         return parent;
