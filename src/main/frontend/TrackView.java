@@ -36,11 +36,11 @@ public class TrackView {
     private FilteredList<Track> filteredTracks;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
-    TableColumn<Track,String> nameCol = new TableColumn<>("Name");
+    TableColumn<Track,String> nameCol = new TableColumn<>("Track Name");
     TableColumn<Track,String> durationCol = new TableColumn<>("Duration");
-    TableColumn<Track,String> artistsCol = new TableColumn<>("Artists");
-    TableColumn<Track,String> albumsCol = new TableColumn<>("Albums");
-    TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
+    TableColumn<Track,String> artistsCol = new TableColumn<>("Artist Name");
+    TableColumn<Track,String> albumsCol = new TableColumn<>("Album");
+    TableColumn<Track,String> genresCol = new TableColumn<>("Genre");
 
 
     public TrackView(AudioPlayer audioPlayer) {
@@ -66,6 +66,8 @@ public class TrackView {
         title = String.format("%s - %s", album.getArtists(), album.getName());
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        indexCol.setMinWidth(20);
+        indexCol.setMaxWidth(50);
         trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
