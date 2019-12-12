@@ -142,12 +142,9 @@ public class ImportController {
 
 
 
-
-
     private File parentFile;
     private List<File> files;
     private ArrayList<TrackInfo> trackInfos = new ArrayList<>();
-    // private AlbumInfo albumInfo;
 
     
     @FXML

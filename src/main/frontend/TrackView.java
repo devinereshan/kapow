@@ -7,14 +7,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -27,16 +23,12 @@ import main.player.AudioPlayer;
 
 public class TrackView {
     private final TrackList trackList;
-    // private Tab trackViewTab = new Tab("Tracks");
     final TableView<Track> trackViewTable = new TableView<>();
     private VBox trackViewContents;
-    // private Button returnToParent;
-    // private Label currentAlbumLabel = new Label("kapow!");
     private String title = "kapow!";
     private AlbumView parent;
     private ContextMenu contextMenu;
     private AudioPlayer audioPlayer;
-    // private ViewHandler viewHandler;
     private Album album;
 
     TableColumn<Track,String> indexCol = new TableColumn<>("#");
@@ -46,16 +38,6 @@ public class TrackView {
     TableColumn<Track,String> albumsCol = new TableColumn<>("Albums");
     TableColumn<Track,String> genresCol = new TableColumn<>("Genres");
 
-
-    public TrackView(TrackList trackList, ViewHandler viewHandler) {
-        this.trackList = trackList;
-        assignColumnValues();
-
-        trackViewContents = new VBox(trackViewTable);
-
-        trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        // buildContextMenu();
-    }
 
     public TrackView(AudioPlayer audioPlayer) {
         this.audioPlayer = audioPlayer;
@@ -84,18 +66,6 @@ public class TrackView {
     public String getTitle() {
         return title;
     }
-
-    // private void setDoubleClick() {
-    //     trackViewTable.setRowFactory(tv -> {
-    //         TableRow<Track> trackRow = new TableRow<>();
-    //         trackRow.setOnMouseClicked(event -> {
-    //             if (event.getClickCount() == 2 && (!trackRow.isEmpty())) {
-    //                 play(trackRow.getItem());
-    //             }
-    //         });
-    //         return trackRow;
-    //     });
-    // }
 
     private void buildContextMenu() {
         contextMenu = new ContextMenu();
@@ -208,10 +178,6 @@ public class TrackView {
         return trackViewContents;
     }
 
-
-    // public Tab getTab() {
-    //     return trackViewTab;
-    // }
 
     private void assignColumnValues() {
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));

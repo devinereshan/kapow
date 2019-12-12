@@ -12,33 +12,6 @@ public class MediaListHandler {
     private static TrackList nestedTrackList;
     private static AlbumList nestedAlbumList;
 
-    // private static ArrayList<TrackList> trackLists = new ArrayList<>();
-    // private static ArrayList<AlbumList> albumLists = new ArrayList<>();
-    // private static ArrayList<ArtistList> artistLists = new ArrayList<>();
-
-    // public MediaListHandler() {
-        // mainTrackList = new TrackList();
-        // mainAlbumList = new AlbumList();
-        // mainArtistList = new ArtistList();
-
-        // trackLists = new ArrayList<>();
-        // albumLists = new ArrayList<>();
-        // artistLists = new ArrayList<>();
-    // }
-
-
-    // public AlbumList getMainAlbumList() {
-    //     return mainAlbumList;
-    // }
-
-
-    // public TrackList getMainTrackList() {
-    //     return mainTrackList;
-    // }
-
-    // public ArtistList getMainArtistList() {
-    //     return mainArtistList;
-    // }
 
     public static void setMainAlbumList(AlbumList albumList) {
         mainAlbumList = albumList;
@@ -57,23 +30,6 @@ public class MediaListHandler {
     }
     
 
-    // public static void addTrackList(TrackList trackList) {
-    //     trackLists.add(trackList);
-    // }
-
-    // public static void removeTrackList(TrackList trackList) {
-    //     trackLists.remove(trackList);
-    // }
-
-    // public static void addAlbumList(AlbumList albumList) {
-    //     albumLists.add(albumList);
-    // }
-
-    // public static void removeAlbumList(AlbumList albumList) {
-    //     albumLists.remove(albumList);
-    // }
-
-    // public void addArtistList()
     public static void setMainArtistList(ArtistList artistList) {
         mainArtistList = artistList;
     }
