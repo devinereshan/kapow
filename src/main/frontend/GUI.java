@@ -14,9 +14,9 @@ public class GUI extends Application {
     public static final String databasePath = databaseDir + "/music.db";
 
     public static void main(String[] args) {
-        boolean success = false;
-        
-        if (!DBBuilder.dbExists()) {
+        boolean success = DBBuilder.dbExists();
+
+        if (!success) {
             success = DBBuilder.buildDatabase();
         }
 
