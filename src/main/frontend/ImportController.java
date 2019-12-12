@@ -2,6 +2,7 @@ package main.frontend;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,8 +23,12 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.database.DBConnection;
+import main.library.MediaListHandler;
+import main.library.Track;
 import main.player.TrackLengthCalculator;
 
 public class ImportController {
@@ -34,8 +39,6 @@ public class ImportController {
         Label nameLabel = new Label("Name:");
         TextField indexInAlbumField;
         Label indexLabel = new Label("Track #");
-        // VBox parent;
-        // HBox top;
         HBox bottom;
         int lengthInSeconds;
         String duration;
@@ -50,14 +53,12 @@ public class ImportController {
 
             Label filePathLabel = new Label(file.getName().toString());
             filePathLabel.setPadding(new Insets(10, 10, 5, 10));
-            // top = new HBox(new Label(file.getName().toString()));
             indexLabel.setPadding(new Insets(5, 5, 5, 10));
             nameLabel.setPadding(new Insets(5, 5, 5, 20));
             bottom = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
             bottom.setPadding(new Insets(0, 0, 5, 0));
             Separator separator = new Separator();
             trackListBox.getChildren().addAll(filePathLabel, bottom, separator);
-            // parent = new VBox(top, bottom, separator);
 
             indexInAlbumField.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -87,10 +88,6 @@ public class ImportController {
         public String getName() {
             return nameField.getText();
         }
-
-        // public VBox getParent() {
-        //     return parent;
-        // }
 
         public String getDuration() {
             return duration;
@@ -144,53 +141,13 @@ public class ImportController {
     }
 
 
-    private class AlbumInfo {
-        File file;
-        Label albumNameLabel = new Label("Album Name");
-        Label artistNameLabel = new Label("Artist Name");
-        Label genreLabel = new Label("Genre");
-        TextField albumField = new TextField();
-        TextField artistField = new TextField();
-        TextField genreField = new TextField();
-
-        VBox parent;
-
-
-        public AlbumInfo (File file) {
-            this.file = file;
-
-            parent = new VBox(10, artistNameLabel, artistField, albumNameLabel, albumField, genreLabel, genreField);
-
-            autoFillFields();
-        }
-
-        public VBox getParent() {
-            return parent;
-        }
-
-        private void autoFillFields() {
-            artistField.setText(file.getParentFile().getName());
-            albumField.setText(file.getName());
-        }
-
-        public String getAlbumName() {
-            return albumField.getText();
-        }
-
-        public String getArtistName() {
-            return artistField.getText();
-        }
-
-        public String getGenre() {
-            return genreField.getText();
-        }
-    }
 
 
 
+    private File parentFile;
     private List<File> files;
     private ArrayList<TrackInfo> trackInfos = new ArrayList<>();
-    private AlbumInfo albumInfo;
+    // private AlbumInfo albumInfo;
 
     
     @FXML
@@ -221,6 +178,7 @@ public class ImportController {
     void browseClicked(ActionEvent event) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         getFiles(stage);
+        confirmButton.setDisable(false);
     }
 
     @FXML
@@ -231,41 +189,37 @@ public class ImportController {
 
     @FXML
     void confirmClicked(ActionEvent event) {
-
+        submit();
     }
 
     private void getFiles(Stage stage) {
-        // Stage stage = (Stage) cancelButton.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.aiff",
                 "*.au");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        List<File> files = fileChooser.showOpenMultipleDialog(stage);
+        files = fileChooser.showOpenMultipleDialog(stage);
 
         if (files != null) {
-            addImportFields(files);
+            addImportFields();
         }
     }
 
-    private void addImportFields(List<File> files) {
-        File parentFile = files.get(0).getParentFile();
+    private void addImportFields() {
+        parentFile = files.get(0).getParentFile();
         filepathLabel.setText(parentFile.toString());
 
         for (File file : files) {
             if (isValidAudioFile(file)) {
                 TrackInfo temp = new TrackInfo(file);
-                // temp.setLengthVariables();
                 trackInfos.add(temp);
-                // trackListBox.getChildren().add(temp.getParent());
-                // middleLeft.getChildren().add(temp.getParent());
             }
         }
 
-        albumInfo = new AlbumInfo(parentFile);
-        // middleRight.getChildren().add(albumInfo.getParent());
+        artistField.setText(parentFile.getParentFile().getName());
+        albumField.setText(parentFile.getName());
 
-        // submit.setDisable(false);
+        confirmButton.setDisable(false);
     }
 
     private boolean isValidAudioFile(File file) {
@@ -274,6 +228,43 @@ public class ImportController {
             return true;
         } catch (UnsupportedAudioFileException | IOException e) {
             return false;
+        }
+    }
+
+    private void submit() {
+        String albumName = albumField.getText().trim();
+        String artistName = artistField.getText().trim();
+        String genre = genreField.getText().trim();
+
+        ArrayList<Track> tracks = new ArrayList<>();
+
+        for (TrackInfo t : trackInfos) {
+            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artistName, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
+            tracks.add(temp);
+        }
+
+        boolean success = false;
+
+        try (DBConnection connection = new DBConnection()) {
+            connection.importMultiTrack(tracks);
+            success = true;
+        } catch (SQLException e) {
+            System.err.println("ImportBox submit: failed to submit new information to database");
+            e.printStackTrace();
+        }
+
+
+        if (success) {
+            MediaListHandler.hardRefresh();
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
+            stage.close();
+        } else {
+            trackListBox.getChildren().clear();
+            Label failed = new Label("Failed to import tracks");
+            failed.setFont(new Font(30));
+            failed.setPadding(new Insets(10, 10, 10, 10));
+            trackListBox.getChildren().add(failed);
+            confirmButton.setDisable(true);
         }
     }
 }

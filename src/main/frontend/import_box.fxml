@@ -16,7 +16,7 @@
          <bottom>
             <HBox alignment="BOTTOM_LEFT" minWidth="50.0" prefHeight="33.0" prefWidth="710.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmClicked" text="Confirm">
+                  <Button fx:id="confirmButton" disable="true" mnemonicParsing="false" onAction="#confirmClicked" text="Confirm">
                      <HBox.margin>
                         <Insets bottom="10.0" left="40.0" top="10.0" />
                      </HBox.margin>
