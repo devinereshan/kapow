@@ -76,6 +76,15 @@ public class AudioPlayer {
         currentTrackPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
+                if (currentTrackPlayer.getCurrentTime().toSeconds() > elapsedTimeListener.getMaxElapsedTime()) {
+                    if (queue.hasTrack(SEEK_RIGHT)) {
+                        loadTrack(queue.next());
+                    } else {
+                        stop();
+                        loadCurrentTrack();
+                    }
+                }
+
                 if (elapsedTimeListener == null) {
                     return;
                 }
