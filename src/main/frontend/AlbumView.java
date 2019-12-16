@@ -75,7 +75,11 @@ public class AlbumView {
         MenuItem play = new MenuItem("Play");
         play.setOnAction(e -> play(albumViewTable.getSelectionModel().getSelectedItems()));
 
+        MenuItem queue = new MenuItem("Queue");
+        queue.setOnAction(e -> addToQueue(albumViewTable.getSelectionModel().getSelectedItems()));
+
         contextMenu.getItems().add(play);
+        contextMenu.getItems().add(queue);
         albumViewTable.setContextMenu(contextMenu);
     }
 
@@ -90,6 +94,20 @@ public class AlbumView {
             
             if (tracks != null) {
                 audioPlayer.queueAndPlay(tracks);
+            }
+        }
+    }
+
+    private void addToQueue(ObservableList<Album> albums) {
+        if (albums != null) {
+            ObservableList<Track> tracks = FXCollections.observableArrayList();
+            for (Album album : albums) {
+                TrackList partialTrackList = new TrackList(album.getId(), "album");
+                tracks.addAll(partialTrackList.getTracks());
+            }
+
+            if (tracks != null) {
+                audioPlayer.queue(tracks);
             }
         }
     }
