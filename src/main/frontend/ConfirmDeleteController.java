@@ -50,7 +50,6 @@ public class ConfirmDeleteController {
 
     public void setFields() {
         if (tracksToDelete == null) {
-            System.out.println("No tracks to delete");
             return;
         }
         

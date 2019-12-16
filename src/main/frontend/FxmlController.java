@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,19 +15,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-// import javafx.scene.control.ToggleButton;
-// import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-// import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -93,10 +87,6 @@ public class FxmlController implements Initializable {
         if (event.getClickCount() == 2 && (queueListView.getSelectionModel().getSelectedItem() != null)) {
             audioPlayer.seekToQueueIndex(index);            
         }
-        // boolean suucess = audioPlayer.seekToIndex(index);
-        // if (success) {
-        //     queueListView.
-        // }
     }
 
     private final ArtistView artistView = new ArtistView();
@@ -104,14 +94,8 @@ public class FxmlController implements Initializable {
     private TrackView trackView;
     private AlbumView nestedAlbumView;
     private TrackView nestedTrackView;
-    // private TrackView currentTrackView;
-    // private AlbumView currentAlbumView;
     private ElapsedTimeListener elapsedTimeListener;
     private AudioPlayer audioPlayer;
-    // private final MediaListHandler mediaListHandler = new MediaListHandler();
-    // private ContextMenu artistContextMenu = new ContextMenu();
-    // private ContextMenu albumContextMenu = new ContextMenu();
-    // private ContextMenu trackContextMenu;
 
     @FXML
     void albumsToggleClicked(ActionEvent event) {
@@ -241,12 +225,10 @@ public class FxmlController implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        System.out.println("Loading user data");
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
         audioPlayer = new AudioPlayer(elapsedTimeListener);
         trackView = new TrackView(audioPlayer);
 
-        // queueListView = new ListView<String>(audioPlayer.getTrackNameList());
         queueListView.setItems(audioPlayer.getTrackNameList());
         listViewBorderPane.setCenter(queueListView);
         queueListView.getItems().addListener(new ListChangeListener() {
@@ -262,8 +244,7 @@ public class FxmlController implements Initializable {
                 audioPlayer.setVolume(volumeBar.getValue() / 100);
             }
         });
-        // currentTrackView = trackView;
-        // currentAlbumView = albumView;
+
         MediaListHandler.setMainTrackList(trackView.getList());
         MediaListHandler.setMainAlbumList(albumView.getList());
         MediaListHandler.setMainArtistList(artistView.getList());
@@ -276,8 +257,6 @@ public class FxmlController implements Initializable {
         totalTimeLabel.textProperty().bind(elapsedTimeListener.totalTimeProperty());
         currentTrackLabel.textProperty().bind(audioPlayer.currentTrackNameProperty());
 
-        System.out.println("Made is here");
-        // setContextMenus();
         self = this;
     }
 
@@ -383,21 +362,12 @@ public class FxmlController implements Initializable {
             if (nestedTrackView != null) {
                 boolean albumExists = connection.albumExists(nestedTrackView.getAlbum().getId());
                 if (!albumExists) {
-                    System.out.println("FXML controller Album no longer exists");
-                    // libraryPlayerPane.setCenter(artistView.artistViewTable);
-                    // clearNestedViews();
-                    // disableBackButton();
-                    // title.setText(artistView.getTitle());
                     switchToMainArtistsView();
                 }
             }
 
             boolean artistExists = connection.artistExists(oldArtist.getId());
             if (!artistExists) {
-                // libraryPlayerPane.setCenter(artistView.artistViewTable);
-                // clearNestedViews();
-                // disableBackButton();
-                // title.setText(artistView.getTitle());
                 switchToMainArtistsView();
             }
         } catch (SQLException e) {
@@ -422,8 +392,6 @@ public class FxmlController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("import_box.fxml"));
             Parent root = (Parent)fxmlLoader.load();
             ImportController controller = fxmlLoader.<ImportController>getController();
-            // controller.setTrackToEdit(track);
-            // controller.setFields();
 
             Stage popup = new Stage();
             popup.setTitle("Edit Track Information");
@@ -434,80 +402,4 @@ public class FxmlController implements Initializable {
             e.printStackTrace();
         }
     }
-    // private void setContextMenus() {
-    //     System.out.println("In set context Menu");
-    //     buildTrackViewMenu();
-    //     // setTrackViewMenu(trackView);
-    //     // trackView.trackViewTable.setContextMenu(trackContextMenu);
-    //     // System.out.println("current track view null:");
-    //     // System.out.println(currentTrackView == null);
-
-
-    // }
-
-    // private void buildTrackViewMenu() {
-    //     trackContextMenu = new ContextMenu();
-    //     MenuItem play = new MenuItem("Play");
-    //     play.setOnAction(e -> {
-    //         System.out.println("Play selected");
-    //         queueAndPlay(trackView.trackViewTable.getSelectionModel().getSelectedItems());
-    //     });
-
-    //     MenuItem queue = new MenuItem("Queue");
-    //     queue.setOnAction(e -> {
-    //         System.out.println("queue selected");
-    //         queue(trackView.trackViewTable.getSelectionModel().getSelectedItems()); 
-    //     });
-
-    //     MenuItem queueNext = new MenuItem("Queue Next");
-    //     queue.setOnAction(e -> queueNext(trackView.trackViewTable.getSelectionModel().getSelectedItems()));
-
-    //     MenuItem edit = new MenuItem("Edit Selection");
-    //     queue.setOnAction(e -> editTrack(trackView.trackViewTable.getSelectionModel().getSelectedItem()));
-
-    //     trackContextMenu.getItems().addAll(play, queue, queueNext, edit);
-    //     // trackContextMenu.getItems().add(queue);
-    //     // trackContextMenu.getItems().add(queueNext);
-    //     // trackContextMenu.getItems().add(edit);
-
-    //     trackView.trackViewTable.setContextMenu(trackContextMenu);
-
-    //     System.out.println("Done building track context menu");
-    // }
-
-    // private void queueAndPlay(ObservableList<Track> tracks) {
-    //     if (tracks != null) {
-    //         if (tracks.size() > 0) {
-    //             audioPlayer.queueAndPlay(tracks);
-    //         }
-    //     }
-    // }
-
-    // private void queue(ObservableList<Track> tracks) {
-    //     System.out.println("Tracks is null: " + tracks == null);
-    //     if (tracks != null) {
-    //         if (tracks.size() > 0) {
-    //             System.out.println("queueing tracks");
-    //             audioPlayer.queue(tracks);
-    //         }
-    //     }
-    // }
-
-    // private void queueNext(ObservableList<Track> tracks) {
-    //     if (tracks != null) {
-    //         if (tracks.size() > 0) {
-    //             audioPlayer.queueNext(tracks);
-    //         }
-    //     }
-    // }
-
-    // private void editTrack(Track track) {
-    //     if (track != null) {
-    //         // Do some editing
-    //     }
-    // }
-
-    // private void setTrackViewMenu(TrackView view) {
-    //     view.trackViewTable.setContextMenu(trackContextMenu);
-    // }
 }

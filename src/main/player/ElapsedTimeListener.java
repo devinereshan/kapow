@@ -1,12 +1,8 @@
 package main.player;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Slider;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 public class ElapsedTimeListener {
     private int elapsedHours;
@@ -22,25 +18,10 @@ public class ElapsedTimeListener {
     private Slider elapsedTimeSlider;
 
     public ElapsedTimeListener(Slider elapsedTimeSlider) {
-        System.out.println("In elapsedTimeListener constructor");
-        System.out.println("line");
-        System.out.println("Slider is null: " + elapsedTimeSlider == null);
         this.elapsedTimeSlider = elapsedTimeSlider;
     }
 
     public ElapsedTimeListener() {}
-
-
-    // public void connectSliderToPlayer(MediaPlayer mediaPlayer) {
-    //     elapsedTimeSlider.valueProperty().addListener(new InvalidationListener() {
-    //         public void invalidated(Observable observable) {
-    //             if (elapsedTimeSlider.isPressed()) {
-    //                 mediaPlayer.seek(Duration.seconds(elapsedTimeSlider.getValue() * maxElapsedTime / 100));
-    //             }
-    //         }
-    //     });
-
-    // }
 
     public void resetElapsedTime() {
         setElapsedTime(0);
@@ -62,8 +43,6 @@ public class ElapsedTimeListener {
         maxElapsedTime = totalTimeInSeconds;
         setTotalTime((int) totalTimeInSeconds);
         resetElapsedTime();
-        // elapsedTimeSlider.setMin(0);
-        // elapsedTimeSlider.setMax(totalTimeInSeconds);
         elapsedTimeSlider.setValue(0);
     }
 

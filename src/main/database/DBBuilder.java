@@ -25,6 +25,7 @@ public class DBBuilder {
  
 
         try (Connection connection = DriverManager.getConnection(url)) {
+            System.out.println("Building new kapow! database");
             if (connection != null) {
                 System.out.println("Connection success");
                 connection.createStatement().executeUpdate("PRAGMA foreign_keys = ON;");
@@ -36,7 +37,7 @@ public class DBBuilder {
  
         } catch (SQLException e) {
             System.err.println("DBBuilder: Failed to connect to database");
-            System.out.println(e.getStackTrace());
+            System.err.println(e.getStackTrace());
         }
 
         return success;

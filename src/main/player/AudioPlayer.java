@@ -61,7 +61,6 @@ public class AudioPlayer {
         
         if (elapsedTimeListener != null) {
             elapsedTimeListener.setNewTrackDimensions(currentTrack.getLengthInSeconds());
-            // elapsedTimeListener.connectSliderToPlayer(currentTrackPlayer);
         }
 
         currentTrackPlayer.setOnReady(new Runnable() {
@@ -217,11 +216,6 @@ public class AudioPlayer {
 
     public ObservableList<Track> getQueue() {
         return queue.getTracks();
-    }
-
-      // testing
-    public void printQueue() {
-        System.out.println(queue.toString());
     }
 
     public void fineSeek(Duration duration) {

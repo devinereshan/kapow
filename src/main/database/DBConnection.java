@@ -392,7 +392,6 @@ public class DBConnection implements AutoCloseable {
 
     private void addUniqueValue(String table, String field, String value) throws SQLException {
         if (valueExists(table, field, value)) {
-            System.out.println("Value already exists in database");
             return;
         }
         preparedStatement = connection.prepareStatement("INSERT INTO " + table + " (" + field + ") VALUES (?)");
@@ -474,7 +473,6 @@ public class DBConnection implements AutoCloseable {
             if (!valueExists("Track", "filepath", track.getFilepath())) {
                 addTrackToDB(track);
                 track.setID(getID("Track", "filepath", track.getFilepath()));
-                System.out.println(track.getId());
             }
         }
 
@@ -495,8 +493,7 @@ public class DBConnection implements AutoCloseable {
         int lengthInSeconds = newTrack.getLengthInSeconds();
 
         if (valueExists("Track", "filepath", filepath)) {
-            // track already exists. Notify user somehow, then return
-            System.out.println("Track already Exists");
+            // TODO: track already exists. Notify user somehow, then return
             return;
         }
 
