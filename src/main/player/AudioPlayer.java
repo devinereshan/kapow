@@ -199,18 +199,30 @@ public class AudioPlayer {
 
     public void queue(Track track) {
         queue.add(track);
+        if (currentTrack == null) {
+            seekRight();
+        }
     }
 
     public void queue(ObservableList<Track> tracks) {
         queue.add(tracks);
+        if (currentTrack == null) {
+            seekRight();
+        }
     }
 
     public void queueNext(Track track) {
         queue.addNext(track);
+        if (currentTrack == null) {
+            seekRight();
+        }
     }
 
     public void queueNext(ObservableList<Track> tracks) {
         queue.addNext(tracks);
+        if (currentTrack == null) {
+            seekRight();
+        }
     }
 
 
