@@ -86,6 +86,9 @@ public class AlbumView {
         MenuItem queueNext = new MenuItem("Queue Next");
         queueNext.setOnAction(e -> queueNext(albumViewTable.getSelectionModel().getSelectedItems()));
 
+        MenuItem importAudio = new MenuItem("Import");
+        importAudio.setOnAction(e -> importAudio());
+
         MenuItem delete = new MenuItem("Remove");
         delete.setOnAction(e -> deleteTrack(albumViewTable.getSelectionModel().getSelectedItems()));
 
@@ -93,6 +96,7 @@ public class AlbumView {
         contextMenu.getItems().add(play);
         contextMenu.getItems().add(queue);
         contextMenu.getItems().add(queueNext);
+        contextMenu.getItems().add(importAudio);
         contextMenu.getItems().add(delete);
         albumViewTable.setContextMenu(contextMenu);
     }
@@ -137,6 +141,22 @@ public class AlbumView {
             if (tracks != null) {
                 audioPlayer.queueNext(tracks);
             }
+        }
+    }
+
+    private void importAudio() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("import_box.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            ImportController controller = fxmlLoader.<ImportController>getController();
+
+            Stage popup = new Stage();
+            popup.setTitle("Edit Track Information");
+            popup.setScene(new Scene(root));
+            popup.show();
+        } catch (IOException e) {
+            System.err.println("TrackView: Unable to open track edit box");
+            e.printStackTrace();
         }
     }
 
