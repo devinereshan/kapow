@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -42,6 +43,7 @@ public class AlbumView {
         assignColumnValues();
         buildContextMenu();
         albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        albumViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
 
@@ -54,6 +56,7 @@ public class AlbumView {
         this.artist = artist;
         title = artist.getName();
         albumViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        albumViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
 
