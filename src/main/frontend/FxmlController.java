@@ -85,7 +85,8 @@ public class FxmlController implements Initializable {
     void queueListViewClicked(MouseEvent event) {
         int index = queueListView.getSelectionModel().getSelectedIndex();
         if (event.getClickCount() == 2 && (queueListView.getSelectionModel().getSelectedItem() != null)) {
-            audioPlayer.seekToQueueIndex(index);            
+            audioPlayer.seekToQueueIndex(index);   
+            audioPlayer.play();         
         }
     }
 
