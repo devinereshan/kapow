@@ -78,8 +78,12 @@ public class AlbumView {
         MenuItem queue = new MenuItem("Queue");
         queue.setOnAction(e -> addToQueue(albumViewTable.getSelectionModel().getSelectedItems()));
 
+        MenuItem queueNext = new MenuItem("Queue Next");
+        queueNext.setOnAction(e -> queueNext(albumViewTable.getSelectionModel().getSelectedItems()));
+
         contextMenu.getItems().add(play);
         contextMenu.getItems().add(queue);
+        contextMenu.getItems().add(queueNext);
         albumViewTable.setContextMenu(contextMenu);
     }
 
@@ -111,6 +115,21 @@ public class AlbumView {
             }
         }
     }
+
+    private void queueNext(ObservableList<Album> albums) {
+        if (albums != null) {
+            ObservableList<Track> tracks = FXCollections.observableArrayList();
+            for (Album album : albums) {
+                TrackList partialTrackList = new TrackList(album.getId(), "album");
+                tracks.addAll(partialTrackList.getTracks());
+            }
+
+            if (tracks != null) {
+                audioPlayer.queueNext(tracks);
+            }
+        }
+    }
+
 
     public void filter(TextField searchBox) {
         filteredAlbums.setPredicate(p -> p.getSearchString().toLowerCase().contains(searchBox.getText().toLowerCase().trim()));
