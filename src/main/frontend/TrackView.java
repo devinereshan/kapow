@@ -66,8 +66,8 @@ public class TrackView {
         title = String.format("%s - %s", album.getArtists(), album.getName());
         buildContextMenu();
         trackViewTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        indexCol.setMinWidth(20);
-        indexCol.setMaxWidth(50);
+        indexCol.setMinWidth(50);
+        indexCol.setMaxWidth(400);
         trackViewTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
