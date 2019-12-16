@@ -1,10 +1,14 @@
 package main.frontend;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -13,6 +17,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import main.database.DBConnection;
 import main.library.Album;
 import main.library.AlbumList;
@@ -81,9 +86,14 @@ public class AlbumView {
         MenuItem queueNext = new MenuItem("Queue Next");
         queueNext.setOnAction(e -> queueNext(albumViewTable.getSelectionModel().getSelectedItems()));
 
+        MenuItem delete = new MenuItem("Remove");
+        delete.setOnAction(e -> deleteTrack(albumViewTable.getSelectionModel().getSelectedItems()));
+
+
         contextMenu.getItems().add(play);
         contextMenu.getItems().add(queue);
         contextMenu.getItems().add(queueNext);
+        contextMenu.getItems().add(delete);
         albumViewTable.setContextMenu(contextMenu);
     }
 
@@ -126,6 +136,35 @@ public class AlbumView {
 
             if (tracks != null) {
                 audioPlayer.queueNext(tracks);
+            }
+        }
+    }
+
+
+    private void deleteTrack(ObservableList<Album> albums) {
+        if (albums != null) {
+            ObservableList<Track> tracksToDelete = FXCollections.observableArrayList();
+
+            for (Album album : albums) {
+                TrackList partialTrackList = new TrackList(album.getId(), "album");
+                tracksToDelete.addAll(partialTrackList.getTracks());
+            }
+
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("confirm_delete.fxml"));     
+
+                Parent root = (Parent)fxmlLoader.load();          
+                ConfirmDeleteController controller = fxmlLoader.<ConfirmDeleteController>getController();
+                controller.setTracksToDelete(tracksToDelete);
+                controller.setFields();
+
+                Stage popup = new Stage();
+                popup.setTitle("Remove Track Confirmation");
+                popup.setScene(new Scene(root));
+                popup.show();
+            } catch (IOException e) {
+                System.err.println("TrackView: Unable to open track confirm delete box");
+                e.printStackTrace();
             }
         }
     }
