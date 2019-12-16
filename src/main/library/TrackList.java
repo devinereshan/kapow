@@ -25,20 +25,23 @@ public class TrackList {
     }
 
     // constructor for single album or artist track list
-    public TrackList(int parentID, String parentName) {
+    public TrackList(int parentID, String parentType) {
         try (DBConnection connection = new DBConnection()) {
-            if (parentName == "album") {
+            if (parentType == "album") {
                 trackIDs = connection.getTrackAlbumIDs(parentID);
                 this.albumID = parentID;
-            } else if (parentName == "artist") {
+            } else if (parentType == "artist") {
                 // TODO
                 // trackIDs = connection.getTrackArtistIDs(parentID);
             } else {
                 // not valid parent
-                System.err.println("Unrecognized parent: " + parentName);
+                System.err.println("Unrecognized parent: " + parentType);
             }
-            for (Integer trackID : trackIDs) {
-                tracks.add(connection.getTrack(trackID));
+            
+            if (trackIDs != null) {
+                for (Integer trackID : trackIDs) {
+                    tracks.add(connection.getTrack(trackID));
+                }
             }
         } catch (SQLException e) {
             System.err.println("Unable to access tracks ids");

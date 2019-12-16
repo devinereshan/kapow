@@ -90,7 +90,7 @@ public class FxmlController implements Initializable {
     }
 
     private final ArtistView artistView = new ArtistView();
-    private final AlbumView albumView = new AlbumView();
+    private AlbumView albumView;
     private TrackView trackView;
     private AlbumView nestedAlbumView;
     private TrackView nestedTrackView;
@@ -228,6 +228,7 @@ public class FxmlController implements Initializable {
         elapsedTimeListener = new ElapsedTimeListener(elapsedTimeBar);
         audioPlayer = new AudioPlayer(elapsedTimeListener);
         trackView = new TrackView(audioPlayer);
+        albumView = new AlbumView(audioPlayer);
 
         queueListView.setItems(audioPlayer.getTrackNameList());
         listViewBorderPane.setCenter(queueListView);
@@ -332,7 +333,7 @@ public class FxmlController implements Initializable {
     }
 
     private void switchToNestedAlbumView(Artist artist) {
-        nestedAlbumView = new AlbumView(artist);
+        nestedAlbumView = new AlbumView(artist, audioPlayer);
         libraryPlayerPane.setCenter(nestedAlbumView.albumViewTable);
         setAlbumViewDoubleClick(nestedAlbumView);
         // currentAlbumView = nestedAlbumView;
