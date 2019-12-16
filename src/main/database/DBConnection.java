@@ -707,12 +707,10 @@ public class DBConnection implements AutoCloseable {
             }
 
             if (albumIsEmpty(oldAlbum.getId())) {
-                System.out.println(oldAlbum.getName() + " No longer has any tracks. Removing from database");
                 removeAlbumNoCommit(oldAlbum);
             }
 
             if (artistIsEmpty(oldArtist.getId())) {
-                System.out.println(oldArtist.getName() + " No longer has any tracks. Removing from database");
                 removeArtistNoCommit(oldArtist);
             }
 
