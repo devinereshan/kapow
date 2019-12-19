@@ -14,16 +14,22 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -43,16 +49,21 @@ public class ImportController {
         Label nameLabel = new Label("Name:");
         TextField indexInAlbumField;
         Label indexLabel = new Label("Track #");
+        HBox top;
+        HBox middle;
         HBox bottom;
         int lengthInSeconds;
         String duration;
-        Label artistsLabel = new Label("Artists:");
-        ArrayList<String> artists = new ArrayList<>();
-        ArrayList<Label> artistNameLabels = new ArrayList<>();
-        ArrayList<Button> removeArtistButtons = new ArrayList<>();
-        ArrayList<HBox> nameButtonBoxes = new ArrayList<>();
+        Label artistsLabel = new Label("Artists:\t");
+        CheckBox sameAsAlbumCheckbox = new CheckBox("Same as album");
+        // ArrayList<String> artists = new ArrayList<>();
+        // ArrayList<Label> artistNameLabels = new ArrayList<>();
+        // ArrayList<Button> removeArtistButtons = new ArrayList<>();
+        // ArrayList<HBox> nameButtonBoxes = new ArrayList<>();
         TextField newArtistField;
-        Button addArtist = new Button("Add");
+        Button addArtist = new Button("Add Artist");
+        ListView<String> artistsListView;
+        ObservableList<String> artistsList = FXCollections.observableArrayList();
 
         public TrackInfo(File file) {
             this.file = file;
@@ -62,38 +73,55 @@ public class ImportController {
             indexInAlbumField = new TextField();
             nameField.setPrefWidth(250);
             indexInAlbumField.setPrefWidth(40);
-            artistsLabel.setPadding(new Insets(5, 5, 5, 10));
-            artists.add("Same as album");
-            artistNameLabels.add(new Label(artists.get(0)));
-            artistNameLabels.get(0).setPadding(new Insets(5, 5, 5, 10));
+
+            artistsListView = new ListView<>(artistsList);
+            // artistsListView.setItems(artistsList);
+            VBox listViewBox = new VBox(artistsListView);
+            artistsListView.setPrefHeight(100);
+            // artistsListView.setMinHeight(0);
             
-            removeArtistButtons.add(new Button("Remove"));
-            removeArtistButtons.get(0).setPadding(new Insets(5, 5, 5, 10));
+            artistsListView.setMinHeight(0);
+            // VBox.setVgrow(artistsListView);
+
+            top = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
+            top.setPadding(new Insets(0, 0, 5, 0));
+
+            artistsLabel.setPadding(new Insets(5, 5, 5, 10));
+            sameAsAlbumCheckbox.setSelected(true);
+            middle = new HBox(artistsLabel, sameAsAlbumCheckbox);
+            // middle.setPadding(new Insets(5, 5, 5, 10));
+            middle.setAlignment(Pos.CENTER_LEFT);
+            // artists.add("Same as album");
+            // artistNameLabels.add(new Label(artists.get(0)));
+            // artistNameLabels.get(0).setPadding(new Insets(5, 5, 5, 10));
+            
+            // removeArtistButtons.add(new Button("Remove"));
+            // removeArtistButtons.get(0).setPadding(new Insets(5, 5, 5, 10));
             
             HBox spacer = new HBox();
             spacer.setMinWidth(5);
             
-            nameButtonBoxes.add(new HBox(removeArtistButtons.get(0), artistNameLabels.get(0)));
-            nameButtonBoxes.get(0).setPadding(new Insets(5, 5, 5, 15));
+            // nameButtonBoxes.add(new HBox(removeArtistButtons.get(0), artistNameLabels.get(0)));
+            // nameButtonBoxes.get(0).setPadding(new Insets(5, 5, 5, 15));
 
             newArtistField = new TextField();
             addArtist.setPadding(new Insets(5, 5, 5, 10));
             // newArtistField.setPadding(new Insets(5, 5, 5, 10));
-            HBox bottomBottom = new HBox(addArtist, spacer, newArtistField);
-            bottomBottom.setPadding(new Insets(5, 5, 5, 15));
+            bottom = new HBox(addArtist, spacer, newArtistField);
+            bottom.setPadding(new Insets(5, 5, 5, 15));
 
 
             // Label filePathLabel = new Label(file.getName().toString());
             // filePathLabel.setPadding(new Insets(10, 10, 5, 10));
             indexLabel.setPadding(new Insets(5, 5, 5, 10));
             nameLabel.setPadding(new Insets(5, 5, 5, 20));
-            bottom = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
-            bottom.setPadding(new Insets(0, 0, 5, 0));
-            Separator separator = new Separator();
-            // trackListBox.getChildren().addAll(filePathLabel, bottom, artistsLabel, nameButtonBoxes.get(0), bottomBottom, separator);
-            infoBox = new VBox(bottom, artistsLabel, nameButtonBoxes.get(0), bottomBottom);
+            // Separator separator = new Separator();
+            // trackListBox.getChildren().addAll(filePathLabel, top, artistsLabel, nameButtonBoxes.get(0), bottom, separator);
+            infoBox = new VBox(top, middle, listViewBox, bottom);
             titledPane = new TitledPane(file.getName().toString(), infoBox);
             trackListBox.getPanes().add(titledPane);
+
+            addArtist.setOnAction(e -> addArtist());
 
             indexInAlbumField.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -109,6 +137,22 @@ public class ImportController {
             autoFillFields();
         }
 
+        private void addArtist() {
+            String name = newArtistField.getText().trim();
+            newArtistField.clear();
+            if (name.length() > 0) {
+                artistsList.add(name);
+                System.out.println("Name is: " + name);
+                artistsListView.setMinHeight((artistsList.size() * 24) + 2);
+                // artistsListView.setMinHeight(artistsList.size() * 10);
+                // int index = artists.size();
+                // artists.add(name);
+                // artistNameLabels.add(new Label(name));
+                // removeArtistButtons.add(new Button("Remove"));
+                // nameButtonBoxes.add(new HBox(removeArtistButtons.get(index), artistNameLabels.get(index)));
+                // re
+            }
+        }
 
         public String getFilepath() {
             return file.getAbsolutePath();
