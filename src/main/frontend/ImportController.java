@@ -2,9 +2,11 @@ package main.frontend;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
@@ -41,7 +44,7 @@ import main.library.MediaListHandler;
 import main.library.Track;
 import main.player.TrackLengthCalculator;
 
-public class ImportController {
+public class ImportController implements Initializable {
 
     private class TrackInfo {
         final int ROW_HEIGHT = 24;
@@ -76,7 +79,9 @@ public class ImportController {
 
             artistsListView = new ListView<>(artistsList);
             VBox listViewBox = new VBox(artistsListView);
+            listViewBox.setPadding(new Insets(5, 5, 5, 20));
             artistsListView.setPrefHeight(100);
+            artistsListView.setMaxWidth(400);
             
             artistsListView.setMinHeight(0);
             
@@ -217,8 +222,15 @@ public class ImportController {
     private File parentFile;
     private List<File> files;
     private ArrayList<TrackInfo> trackInfos = new ArrayList<>();
+    private ObservableList<String> artistNames = FXCollections.observableArrayList();
+    private ObservableList<String> genreNames = FXCollections.observableArrayList();
 
-    
+    @FXML
+    private ListView<String> albumArtistsListView;
+
+    @FXML
+    private ListView<String> albumGenreListView;
+
     @FXML
     private Button confirmButton;
 
@@ -244,6 +256,30 @@ public class ImportController {
     private TextField genreField;
 
     @FXML
+    void addAlbumArtistClicked(ActionEvent event) {
+        String name = artistField.getText().trim();
+        artistField.clear();
+
+        if(name.length() > 0) {
+            artistNames.add(name);
+            albumArtistsListView.setMinHeight((artistNames.size() * 24) + 2);
+        }
+
+    }
+
+    @FXML
+    void addAlbumGenreClicked(ActionEvent event) {
+        String name = genreField.getText().trim();
+        genreField.clear();
+
+        if(name.length() > 0) {
+            genreNames.add(name);
+            albumGenreListView.setMinHeight((genreNames.size() * 24) + 2);
+        }
+
+    }
+    
+    @FXML
     void browseClicked(ActionEvent event) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         getFiles(stage);
@@ -259,6 +295,52 @@ public class ImportController {
     @FXML
     void confirmClicked(ActionEvent event) {
         submit();
+    }
+
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        albumArtistsListView.setItems(artistNames);
+        buildArtistContextMenu();
+        albumGenreListView.setItems(genreNames);
+        buildGenreContextMenu();
+    }
+
+    private void buildArtistContextMenu() {
+        ContextMenu artistMenu = new ContextMenu();
+        MenuItem remove = new MenuItem("Remove");
+        remove.setOnAction(e -> removeArtist(albumArtistsListView.getSelectionModel().getSelectedItem()));
+        artistMenu.getItems().add(remove);
+        albumArtistsListView.setContextMenu(artistMenu);
+    }
+
+    private void buildGenreContextMenu() {
+        ContextMenu genreMenu = new ContextMenu();
+        MenuItem remove = new MenuItem("Remove");
+        remove.setOnAction(e -> removeGenre(albumGenreListView.getSelectionModel().getSelectedItem()));
+        genreMenu.getItems().add(remove);
+        albumGenreListView.setContextMenu(genreMenu);
+    }
+
+    private void removeArtist(String artist) {
+        if (artist != null) {
+            artistNames.remove(artist);
+            if (artistNames.size() == 0) {
+                albumArtistsListView.setMinHeight(0);
+            } else {
+                albumArtistsListView.setMinHeight((artistNames.size() * 24) + 2);
+            }
+        }
+    }
+
+    private void removeGenre(String genre) {
+        if (genre != null) {
+            genreNames.remove(genre);
+            if (genreNames.size() == 0) {
+                albumGenreListView.setMinHeight(0);
+            } else {
+                albumGenreListView.setMinHeight((genreNames.size() * 24) + 2);
+            }
+        }
     }
 
     private void getFiles(Stage stage) {
