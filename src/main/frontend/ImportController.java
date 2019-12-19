@@ -17,10 +17,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -35,6 +37,8 @@ public class ImportController {
 
     private class TrackInfo {
         File file;
+        TitledPane titledPane;
+        VBox infoBox;
         TextField nameField;
         Label nameLabel = new Label("Name:");
         TextField indexInAlbumField;
@@ -42,23 +46,54 @@ public class ImportController {
         HBox bottom;
         int lengthInSeconds;
         String duration;
+        Label artistsLabel = new Label("Artists:");
+        ArrayList<String> artists = new ArrayList<>();
+        ArrayList<Label> artistNameLabels = new ArrayList<>();
+        ArrayList<Button> removeArtistButtons = new ArrayList<>();
+        ArrayList<HBox> nameButtonBoxes = new ArrayList<>();
+        TextField newArtistField;
+        Button addArtist = new Button("Add");
 
         public TrackInfo(File file) {
             this.file = file;
+            // Insets padding = new Insets(5, 5, 5, 40);
             nameField = new TextField();
             nameField.setPrefWidth(50);
             indexInAlbumField = new TextField();
             nameField.setPrefWidth(250);
             indexInAlbumField.setPrefWidth(40);
+            artistsLabel.setPadding(new Insets(5, 5, 5, 10));
+            artists.add("Same as album");
+            artistNameLabels.add(new Label(artists.get(0)));
+            artistNameLabels.get(0).setPadding(new Insets(5, 5, 5, 10));
+            
+            removeArtistButtons.add(new Button("Remove"));
+            removeArtistButtons.get(0).setPadding(new Insets(5, 5, 5, 10));
+            
+            HBox spacer = new HBox();
+            spacer.setMinWidth(5);
+            
+            nameButtonBoxes.add(new HBox(removeArtistButtons.get(0), artistNameLabels.get(0)));
+            nameButtonBoxes.get(0).setPadding(new Insets(5, 5, 5, 15));
 
-            Label filePathLabel = new Label(file.getName().toString());
-            filePathLabel.setPadding(new Insets(10, 10, 5, 10));
+            newArtistField = new TextField();
+            addArtist.setPadding(new Insets(5, 5, 5, 10));
+            // newArtistField.setPadding(new Insets(5, 5, 5, 10));
+            HBox bottomBottom = new HBox(addArtist, spacer, newArtistField);
+            bottomBottom.setPadding(new Insets(5, 5, 5, 15));
+
+
+            // Label filePathLabel = new Label(file.getName().toString());
+            // filePathLabel.setPadding(new Insets(10, 10, 5, 10));
             indexLabel.setPadding(new Insets(5, 5, 5, 10));
             nameLabel.setPadding(new Insets(5, 5, 5, 20));
             bottom = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
             bottom.setPadding(new Insets(0, 0, 5, 0));
             Separator separator = new Separator();
-            trackListBox.getChildren().addAll(filePathLabel, bottom, separator);
+            // trackListBox.getChildren().addAll(filePathLabel, bottom, artistsLabel, nameButtonBoxes.get(0), bottomBottom, separator);
+            infoBox = new VBox(bottom, artistsLabel, nameButtonBoxes.get(0), bottomBottom);
+            titledPane = new TitledPane(file.getName().toString(), infoBox);
+            trackListBox.getPanes().add(titledPane);
 
             indexInAlbumField.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -154,7 +189,7 @@ public class ImportController {
     private Button cancelButton;
 
     @FXML
-    private VBox trackListBox;
+    private Accordion trackListBox;
 
     @FXML
     private Button browseButton;
@@ -256,11 +291,11 @@ public class ImportController {
             Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.close();
         } else {
-            trackListBox.getChildren().clear();
+            // trackListBox.getChildren().clear();
             Label failed = new Label("Failed to import tracks");
             failed.setFont(new Font(30));
             failed.setPadding(new Insets(10, 10, 10, 10));
-            trackListBox.getChildren().add(failed);
+            // trackListBox.getChildren().add(failed);
             confirmButton.setDisable(true);
         }
     }
