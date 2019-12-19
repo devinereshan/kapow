@@ -23,8 +23,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -42,6 +44,7 @@ import main.player.TrackLengthCalculator;
 public class ImportController {
 
     private class TrackInfo {
+        final int ROW_HEIGHT = 24;
         File file;
         TitledPane titledPane;
         VBox infoBox;
@@ -56,14 +59,11 @@ public class ImportController {
         String duration;
         Label artistsLabel = new Label("Artists:\t");
         CheckBox sameAsAlbumCheckbox = new CheckBox("Same as album");
-        // ArrayList<String> artists = new ArrayList<>();
-        // ArrayList<Label> artistNameLabels = new ArrayList<>();
-        // ArrayList<Button> removeArtistButtons = new ArrayList<>();
-        // ArrayList<HBox> nameButtonBoxes = new ArrayList<>();
         TextField newArtistField;
         Button addArtist = new Button("Add Artist");
         ListView<String> artistsListView;
         ObservableList<String> artistsList = FXCollections.observableArrayList();
+        ContextMenu listViewMenu;
 
         public TrackInfo(File file) {
             this.file = file;
@@ -75,13 +75,20 @@ public class ImportController {
             indexInAlbumField.setPrefWidth(40);
 
             artistsListView = new ListView<>(artistsList);
-            // artistsListView.setItems(artistsList);
             VBox listViewBox = new VBox(artistsListView);
             artistsListView.setPrefHeight(100);
-            // artistsListView.setMinHeight(0);
             
             artistsListView.setMinHeight(0);
-            // VBox.setVgrow(artistsListView);
+            
+            listViewMenu = new ContextMenu();
+            
+            MenuItem remove = new MenuItem("Remove");
+            remove.setOnAction(e -> removeArtist(artistsListView.getSelectionModel().getSelectedItem()));
+
+            listViewMenu.getItems().add(remove);
+            artistsListView.setContextMenu(listViewMenu);
+
+            
 
             top = new HBox(indexLabel, indexInAlbumField, nameLabel, nameField);
             top.setPadding(new Insets(0, 0, 5, 0));
@@ -89,34 +96,18 @@ public class ImportController {
             artistsLabel.setPadding(new Insets(5, 5, 5, 10));
             sameAsAlbumCheckbox.setSelected(true);
             middle = new HBox(artistsLabel, sameAsAlbumCheckbox);
-            // middle.setPadding(new Insets(5, 5, 5, 10));
             middle.setAlignment(Pos.CENTER_LEFT);
-            // artists.add("Same as album");
-            // artistNameLabels.add(new Label(artists.get(0)));
-            // artistNameLabels.get(0).setPadding(new Insets(5, 5, 5, 10));
-            
-            // removeArtistButtons.add(new Button("Remove"));
-            // removeArtistButtons.get(0).setPadding(new Insets(5, 5, 5, 10));
             
             HBox spacer = new HBox();
             spacer.setMinWidth(5);
             
-            // nameButtonBoxes.add(new HBox(removeArtistButtons.get(0), artistNameLabels.get(0)));
-            // nameButtonBoxes.get(0).setPadding(new Insets(5, 5, 5, 15));
-
             newArtistField = new TextField();
             addArtist.setPadding(new Insets(5, 5, 5, 10));
-            // newArtistField.setPadding(new Insets(5, 5, 5, 10));
             bottom = new HBox(addArtist, spacer, newArtistField);
             bottom.setPadding(new Insets(5, 5, 5, 15));
 
-
-            // Label filePathLabel = new Label(file.getName().toString());
-            // filePathLabel.setPadding(new Insets(10, 10, 5, 10));
             indexLabel.setPadding(new Insets(5, 5, 5, 10));
             nameLabel.setPadding(new Insets(5, 5, 5, 20));
-            // Separator separator = new Separator();
-            // trackListBox.getChildren().addAll(filePathLabel, top, artistsLabel, nameButtonBoxes.get(0), bottom, separator);
             infoBox = new VBox(top, middle, listViewBox, bottom);
             titledPane = new TitledPane(file.getName().toString(), infoBox);
             trackListBox.getPanes().add(titledPane);
@@ -143,14 +134,16 @@ public class ImportController {
             if (name.length() > 0) {
                 artistsList.add(name);
                 System.out.println("Name is: " + name);
-                artistsListView.setMinHeight((artistsList.size() * 24) + 2);
-                // artistsListView.setMinHeight(artistsList.size() * 10);
-                // int index = artists.size();
-                // artists.add(name);
-                // artistNameLabels.add(new Label(name));
-                // removeArtistButtons.add(new Button("Remove"));
-                // nameButtonBoxes.add(new HBox(removeArtistButtons.get(index), artistNameLabels.get(index)));
-                // re
+                artistsListView.setMinHeight((artistsList.size() * ROW_HEIGHT) + 2);
+            }
+        }
+
+        private void removeArtist(String artist) {
+            artistsList.remove(artist);
+            if (artistsList.size() == 0) {
+                artistsListView.setMinHeight(0);
+            } else {
+                artistsListView.setMinHeight((artistsList.size() * ROW_HEIGHT) + 2);
             }
         }
 
