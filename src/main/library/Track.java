@@ -1,5 +1,7 @@
 package main.library;
 
+import java.util.List;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -7,6 +9,7 @@ import javafx.beans.property.StringProperty;
 public class Track {
     private int id;
     private int lengthInSeconds;
+    private List<String> artistList;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
     private SimpleStringProperty duration;
@@ -43,11 +46,40 @@ public class Track {
         buildSearchString();
     }
 
+    public Track(String filepath, String name, String duration, List<String> artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
+        this.lengthInSeconds = lengthInSeconds;
+        this.filepath = new SimpleStringProperty(filepath);
+        this.name = new SimpleStringProperty(name);
+        this.duration = new SimpleStringProperty(duration);
+        this.artistList = artists;
+        buildArtistsString();
+        this.albums = new SimpleStringProperty(albums);
+        this.genres = new SimpleStringProperty(genres);
+        this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
+        buildSearchString();
+    }
+
+
+    private void buildArtistsString() {
+        String temp = "";
+        for (String artist : artistList) {
+            if (artist.equals(artistList.get(artistList.size() - 1))) {
+                temp += artist;
+            } else {
+                temp += artist + ", ";
+            }
+        }
+
+        artists = new SimpleStringProperty(temp);
+    }
 
     private void buildSearchString() {
         searchString = name.get() + albums.get() + artists.get() + genres.get();
     }
 
+    public List<String> getArtistList() {
+        return artistList;
+    }
 
     public String getSearchString() {
         return searchString;

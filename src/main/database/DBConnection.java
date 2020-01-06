@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import main.frontend.GUI;
 import main.library.Album;
@@ -486,7 +487,7 @@ public class DBConnection implements AutoCloseable {
         String filepath = newTrack.getFilepath();
         String trackName = newTrack.getName();
         String duration = newTrack.getDuration();
-        String artistName = newTrack.getArtists();
+        // String artistName = newTrack.getArtists();
         String albumName = newTrack.getAlbums();
         String genreName = newTrack.getGenres();
         int indexInAlbum = newTrack.getIndexInAlbum();
@@ -507,8 +508,11 @@ public class DBConnection implements AutoCloseable {
 
         int trackID = getID("Track", "filepath", filepath);
 
-        addUniqueValue("Artist", "name", artistName);
-        int artistID = getID("Artist", "name", artistName);
+        for (String artistName : newTrack.getArtistList()) {
+            addUniqueValue("Artist", "name", artistName);
+            int artistID = getID("Artist", "name", artistName);
+            addIDPair("Track_Artist", trackID, artistID);
+        }
 
         addUniqueValue("Album", "name", albumName);
         int albumID = getID("Album", "name", albumName);
@@ -516,8 +520,6 @@ public class DBConnection implements AutoCloseable {
         addUniqueValue("Genre", "name", genreName);
         int genreID = getID("Genre", "name", genreName);
 
-        // add ID pairs
-        addIDPair("Track_Artist", trackID, artistID);
 
         addTrackAlbumPair(trackID, albumID, indexInAlbum);
 
@@ -632,9 +634,25 @@ public class DBConnection implements AutoCloseable {
         return trackCount <= 0;
     }
 
+    private List<Integer> getAllArtistIDs(int trackID) throws SQLException {
+        preparedStatement = connection.prepareStatement("SELECT artist_id FROM Track_Artist WHERE track_id = ?");
+        preparedStatement.setInt(1, trackID);
+
+        resultSet = preparedStatement.executeQuery();
+        List<Integer> artistIDs = new ArrayList<>();
+
+        while (resultSet.next()) {
+            artistIDs.add(resultSet.getInt(1));
+        }
+
+        return artistIDs;
+
+    }
 
     public void removeTrackFromDB(int trackID, int artistID, int albumID) throws SQLException {
         connection.setAutoCommit(false);
+
+        List<Integer> artistIDs = getAllArtistIDs(trackID);
 
         // int albumID = getAlbumID(albumName, trackID);
         deleteFromTable(trackID, "track_id", "Track_Genre");
@@ -650,11 +668,14 @@ public class DBConnection implements AutoCloseable {
         }
 
         // if this empties an artist, remove that artist
-        if (artistIsEmpty(artistID)) {
-            // removeArtist(getArtist(artistID));
-            deleteFromTable(artistID, "artist_id", "Track_Artist");
-            deleteFromTable(artistID, "id", "Artist");
+        for (Integer id : artistIDs) {
 
+            if (artistIsEmpty(id)) {
+                // removeArtist(getArtist(artistID));
+                deleteFromTable(id, "artist_id", "Track_Artist");
+                deleteFromTable(id, "id", "Artist");
+                
+            }
         }
 
         connection.commit();

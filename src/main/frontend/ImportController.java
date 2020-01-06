@@ -30,11 +30,11 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Separator;
+// import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+// import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -150,6 +150,21 @@ public class ImportController implements Initializable {
             } else {
                 artistsListView.setMinHeight((artistsList.size() * ROW_HEIGHT) + 2);
             }
+        }
+
+        public List<String> getArtistList(List<String> albumArtists) {
+            List<String> artists = artistsListView.getItems();
+            String extraArtist = newArtistField.getText().trim();
+
+            if (!extraArtist.isEmpty()) {
+                artists.add(extraArtist);
+            }
+            
+            if (sameAsAlbumCheckbox.isSelected()) {
+                artists.addAll(0, albumArtists);
+            }
+
+            return artists;
         }
 
         public String getFilepath() {
@@ -384,13 +399,19 @@ public class ImportController implements Initializable {
 
     private void submit() {
         String albumName = albumField.getText().trim();
-        String artistName = artistField.getText().trim();
+        // String artistName = artistField.getText().trim();
+        // for (String artist : )
+        List<String> albumArtists = albumArtistsListView.getItems();
+        albumArtists.add(0, artistField.getText().trim());
+        
         String genre = genreField.getText().trim();
 
         ArrayList<Track> tracks = new ArrayList<>();
 
         for (TrackInfo t : trackInfos) {
-            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artistName, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
+            // List<String> artists = t.artistsListView.getItems();
+            List<String> artists = t.getArtistList(albumArtists);
+            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artists, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
             tracks.add(temp);
         }
 
