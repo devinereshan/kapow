@@ -10,6 +10,7 @@ public class Track {
     private int id;
     private int lengthInSeconds;
     private List<String> artistList;
+    private List<String> genreList;
     private SimpleStringProperty filepath;
     private SimpleStringProperty name;
     private SimpleStringProperty duration;
@@ -46,21 +47,22 @@ public class Track {
         buildSearchString();
     }
 
-    public Track(String filepath, String name, String duration, List<String> artists, String albums, String genres, int lengthInSeconds, int indexInAlbum) {
+    public Track(String filepath, String name, String duration, List<String> artists, String albums, List<String> genres, int lengthInSeconds, int indexInAlbum) {
         this.lengthInSeconds = lengthInSeconds;
         this.filepath = new SimpleStringProperty(filepath);
         this.name = new SimpleStringProperty(name);
         this.duration = new SimpleStringProperty(duration);
         this.artistList = artists;
-        buildArtistsString();
+        buildArtistString();
         this.albums = new SimpleStringProperty(albums);
-        this.genres = new SimpleStringProperty(genres);
+        this.genreList = genres;
+        buildGenreString();
+        // this.genres = new SimpleStringProperty(genres);
         this.indexInAlbum = new SimpleIntegerProperty(indexInAlbum);
         buildSearchString();
     }
 
-
-    private void buildArtistsString() {
+    private void buildArtistString() {
         String temp = "";
         for (String artist : artistList) {
             if (artist.equals(artistList.get(artistList.size() - 1))) {
@@ -73,8 +75,25 @@ public class Track {
         artists = new SimpleStringProperty(temp);
     }
 
+    private void buildGenreString() {
+        String temp = "";
+        for (String genre : genreList) {
+            if (genre.equals(genreList.get(genreList.size() - 1))) {
+                temp += genre;
+            } else {
+                temp += genre + ", ";
+            }
+        }
+
+        genres = new SimpleStringProperty(temp);
+    }
+
     private void buildSearchString() {
         searchString = name.get() + albums.get() + artists.get() + genres.get();
+    }
+
+    public List<String> getGenreList() {
+        return genreList;
     }
 
     public List<String> getArtistList() {

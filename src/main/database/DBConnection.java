@@ -489,7 +489,7 @@ public class DBConnection implements AutoCloseable {
         String duration = newTrack.getDuration();
         // String artistName = newTrack.getArtists();
         String albumName = newTrack.getAlbums();
-        String genreName = newTrack.getGenres();
+        // String genreName = newTrack.getGenres();
         int indexInAlbum = newTrack.getIndexInAlbum();
         int lengthInSeconds = newTrack.getLengthInSeconds();
 
@@ -517,13 +517,15 @@ public class DBConnection implements AutoCloseable {
         addUniqueValue("Album", "name", albumName);
         int albumID = getID("Album", "name", albumName);
 
-        addUniqueValue("Genre", "name", genreName);
-        int genreID = getID("Genre", "name", genreName);
+        for (String genreName : newTrack.getGenreList()) {
+            addUniqueValue("Genre", "name", genreName);
+            int genreID = getID("Genre", "name", genreName);
+            addIDPair("Track_Genre", trackID, genreID);
+        }
 
 
         addTrackAlbumPair(trackID, albumID, indexInAlbum);
 
-        addIDPair("Track_Genre", trackID, genreID);
     }
 
 

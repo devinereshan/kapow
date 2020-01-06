@@ -399,19 +399,24 @@ public class ImportController implements Initializable {
 
     private void submit() {
         String albumName = albumField.getText().trim();
-        // String artistName = artistField.getText().trim();
-        // for (String artist : )
+        String artistName = artistField.getText().trim();
         List<String> albumArtists = albumArtistsListView.getItems();
-        albumArtists.add(0, artistField.getText().trim());
+        if (!artistName.isEmpty()) {
+            albumArtists.add(0, artistName);
+        }
         
         String genre = genreField.getText().trim();
+        List<String> genres = albumGenreListView.getItems();
+        if (!genre.isEmpty()) {
+            genres.add(0, genre);
+        }
+
 
         ArrayList<Track> tracks = new ArrayList<>();
 
         for (TrackInfo t : trackInfos) {
-            // List<String> artists = t.artistsListView.getItems();
             List<String> artists = t.getArtistList(albumArtists);
-            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artists, albumName, genre, t.getLengthInSeconds(), t.getIndexInAlbum());
+            Track temp = new Track(t.getFilepath().trim(), t.getName().trim(), t.getDuration().trim(), artists, albumName, genres, t.getLengthInSeconds(), t.getIndexInAlbum());
             tracks.add(temp);
         }
 
