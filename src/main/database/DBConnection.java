@@ -671,7 +671,6 @@ public class DBConnection implements AutoCloseable {
 
         // if this empties an artist, remove that artist
         for (Integer id : artistIDs) {
-
             if (artistIsEmpty(id)) {
                 // removeArtist(getArtist(artistID));
                 deleteFromTable(id, "artist_id", "Track_Artist");

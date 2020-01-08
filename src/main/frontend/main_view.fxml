@@ -15,14 +15,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.frontend.FxmlController">
+<AnchorPane id="root-anchor-pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1200.0" style="-fx-background-color: #333;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.frontend.FxmlController">
    <children>
       <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
             <BorderPane fx:id="libraryPlayerPane" prefHeight="328.0" prefWidth="471.0" BorderPane.alignment="CENTER">
                <center>
-                  <TableView prefHeight="534.0" prefWidth="766.0" BorderPane.alignment="CENTER">
+                  <TableView prefHeight="534.0" prefWidth="766.0" stylesheets="@style.css" BorderPane.alignment="CENTER">
                     <columns>
                       <TableColumn prefWidth="75.0" text="C1" />
                       <TableColumn prefWidth="75.0" text="C2" />
@@ -32,9 +31,9 @@
                <bottom>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <center>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #aaa;" BorderPane.alignment="CENTER">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #3c3c3c; -fx-border-color: #196e87; -fx-border-width: 2;" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="currentTrackLabel" alignment="CENTER" prefHeight="39.0" prefWidth="500.0" text="Label" textAlignment="CENTER">
+                              <Label fx:id="currentTrackLabel" alignment="CENTER" prefHeight="39.0" prefWidth="500.0" style="-fx-text-fill: #f0f8ff;" text="Label" textAlignment="CENTER">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" />
                                  </VBox.margin>
@@ -51,7 +50,7 @@
                                     </Slider>
                                  </center>
                                  <left>
-                                    <Label fx:id="elapsedTimeLabel" alignment="CENTER" prefHeight="30.0" prefWidth="75.0" text="00:00" BorderPane.alignment="CENTER">
+                                    <Label fx:id="elapsedTimeLabel" alignment="CENTER" prefHeight="30.0" prefWidth="75.0" style="-fx-text-fill: #f0f8ff;" text="00:00" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets left="40.0" />
                                        </BorderPane.margin>
@@ -61,7 +60,7 @@
                                     </Label>
                                  </left>
                                  <right>
-                                    <Label fx:id="totalTimeLabel" alignment="CENTER" prefHeight="30.0" prefWidth="75.0" text="00:00" BorderPane.alignment="CENTER">
+                                    <Label fx:id="totalTimeLabel" alignment="CENTER" prefHeight="30.0" prefWidth="75.0" style="-fx-text-fill: #f0f8ff;" text="00:00" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets right="40.0" />
                                        </BorderPane.margin>
@@ -107,14 +106,14 @@
                      <left>
                         <VBox prefHeight="40.0" prefWidth="80.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button fx:id="backButton" disable="true" mnemonicParsing="false" onAction="#backClicked" prefHeight="49.0" prefWidth="80.0" />
+                              <Button fx:id="backButton" disable="true" mnemonicParsing="false" onAction="#backClicked" prefHeight="49.0" prefWidth="80.0" style="-fx-background-color: #626262;" />
                            </children>
                         </VBox>
                      </left>
                      <center>
                         <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="title" prefHeight="57.0" prefWidth="923.0" text="kapow!">
+                              <Label fx:id="title" prefHeight="57.0" prefWidth="923.0" style="-fx-text-fill: #f0f8ff;" text="kapow!">
                                  <padding>
                                     <Insets left="20.0" />
                                  </padding>
@@ -127,19 +126,28 @@
             </BorderPane>
          </center>
          <left>
-            <BorderPane fx:id="listViewBorderPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #aaa;" BorderPane.alignment="CENTER">
+            <BorderPane fx:id="listViewBorderPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3c3c3c;" BorderPane.alignment="CENTER">
                <top>
-                  <VBox prefHeight="220.0" prefWidth="200.0" style="-fx-background-color: #777;" BorderPane.alignment="CENTER">
+                  <VBox prefHeight="220.0" prefWidth="200.0" style="-fx-background-color: #3c3c3c;" BorderPane.alignment="CENTER">
                      <children>
-                        <ToggleButton fx:id="artistsToggleButton" mnemonicParsing="false" onAction="#artistsToggleClicked" prefHeight="60.0" prefWidth="200.0" selected="true" text="Artists" />
-                        <ToggleButton fx:id="albumsToggleButton" mnemonicParsing="false" onAction="#albumsToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Albums" />
-                        <ToggleButton fx:id="tracksToggleButton" mnemonicParsing="false" onAction="#tracksToggleClicked" prefHeight="60.0" prefWidth="200.0" text="Tracks" />
-                        <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" promptText="Search" />
+                        <ToggleButton fx:id="artistsToggleButton" mnemonicParsing="false" onAction="#artistsToggleClicked" prefHeight="60.0" prefWidth="200.0" selected="true" styleClass="tabButton" text="Artists">
+                           <font>
+                              <Font size="20.0" />
+                           </font></ToggleButton>
+                        <ToggleButton fx:id="albumsToggleButton" mnemonicParsing="false" onAction="#albumsToggleClicked" prefHeight="60.0" prefWidth="200.0" styleClass="tabButton" text="Albums">
+                           <font>
+                              <Font size="20.0" />
+                           </font></ToggleButton>
+                        <ToggleButton fx:id="tracksToggleButton" mnemonicParsing="false" onAction="#tracksToggleClicked" prefHeight="60.0" prefWidth="200.0" styleClass="tabButton" text="Tracks">
+                           <font>
+                              <Font size="20.0" />
+                           </font></ToggleButton>
+                        <TextField fx:id="searchBox" onKeyReleased="#searchTermEntered" prefHeight="40.0" promptText="Search" style="-fx-background-color: #626262; -fx-border-color: #4b4b4b; -fx-border-width: 1 2 2 2; -fx-border-radius: 4;" />
                      </children>
                   </VBox>
                </top>
                <center>
-                  <ListView fx:id="queueListView" onMouseClicked="#queueListViewClicked" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ddd;" BorderPane.alignment="CENTER" />
+                  <ListView fx:id="queueListView" onMouseClicked="#queueListViewClicked" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3c3c3c;" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </left>

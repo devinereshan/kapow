@@ -31,7 +31,10 @@ public class GUI extends Application {
         pStage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("main_view.fxml"));
         primaryStage.setTitle("Kapow!");
-        primaryStage.setScene(new Scene(root, 1200, 800));
+        Scene scene = new Scene(root, 1200, 800);
+        scene.getStylesheets().add("main/frontend/style.css");
+        // primaryStage.setScene(new Scene(root, 1200, 800));
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
